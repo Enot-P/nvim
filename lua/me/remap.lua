@@ -1,1 +1,8 @@
--- All keymaps have been moved to plugin definitions or removed.
+vim.g.mapleader = " "
+vim.keymap.set("n", "<leader>q", ":Neotree toggle<CR>", { desc = "Toggle NeoTree" })
+vim.keymap.set("n", "<leader>|", "<cmd>vsplit<CR>", { desc = "Вертикальное разделение" })
+vim.keymap.set("n", "<leader>\\", "<cmd>split<CR>", { desc = "Горизонтальное разделение" })
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Перейти в левое окно" })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Перейти в нижнее окно" })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Перейти в верхнее окно" })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Перейти в правое окно" })
