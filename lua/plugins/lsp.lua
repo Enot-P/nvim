@@ -7,7 +7,6 @@ return {
 		end,
 	},
 	{
-		-- bridges the gap between mason and lspconfig
 		"williamboman/mason-lspconfig.nvim",
 		lazy = false,
 	},
@@ -16,10 +15,8 @@ return {
 		lazy = false,
 		config = function()
 			local lsp_config = require("lspconfig")
-			require("mason").setup()
 			require("mason-lspconfig").setup({
 				ensure_installed = {
-					-- dart sdk ships with LSP
 					"astro",
 					"tailwindcss",
 					"ts_ls",
@@ -41,10 +38,7 @@ return {
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 				callback = function(ev)
-					-- Buffer local mappings.
-					-- See `:help vim.lsp.*` for documentation on any of the below functions
 					local opts = { buffer = ev.buf }
-
 					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 					vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
@@ -56,7 +50,7 @@ return {
 
 			vim.diagnostic.config({
 				virtual_text = true,
-				signs = false,
+				signs = true,
 			})
 
 			local dartExcludedFolders = {
@@ -66,19 +60,19 @@ return {
 				vim.fn.expand("$HOME/tools/flutter/"),
 			}
 
-			lsp_config["dcmls"].setup({
-				capabilities = capabilities,
-				cmd = {
-					"dcm",
-					"start-server",
-				},
-				filetypes = { "dart", "yaml" },
-				settings = {
-					dart = {
-						analysisExcludedFolders = dartExcludedFolders,
+			-- Запускаем dcmls только если он установлен
+			if vim.fn.executable("dcm") == 1 then
+				lsp_config["dcmls"].setup({
+					capabilities = capabilities,
+					cmd = { "dcm", "start-server" },
+					filetypes = { "dart", "yaml" },
+					settings = {
+						dart = {
+							analysisExcludedFolders = dartExcludedFolders,
+						},
 					},
-				},
-			})
+				})
+			end
 
 			lsp_config["dartls"].setup({
 				capabilities = capabilities,
@@ -86,8 +80,6 @@ return {
 					"dart",
 					"language-server",
 					"--protocol=lsp",
-					-- "--port=8123",
-					-- "--instrumentation-log-file=/Users/robertbrunhage/Desktop/lsp-log.txt",
 				},
 				filetypes = { "dart" },
 				init_options = {
@@ -107,61 +99,29 @@ return {
 				},
 			})
 
-			lsp_config.astro.setup({
-				capabilities = capabilities,
-			})
-
-
-			lsp_config.intelephense.setup({
-				capabilities = capabilities,
-			})
-
-
-			lsp_config.clangd.setup({
-				capabilities = capabilities,
-			})
-
-			lsp_config.tailwindcss.setup({
-				capabilities = capabilities,
-			})
-
-			lsp_config.ts_ls.setup({
-				capabilities = capabilities,
-			})
+			lsp_config.astro.setup({ capabilities = capabilities })
+			lsp_config.intelephense.setup({ capabilities = capabilities })
+			lsp_config.clangd.setup({ capabilities = capabilities })
+			lsp_config.tailwindcss.setup({ capabilities = capabilities })
+			lsp_config.ts_ls.setup({ capabilities = capabilities })
 
 			lsp_config.lua_ls.setup({
 				capabilities = capabilities,
 				settings = {
 					Lua = {
-            -- runtime = {
-            --   version = "LuaJIT",
-            -- },
 						diagnostics = {
 							globals = { "vim" },
 						},
-            -- workspace = {
-            --   checkThirdParty = false,
-            --   library = {
-            --     '${3rd}/luv/library',
-            --     unpack(vim.api.nvim_get_runtime_rile("", true)),
-            --     vim.api.nvim_get_proc,
-            --   }
-            -- },
 					},
 				},
 			})
 
-			-- Tooltip for the lsp in bottom right
 			require("fidget").setup({})
-
-			-- Hot reload :)
 			require("dart-tools")
 		end,
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp",
-
 			{ "j-hui/fidget.nvim", tag = "legacy" },
-			-- support for dart hot reload on save
 			"RobertBrunhage/dart-tools.nvim",
 		},
 	},
