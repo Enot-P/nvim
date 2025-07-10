@@ -39,3 +39,4 @@ vim.opt.splitright = true
 
 vim.opt.clipboard = "unnamedplus"
 vim.keymap.set("n", "<C-n>", vim.cmd.Ex)
+vim.opt.colorcolumn = ""

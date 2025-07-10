@@ -1,29 +1,38 @@
 return {
-	-- Color
-	"rose-pine/neovim",
-	name = "rose-pine",
+	"tiagovla/tokyodark.nvim",
+	name = "tokyodark",
+	priority = 1000,
 
 	config = function()
-		require("rose-pine").setup({
-			dark_variant = "moon",
-			light_variant = "dawn",
-		})
-
 		local auto_dark_mode = require("auto-dark-mode")
+
+		-- Функция делает фон прозрачным
+		local function set_transparent_hls()
+			local groups = { "Normal", "NormalNC", "NormalFloat", "SignColumn", "LineNr", "StatusLine", "TabLine", "VertSplit", "EndOfBuffer" }
+			for _, group in ipairs(groups) do
+				vim.api.nvim_set_hl(0, group, { bg = "NONE", ctermbg = "NONE" })
+			end
+		end
 
 		auto_dark_mode.setup({
 			update_interval = 1000,
 			set_dark_mode = function()
-				vim.api.nvim_set_option("background", "dark")
-				vim.api.nvim_command("colorscheme rose-pine")
+				vim.opt.background = "dark"
+				vim.cmd("colorscheme tokyodark")
+				set_transparent_hls()
 			end,
 			set_light_mode = function()
-				vim.api.nvim_set_option("background", "light")
-				vim.api.nvim_command("colorscheme rose-pine")
+				vim.opt.background = "light"
+				vim.cmd("colorscheme tokyodark")
+				set_transparent_hls()
 			end,
 		})
 
 		auto_dark_mode.init()
+
+		-- Установим тему сразу
+		vim.cmd("colorscheme tokyodark")
+		set_transparent_hls()
 	end,
 
 	dependencies = {
