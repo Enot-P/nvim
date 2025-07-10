@@ -40,7 +40,7 @@ return {
           "tailwindcss",
           "ts_ls",
           "lua_ls",
-          "dartls", -- Add dartls here
+         -- "dartls", -- Add dartls here
         },
       })
 

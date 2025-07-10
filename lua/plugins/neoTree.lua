@@ -30,8 +30,8 @@ return {
 					["l"] = "open", -- Открыть файл или директорию
 					["h"] = "close_node", -- Закрыть текущий узел
 					["<space>"] = "none", -- Отключить действие для пробела
-					["Y"] = "copy_path_to_clipboard", -- Копировать путь в буфер обмена
-					["O"] = "open_with_system_app", -- Открыть файл в системном приложении
+					--["Y"] = "copy_path_to_clipboard", -- Копировать путь в буфер обмена
+					--["O"] = "open_with_system_app", -- Открыть файл в системном приложении
 					["P"] = { "toggle_preview", config = { use_float = false } }, -- Переключить предпросмотр
 				},
 			},
@@ -52,7 +52,5 @@ return {
 				},
 			},
 		})
-
-		vim.keymap.set("n", "<leader>t", ":Neotree toggle<CR>", { desc = "Переключить NeoTree" })
 	end,
 }
