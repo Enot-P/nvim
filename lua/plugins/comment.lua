@@ -1,9 +1,9 @@
 return {
 	"numToStr/Comment.nvim",
-  config = function()
-    require("Comment").setup({
-      padding = true,
-      ignoe = '^$',
-    })
-  end,
+	config = function()
+		require("Comment").setup({
+			padding = true,
+			ignore = "^$",
+		})
+	end,
 }
