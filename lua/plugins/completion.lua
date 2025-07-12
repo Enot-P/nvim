@@ -16,36 +16,16 @@ return {
 				end
 			end, { "i" }),
 		})
-		cmp_mappings["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_next_item()
-			elseif require("luasnip").expand_or_jumpable() then
-				require("luasnip").expand_or_jump()
-			else
-				fallback()
-			end
-		end, { "i", "s" })
-		cmp_mappings["<S-Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_prev_item()
-			elseif require("luasnip").jumpable(-1) then
-				require("luasnip").jump(-1)
-			else
-				fallback()
-			end
-		end, { "i", "s" })
 
 		---@diagnostic disable-next-line: missing-fields
 		cmp.setup({
 			snippet = {
 				expand = function(args)
-					require("luasnip").lsp_expand(args.body)
+					require("luasnip").lsp_expand(args.body) -- Необходимо для работы сниппетов
 				end,
 			},
 			sources = cmp.config.sources({
 				{ name = "nvim_lsp", priority = 1000 },
-				{ name = "luasnip", priority = 900 },
-			}, {
 				{ name = "buffer", priority = 800, keyword_length = 3 },
 				{ name = "path", priority = 700 },
 			}),
@@ -54,7 +34,6 @@ return {
 				completion = cmp.config.window.bordered(),
 				documentation = cmp.config.window.bordered(),
 			},
-			-- Добавляем дедупликацию
 			sorting = {
 				comparators = {
 					cmp.config.compare.offset,
@@ -68,7 +47,6 @@ return {
 					cmp.config.compare.order,
 				},
 			},
-			-- Настройки для предотвращения дублирования
 			experimental = {
 				ghost_text = true,
 			},
@@ -76,8 +54,7 @@ return {
 				duplicates = {
 					buffer = 1,
 					path = 1,
-					nvim_lsp = 0, -- Не показываем дубли LSP
-					luasnip = 1,
+					nvim_lsp = 0,
 				},
 				format = require("lspkind").cmp_format({
 					mode = "symbol_text",
@@ -85,7 +62,6 @@ return {
 					before = function(entry, vim_item)
 						vim_item.menu = ({
 							nvim_lsp = "[LSP]",
-							luasnip = "[Snippet]",
 							buffer = "[Buffer]",
 							path = "[Path]",
 							nvim_lua = "[Lua]",
@@ -96,7 +72,7 @@ return {
 			},
 		})
 
-		-- Очистка и загрузка кастомных сниппетов
+		-- Очистка и загрузка только ваших сниппетов
 		require("luasnip").cleanup()
 		require("luasnip.loaders.from_lua").lazy_load({ paths = { "~/.config/nvim/lua/snippets/" } })
 	end,
@@ -106,9 +82,9 @@ return {
 		"hrsh7th/cmp-nvim-lua",
 		"onsails/lspkind.nvim",
 		{
-			"L3MON4D3/LuaSnip",
+			"L3MON4D3/LuaSnip", -- Возвращаем LuaSnip
 			dependencies = {
-				"saadparwaiz1/cmp_luasnip",
+				"saadparwaiz1/cmp_luasnip", -- Необходимо для интеграции с cmp
 			},
 		},
 	},
