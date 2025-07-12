@@ -15,7 +15,7 @@ end
 -- Flutter/Dart снипеты
 return {
 	-- Stateless Widget
-	s("statelessW", {
+	s("stateL", {
 		t("class "),
 		i(1, "name"),
 		t(" extends StatelessWidget {"),
@@ -34,7 +34,7 @@ return {
 	}),
 
 	-- Stateful Widget
-	s("statefulW", {
+	s("stateF", {
 		t("class "),
 		i(1, "name"),
 		t(" extends StatefulWidget {"),

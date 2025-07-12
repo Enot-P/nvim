@@ -1,13 +1,57 @@
 return {
 	"hrsh7th/nvim-cmp",
+	dependencies = {
+		"hrsh7th/cmp-buffer",
+		"hrsh7th/cmp-path",
+		"hrsh7th/cmp-nvim-lua",
+		"onsails/lspkind.nvim",
+		{
+			"L3MON4D3/LuaSnip",
+			build = "make install_jsregexp",
+			config = function()
+				-- Загружаем только свои сниппеты
+				require("luasnip.loaders.from_lua").lazy_load({
+					paths = { "~/.config/nvim/lua/snippets/" },
+				})
+			end,
+			dependencies = {
+				"saadparwaiz1/cmp_luasnip",
+			},
+		},
+	},
 	config = function()
+		-- Внутри config = function()
 		local cmp = require("cmp")
+		local luasnip = require("luasnip")
+
 		local cmp_mappings = cmp.mapping.preset.insert({
 			["<C-u>"] = cmp.mapping.scroll_docs(-4),
 			["<C-d>"] = cmp.mapping.scroll_docs(4),
 			["<C-Space>"] = cmp.mapping.complete(),
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = false }),
+
+			-- Переход по параметрам и выбор автодополнения с помощью Tab
+			["<Tab>"] = cmp.mapping(function(fallback)
+				if cmp.visible() then
+					cmp.select_next_item() -- Выбираем следующий элемент в меню автодополнения
+				elseif luasnip.expand_or_jumpable() then
+					luasnip.expand_or_jump() -- Расширяем или переходим к следующему параметру в сниппете
+				else
+					fallback() -- Если нет меню или сниппета, используем стандартное поведение Tab
+				end
+			end, { "i", "s" }),
+
+			["<S-Tab>"] = cmp.mapping(function(fallback)
+				if cmp.visible() then
+					cmp.select_prev_item() -- Выбираем предыдущий элемент в меню автодополнения
+				elseif luasnip.jumpable(-1) then
+					luasnip.jump(-1) -- Переходим к предыдущему параметру в сниппете
+				else
+					fallback() -- Если нет меню или сниппета, используем стандартное поведение Shift-Tab
+				end
+			end, { "i", "s" }),
+
 			["<C-f>"] = cmp.mapping(function(fallback)
 				if cmp.visible_docs() then
 					cmp.close_docs()
@@ -16,16 +60,15 @@ return {
 				end
 			end, { "i" }),
 		})
-
-		---@diagnostic disable-next-line: missing-fields
 		cmp.setup({
 			snippet = {
 				expand = function(args)
-					require("luasnip").lsp_expand(args.body) -- Необходимо для работы сниппетов
+					luasnip.lsp_expand(args.body)
 				end,
 			},
 			sources = cmp.config.sources({
 				{ name = "nvim_lsp", priority = 1000 },
+				{ name = "luasnip", priority = 900 },
 				{ name = "buffer", priority = 800, keyword_length = 3 },
 				{ name = "path", priority = 700 },
 			}),
@@ -55,6 +98,7 @@ return {
 					buffer = 1,
 					path = 1,
 					nvim_lsp = 0,
+					luasnip = 1,
 				},
 				format = require("lspkind").cmp_format({
 					mode = "symbol_text",
@@ -62,6 +106,7 @@ return {
 					before = function(entry, vim_item)
 						vim_item.menu = ({
 							nvim_lsp = "[LSP]",
+							luasnip = "[Snip]",
 							buffer = "[Buffer]",
 							path = "[Path]",
 							nvim_lua = "[Lua]",
@@ -71,21 +116,5 @@ return {
 				}),
 			},
 		})
-
-		-- Очистка и загрузка только ваших сниппетов
-		require("luasnip").cleanup()
-		require("luasnip.loaders.from_lua").lazy_load({ paths = { "~/.config/nvim/lua/snippets/" } })
 	end,
-	dependencies = {
-		"hrsh7th/cmp-buffer",
-		"hrsh7th/cmp-path",
-		"hrsh7th/cmp-nvim-lua",
-		"onsails/lspkind.nvim",
-		{
-			"L3MON4D3/LuaSnip", -- Возвращаем LuaSnip
-			dependencies = {
-				"saadparwaiz1/cmp_luasnip", -- Необходимо для интеграции с cmp
-			},
-		},
-	},
 }

@@ -12,6 +12,7 @@ vim.keymap.set("n", "<leader>Q", ":q!<CR>", { desc = "Выйти без сохр
 vim.keymap.set("n", "<Tab>", "<Cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
 vim.keymap.set("n", "<leader>tp", ":Telescope projects<CR>", { desc = "Поиск проектов" })
+vim.keymap.set("n", "<leader>c", ":BufferLineClose<CR>", { desc = "Закрыть текущий буфер" })
 for i = 1, 9 do
 	vim.keymap.set(
 		"n",
