@@ -32,3 +32,4 @@ vim.keymap.set("n", "<A-j>", ":resize +2<CR>", { desc = "Увеличить вы
 vim.keymap.set("n", "<A-k>", ":resize -2<CR>", { desc = "Уменьшить высоту окна" })
 vim.keymap.set("n", "<A-h>", ":vertical resize +2<CR>", { desc = "Увеличить ширину окна" })
 vim.keymap.set("n", "<A-l>", ":vertical resize -2<CR>", { desc = "Уменьшить ширину окна" })
+vim.keymap.set("n", "<leader>fq", ":FlutterLogToggle<CR>", { desc = "Открыть консоль Flutter" })
