@@ -65,7 +65,15 @@ return {
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-				callback = M.on_attach,
+				callback = function(ev)
+					M.on_attach(ev)
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						buffer = ev.buf,
+						callback = function()
+							vim.lsp.buf.format({ async = true })
+						end,
+					})
+				end,
 			})
 
 			vim.diagnostic.config({
