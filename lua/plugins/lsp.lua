@@ -27,13 +27,12 @@ return {
             end,
           })
         end
-        local opts = { noremap = true, silent = true, buffer = bufnr }
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-        vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, opts)
-        vim.keymap.set('n', 'ca', vim.lsp.buf.code_action, opts)
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = bufnr, desc = "Перейти к определению" })
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = bufnr, desc = "Показать документацию" })
+        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = bufnr, desc = "Перейти к реализации" })
+        vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, { buffer = bufnr, desc = "Переименовать" })
+        vim.keymap.set('n', 'ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = "Действия с кодом" })
+        vim.keymap.set('n', 'gr', vim.lsp.buf.references, { buffer = bufnr, desc = "Показать использования" })
       end
 
       -- lspconfig.dartls.setup({

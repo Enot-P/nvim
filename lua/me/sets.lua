@@ -35,11 +35,11 @@ vim.g.netrw_fastbrowse = 2
 vim.opt.splitright = true
 
 vim.opt.clipboard = "unnamedplus"
-vim.keymap.set("n", "<C-n>", vim.cmd.Ex)
+vim.keymap.set("n", "<C-n>", vim.cmd.Ex, { desc = "Открыть проводник" })
 vim.opt.colorcolumn = ""
-    vim.keymap.set('n', '<leader>fr', ':FlutterRunTmux<CR>', { desc = 'Flutter Run in Tmux' })
-    vim.keymap.set('n', '<leader>frl', ':FlutterReloadTmux<CR>', { desc = 'Flutter Reload' })
-    vim.keymap.set('n', '<leader>frs', ':FlutterRestartTmux<CR>', { desc = 'Flutter Restart' })
-    vim.keymap.set('n', '<leader>fq', ':FlutterQuitTmux<CR>', { desc = 'Flutter Quit' })
-    vim.keymap.set('n', '<leader>fd', ':FlutterDevices<CR>', { desc = 'Flutter Devices' })
-    vim.keymap.set('n', '<leader>fe', ':FlutterEmulators<CR>', { desc = 'Flutter Emulators' })
+    vim.keymap.set('n', '<leader>fr', ':FlutterRunTmux<CR>', { desc = 'Flutter: Запустить в Tmux' })
+    vim.keymap.set('n', '<leader>frl', ':FlutterReloadTmux<CR>', { desc = 'Flutter: Горячая перезагрузка' })
+    vim.keymap.set('n', '<leader>frs', ':FlutterRestartTmux<CR>', { desc = 'Flutter: Полный перезапуск' })
+    vim.keymap.set('n', '<leader>fq', ':FlutterQuitTmux<CR>', { desc = 'Flutter: Выйти' })
+    vim.keymap.set('n', '<leader>fd', ':FlutterDevices<CR>', { desc = 'Flutter: Показать устройства' })
+    vim.keymap.set('n', '<leader>fe', ':FlutterEmulators<CR>', { desc = 'Flutter: Показать эмуляторы' })

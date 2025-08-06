@@ -23,19 +23,19 @@ return {
 		end
 
 		-- Клавишные комбинации
-		vim.keymap.set("n", "<leader>tb", builtin.buffers, {})
-		vim.keymap.set("n", "<leader>to", builtin.oldfiles, {})
+		vim.keymap.set("n", "<leader>tb", builtin.buffers, { desc = "Поиск по буферам" })
+		vim.keymap.set("n", "<leader>to", builtin.oldfiles, { desc = "Поиск по истории файлов" })
 		vim.keymap.set("n", "<leader>tlb", function()
 			builtin.git_branches({ show_remote_tracking_branches = false })
-		end, {})
-		vim.keymap.set("n", "<leader>tlrb", builtin.git_branches, {})
-		vim.keymap.set("n", "<leader>tgg", require("telescope").extensions.live_grep_args.live_grep_args)
-		vim.keymap.set("n", "<leader>tgs", builtin.grep_string, {})
-		vim.keymap.set("n", "<leader>th", builtin.help_tags, {})
-		vim.keymap.set("n", "<leader>tc", builtin.commands, {})
-		vim.keymap.set("n", "<leader>ts", builtin.lsp_document_symbols, {})
-		vim.keymap.set("n", "<leader>tf", builtin.find_files, {})
-		vim.keymap.set("n", "<C-p>", project_files, {})
+		end, { desc = "Поиск по локальным веткам git" })
+		vim.keymap.set("n", "<leader>tlrb", builtin.git_branches, { desc = "Поиск по всем веткам git" })
+		vim.keymap.set("n", "<leader>tgg", require("telescope").extensions.live_grep_args.live_grep_args, { desc = "Поиск по файлам (live grep)" })
+		vim.keymap.set("n", "<leader>tgs", builtin.grep_string, { desc = "Поиск слова под курсором" })
+		vim.keymap.set("n", "<leader>th", builtin.help_tags, { desc = "Поиск по тегам помощи" })
+		vim.keymap.set("n", "<leader>tc", builtin.commands, { desc = "Поиск по командам" })
+		vim.keymap.set("n", "<leader>ts", builtin.lsp_document_symbols, { desc = "Поиск по символам в документе" })
+		vim.keymap.set("n", "<leader>tf", builtin.find_files, { desc = "Поиск по файлам" })
+		vim.keymap.set("n", "<C-p>", project_files, { desc = "Поиск по файлам проекта" })
 
 		-- Настройка Telescope
 		telescope.setup({
