@@ -36,17 +36,17 @@ return {
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
       end
 
-      lspconfig.dartls.setup({
-        on_attach = on_attach,
-        capabilities = capabilities,
-        settings = {
-          dart = {
-            lineLength = 80,
-            flutterOutline = true,
-            closingLabels = true,
-          }
-        }
-      })
+      -- lspconfig.dartls.setup({
+      --   on_attach = on_attach,
+      --   capabilities = capabilities,
+      --   settings = {
+      --     dart = {
+      --       lineLength = 80,
+      --       flutterOutline = true,
+      --       closingLabels = true,
+      --     }
+      --   }
+      -- })
     end,
   },
 }

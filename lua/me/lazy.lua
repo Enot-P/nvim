@@ -14,5 +14,6 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup("plugins", {
 	spec = {
 		{ "ahmedkhalf/project.nvim" },
+		{ import = "plugins/flutter-tools.lua" },
 	},
 })
