@@ -6,8 +6,8 @@ return {
     require('bufferline').setup({
       options = {
         numbers = "none", -- "none" | "ordinal" | "buffer_id" | "both" | function({ ordinal, id, lower, raise }): string,
-        close_command = "bdelete! %d",       -- can be a string or a function, see "Mouse actions"
-        right_mouse_command = "bdelete! %d", -- can be a string or a function, see "Mouse actions"
+        close_command = function(bufnum) vim.cmd("bdelete! " .. bufnum) end,
+        right_mouse_command = function(bufnum) vim.cmd("bdelete! " .. bufnum) end,
         left_mouse_command = "buffer %d",    -- can be a string or a function, see "Mouse actions"
         middle_mouse_command = nil,          -- can be a string or a function, see "Mouse actions"
         buffer_close_icon = '',

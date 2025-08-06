@@ -12,7 +12,7 @@ vim.keymap.set("n", "<leader>Q", ":q!<CR>", { desc = "Выйти без сохр
 vim.keymap.set("n", "<Tab>", "<Cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
 vim.keymap.set("n", "<leader>tp", ":Telescope projects<CR>", { desc = "Поиск проектов" })
-vim.keymap.set("n", "<leader>c", ":BufferLineClose<CR>", { desc = "Закрыть текущий буфер" })
+vim.keymap.set("n", "<leader>bc", ":bdelete<CR>", { desc = "Закрыть текущий буфер" })
 for i = 1, 9 do
 	vim.keymap.set(
 		"n",
@@ -23,7 +23,7 @@ for i = 1, 9 do
 end
 vim.keymap.set(
 	"n",
-	"<leader>x",
+	"<leader>bx",
 	":BufferLineCloseOthers<CR>",
 	{ desc = "Закрыть остальные буферы" }
 )
@@ -38,3 +38,15 @@ vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Показ
 vim.keymap.set("n", "<leader>ge", function()
   require("me.exports").generate_exports()
 end, { desc = "Сгенерировать экспортный файл" })
+vim.keymap.set(
+	"n",
+	"<leader>bl",
+	":BufferLineCloseLeft<CR>",
+	{ desc = "Закрыть вкладки слева" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>br",
+	":BufferLineCloseRight<CR>",
+	{ desc = "Закрыть вкладки справа" }
+)
