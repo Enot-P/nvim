@@ -25,7 +25,7 @@ return {
             vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
             vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, opts)
             vim.keymap.set('n', 'ca', vim.lsp.buf.code_action, opts)
-            vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+            vim.keymap.set('n', 'gr', function() require('telescope.builtin').lsp_references() end, opts)
           end,
           capabilities = require("cmp_nvim_lsp").default_capabilities(),
           settings = {
