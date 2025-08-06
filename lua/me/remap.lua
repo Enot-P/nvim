@@ -33,7 +33,7 @@ vim.keymap.set("n", "<A-k>", ":resize -2<CR>", { desc = "Уменьшить вы
 vim.keymap.set("n", "<A-h>", ":vertical resize +2<CR>", { desc = "Увеличить ширину окна" })
 vim.keymap.set("n", "<A-l>", ":vertical resize -2<CR>", { desc = "Уменьшить ширину окна" })
 vim.keymap.set("n", "<leader>dl", ":Telescope diagnostics bufnr=0<CR>", { desc = "Показать список ошибок" })
-vim.keymap.set("n", "<leader>df", ":Telescope diagnostics bufnr=nil<CR>", { desc = "Показать ошибки проекта" })
+vim.keymap.set("n", "<leader>dp", ":Telescope diagnostics bufnr=nil<CR>", { desc = "Показать ошибки проекта" })
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Показать ошибку под курсором" })
 vim.keymap.set("n", "<leader>ge", function()
   require("me.exports").generate_exports()
