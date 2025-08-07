@@ -29,44 +29,9 @@ function M.generate_exports()
   end
 end
 
-function M.send_to_tmux_window(window_id, command)
-  -- Проверка, что аргументы переданы
-  if not window_id or not command then
-    vim.notify("Error: window_id and command must be provided", vim.log.levels.ERROR)
-    return
-  end
 
-  -- Проверка, что Neovim работает в tmux
-  if vim.fn.exists('$TMUX') == 0 then
-    vim.notify("Error: Neovim is not running inside a tmux session", vim.log.levels.ERROR)
-    return
-  end
-
-  -- Экранирование команды
-  local escaped_command = command:gsub("'", "'\\''")
-  local tmux_cmd = string.format("tmux send-keys -t %s '%s' C-m", window_id, escaped_command)
-
-  -- Выполнение команды и проверка результата
-  local output = vim.fn.system(tmux_cmd)
-  if vim.v.shell_error == 0 then
-    vim.notify("Command sent to tmux window " .. window_id .. ": " .. command, vim.log.levels.INFO)
-  else
-    vim.notify("Error sending command to tmux window " .. window_id .. ": " .. (output or "Unknown error"), vim.log.levels.ERROR)
-  end
-end
-
--- Определение пользовательской команды с улучшенной обработкой аргументов
-vim.api.nvim_create_user_command('SendToTmux', function(opts)
-  -- Разделяем аргументы по пробелу
-  local args = vim.split(opts.args, "%s+", { trimempty = true })
-  if #args < 2 then
-    vim.notify("Error: Usage: SendToTmux <window_id> <command>", vim.log.levels.ERROR)
-    return
-  end
-
-  local window_id = args[1]
-  local command = table.concat({ unpack(args, 2) }, " ") -- Собираем оставшиеся аргументы в команду
-  M.send_to_tmux_window(window_id, command)
-end, { nargs = '+' })
+vim.keymap.set("n", "<leader>ge", function()
+  require("me.exports").generate_exports()
+end, { desc = "Сгенерировать экспортный файл" })
 
 return M
