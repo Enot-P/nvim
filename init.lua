@@ -1,7 +1,7 @@
 require("me.remap")
 require("me.sets")
 require("me.lazy")
-require("me.exports")
+require("me.utils")
 
 local autocmd = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
