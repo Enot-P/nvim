@@ -22,6 +22,13 @@ return {
 			end
 		end
 
+    -- Функция для поиска только ошибок LSP
+    local function find_lsp_errors()
+        builtin.diagnostics({
+            severity = vim.diagnostic.severity.ERROR, -- Фильтр только ошибок
+        })
+    end
+
 		-- Клавишные комбинации
 		vim.keymap.set("n", "<leader>tb", builtin.buffers, { desc = "Поиск по буферам" })
 		vim.keymap.set("n", "<leader>to", builtin.oldfiles, { desc = "Поиск по истории файлов" })
@@ -36,6 +43,7 @@ return {
 		vim.keymap.set("n", "<leader>ts", builtin.lsp_document_symbols, { desc = "Поиск по символам в документе" })
 		vim.keymap.set("n", "<leader>tf", builtin.find_files, { desc = "Поиск по файлам" })
 		vim.keymap.set("n", "<C-p>", project_files, { desc = "Поиск по файлам проекта" })
+    vim.keymap.set("n", "<leader>te", find_lsp_errors, { desc = "Поиск ошибок LSP" })
 
 		-- Настройка Telescope
 		telescope.setup({

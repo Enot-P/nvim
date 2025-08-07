@@ -50,3 +50,4 @@ vim.keymap.set(
 	":BufferLineCloseRight<CR>",
 	{ desc = "Закрыть вкладки справа" }
 )
+
