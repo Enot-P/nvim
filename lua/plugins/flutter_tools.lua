@@ -57,8 +57,12 @@ return {
           },
           capabilities = require('cmp_nvim_lsp').default_capabilities(),
           on_attach = require('me.utils').on_attach,
-          -- Настройки для улучшения closing labels
           settings = {
+            dart = {
+              lineLength = 80,       -- Из первого файла
+              flutterOutline = true, -- Из первого файла
+              closingLabels = true,  -- Из первого файла
+            },
             showTodos = true,
             completeFunctionCalls = true,
             analysisExcludedFolders = {
