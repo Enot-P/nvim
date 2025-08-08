@@ -24,7 +24,10 @@ end
 vim.keymap.set(
 	"n",
 	"<leader>bx",
-	":BufferLineCloseOthers<CR>",
+	function()
+		vim.cmd("wa")
+		vim.cmd("BufferLineCloseOthers")
+	end,
 	{ desc = "Закрыть остальные буферы" }
 )
 -- Window resizing keybindings
@@ -41,13 +44,19 @@ end, { desc = "Сгенерировать экспортный файл" })
 vim.keymap.set(
 	"n",
 	"<leader>bl",
-	":BufferLineCloseLeft<CR>",
+	function()
+		vim.cmd("wa")
+		vim.cmd("BufferLineCloseLeft")
+	end,
 	{ desc = "Закрыть вкладки слева" }
 )
 vim.keymap.set(
 	"n",
 	"<leader>br",
-	":BufferLineCloseRight<CR>",
+	function()
+		vim.cmd("wa")
+		vim.cmd("BufferLineCloseRight")
+	end,
 	{ desc = "Закрыть вкладки справа" }
 )
 

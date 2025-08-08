@@ -47,3 +47,13 @@ autocmd("BufEnter", {
 		})
 	end,
 })
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  pattern = "*",
+  callback = function()
+    if vim.fn.argc() == 0 then -- Открыть Oil, только если не был передан файл
+      vim.cmd("Oil")
+    end
+  end,
+  desc = "Open Oil on startup",
+})

@@ -37,3 +37,17 @@ vim.opt.splitright = true
 vim.opt.clipboard = "unnamedplus"
 vim.keymap.set("n", "<C-n>", vim.cmd.Ex, { desc = "Открыть проводник" })
 vim.opt.colorcolumn = ""
+
+vim.opt.autowrite = true    -- автосохранение при переключении буферов
+vim.opt.autowriteall = true -- автосохранение при выходе
+
+vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost" }, {
+  pattern = "*",
+  callback = function()
+    if vim.bo.modified and vim.bo.buftype == "" then
+      vim.cmd("silent! w")
+    end
+  end,
+  desc = "Auto save file on leave",
+})
+
