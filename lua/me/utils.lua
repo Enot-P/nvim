@@ -9,7 +9,7 @@ function M.generate_exports()
   local files_to_export = {}
 
   for _, file in ipairs(vim.fn.readdir(current_dir)) do
-    if file:match("%.dart$") and file ~= export_file_name then
+    if file:match("%%.dart$") and file ~= export_file_name then
       table.insert(files_to_export, "export '" .. file .. "';")
     end
   end
@@ -30,16 +30,6 @@ function M.generate_exports()
 end
 
 function M.on_attach(client, bufnr)
-  if client.name == "dartls" then
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      group = vim.api.nvim_create_augroup("LspFormat", { clear = true }),
-      buffer = bufnr,
-      callback = function()
-        vim.lsp.buf.format({ async = true })
-      end,
-    })
-  end
-
   local telescope_builtin = require("telescope.builtin")
   vim.keymap.set('n', 'gd', telescope_builtin.lsp_definitions, { buffer = bufnr, desc = "Перейти к определению (Telescope)" })
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = bufnr, desc = "Показать документацию" })
@@ -54,3 +44,4 @@ vim.keymap.set("n", "<leader>ge", function()
 end, { desc = "Сгенерировать экспортный файл" })
 
 return M
+
