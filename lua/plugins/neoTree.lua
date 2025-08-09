@@ -9,6 +9,7 @@ return {
 	},
 	config = function()
 		require("neo-tree").setup({
+      open_on_setup = false,
 			-- Источники для отображения в NeoTree
 			sources = { "filesystem", "buffers", "git_status" },
 
