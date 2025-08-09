@@ -51,7 +51,7 @@ autocmd("BufEnter", {
 vim.api.nvim_create_autocmd("VimEnter", {
   pattern = "*",
   callback = function()
-    if vim.fn.argc() == 0 then -- Открыть Oil, только если не был передан файл
+    if vim.fn.argc() == 0 or (vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv()[0]) == 1) then -- Открыть Oil, если не был передан файл или была передана директория
       vim.cmd("Oil")
     end
   end,
