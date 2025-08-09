@@ -48,12 +48,12 @@ autocmd("BufEnter", {
 	end,
 })
 
-vim.api.nvim_create_autocmd("VimEnter", {
-  pattern = "*",
-  callback = function()
-    if vim.fn.argc() == 0 or (vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv()[0]) == 1) then -- Открыть Oil, если не был передан файл или была передана директория
-      vim.cmd("Oil")
-    end
-  end,
-  desc = "Open Oil on startup",
-})
+-- vim.api.nvim_create_autocmd("VimEnter", {
+--   pattern = "*",
+--   callback = function()
+--     if vim.fn.argc() == 0 or (vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv()[0]) == 1) then -- Открыть Oil, если не был передан файл или была передана директория
+--       vim.cmd("Oil")
+--     end
+--   end,
+--   desc = "Open Oil on startup",
+-- })
