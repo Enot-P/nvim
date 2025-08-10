@@ -60,3 +60,11 @@ vim.keymap.set(
 	{ desc = "Закрыть вкладки справа" }
 )
 
+vim.keymap.set("n", "]w", function()
+  require("snacks.words").jump(1)
+end, { desc = "Следующее слово" })
+
+vim.keymap.set("n", "[w", function()
+  require("snacks.words").jump(-1)
+end, { desc = "Предыдущее слово" })
+
