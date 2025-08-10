@@ -14,21 +14,21 @@ vim.keymap.set("n", "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", { desc = "Пре�
 vim.keymap.set("n", "<leader>tp", ":Telescope projects<CR>", { desc = "Поиск проектов" })
 vim.keymap.set("n", "<leader>q", ":bdelete<CR>", { desc = "Закрыть текущий буфер" })
 for i = 1, 9 do
-	vim.keymap.set(
-		"n",
-		"<leader>" .. i,
-		":BufferLineGoToBuffer " .. i .. "<CR>",
-		{ desc = "Перейти к буферу " .. i }
-	)
+  vim.keymap.set(
+    "n",
+    "<leader>" .. i,
+    ":BufferLineGoToBuffer " .. i .. "<CR>",
+    { desc = "Перейти к буферу " .. i }
+  )
 end
 vim.keymap.set(
-	"n",
-	"<leader>bx",
-	function()
-		vim.cmd("wa")
-		vim.cmd("BufferLineCloseOthers")
-	end,
-	{ desc = "Закрыть остальные буферы" }
+  "n",
+  "<leader>bx",
+  function()
+    vim.cmd("wa")
+    vim.cmd("BufferLineCloseOthers")
+  end,
+  { desc = "Закрыть остальные буферы" }
 )
 -- Window resizing keybindings
 vim.keymap.set("n", "<A-j>", ":resize +2<CR>", { desc = "Увеличить высоту окна" })
@@ -42,22 +42,22 @@ vim.keymap.set("n", "<leader>ge", function()
   require("me.exports").generate_exports()
 end, { desc = "Сгенерировать экспортный файл" })
 vim.keymap.set(
-	"n",
-	"<leader>bl",
-	function()
-		vim.cmd("wa")
-		vim.cmd("BufferLineCloseLeft")
-	end,
-	{ desc = "Закрыть вкладки слева" }
+  "n",
+  "<leader>bl",
+  function()
+    vim.cmd("wa")
+    vim.cmd("BufferLineCloseLeft")
+  end,
+  { desc = "Закрыть вкладки слева" }
 )
 vim.keymap.set(
-	"n",
-	"<leader>br",
-	function()
-		vim.cmd("wa")
-		vim.cmd("BufferLineCloseRight")
-	end,
-	{ desc = "Закрыть вкладки справа" }
+  "n",
+  "<leader>br",
+  function()
+    vim.cmd("wa")
+    vim.cmd("BufferLineCloseRight")
+  end,
+  { desc = "Закрыть вкладки справа" }
 )
 
 vim.keymap.set("n", "]w", function()
@@ -68,3 +68,9 @@ vim.keymap.set("n", "[w", function()
   require("snacks.words").jump(-1)
 end, { desc = "Предыдущее слово" })
 
+
+
+-- Настройка клавиатурных сокращений
+vim.keymap.set("n", "<leader>tt", "<cmd>TodoTelescope<cr>", { desc = "Search Todos" })
+vim.keymap.set("n", "]t", function() require("todo-comments").jump_next() end, { desc = "Next todo" })
+vim.keymap.set("n", "[t", function() require("todo-comments").jump_prev() end, { desc = "Previous todo" })
