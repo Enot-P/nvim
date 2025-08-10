@@ -1,5 +1,4 @@
 return {
-  -- dashboard-nvim для стартового экрана
   {
     "nvimdev/dashboard-nvim",
     event = "VimEnter",
@@ -7,7 +6,7 @@ return {
     config = function()
       local header = {
         "",
-        "⠀⠀⠀⠀⠀⠀⠀⠀⠰⣶⣶⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        "⠀⠀⠀⠀⠀⠀⠀⠰⣶⣶⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
         "⠀⠀⠀⠀⠀⠀⠀⢰⣿⡟⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
         "⠀⠀⠀⠀⠀⢀⣀⣼⣿⣀⣹⣿⡆⠀⢤⡄⢤⣄⢤⡤⠀⢤⣤⣤⣤⣤⢤⣄⠀⢤⣤⡤⣤⣤⣤⢠⡄⠀⣤⢤⡤⢤⡠⣤⠤⣴⠀⠀⠀⠀",
         "⠀⠀⠀⠀⠀⠈⢹⣿⡇⠉⠉⢿⣿⡄⢸⡇⠀⢹⡏⢿⣠⡟⢹⣿⠤⠄⢸⡿⣷⣼⡇⠀⣿⡇⠀⢸⡇⠀⡇⢸⡇⣎⠀⣿⠶⠌⠀⠀⠀⠀",
@@ -42,11 +41,6 @@ return {
           end,
         },
       })
-
-      vim.api.nvim_set_hl(0, "DashboardHeader", { fg = "#ff79c6" })
-      vim.api.nvim_set_hl(0, "DashboardCenter", { fg = "#f8f8f2" })
-      vim.api.nvim_set_hl(0, "DashboardShortCut", { fg = "#8be9fd" })
-      vim.api.nvim_set_hl(0, "DashboardFooter", { fg = "#6272a4" })
     end,
   },
   -- project.nvim для управления проектами через Telescope
