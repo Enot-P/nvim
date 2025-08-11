@@ -321,17 +321,13 @@ return {
 
       -- Keymaps для отладки
       vim.keymap.set('n', '<leader>fa', attach_to_running_flutter, { desc = 'Smart attach to Flutter' })
-      vim.keymap.set('n', '<leader>fT', attach_with_telescope, { desc = 'Attach with Telescope' })
-      vim.keymap.set('n', '<leader>fd', get_flutter_vm_service_info, { desc = 'Flutter debug info' })
-      vim.keymap.set('n', '<leader>fs', '<cmd>FlutterFindServices<cr>', { desc = 'Find Flutter services' })
 
       -- Стандартные DAP keymaps
-      -- Настройка DAP keymaps с использованием F-клавиш
-      vim.keymap.set('n', '<F5>', require('dap').toggle_breakpoint, { desc = 'Toggle breakpoint' })
-      vim.keymap.set('n', '<F6>', require('dap').continue, { desc = 'Continue' })
-      vim.keymap.set('n', '<F7>', require('dap').step_over, { desc = 'Step over' })
-      vim.keymap.set('n', '<F8>', require('dap').step_into, { desc = 'Step into' })
-      vim.keymap.set('n', '<F9>', require('dap').step_out, { desc = 'Step out' })
+      vim.keymap.set('n', '<leader>db', require('dap').toggle_breakpoint, { desc = 'Toggle breakpoint' })
+      vim.keymap.set('n', '<leader>dc', require('dap').continue, { desc = 'Continue' })
+      vim.keymap.set('n', '<leader>do', require('dap').step_over, { desc = 'Step over' })
+      vim.keymap.set('n', '<leader>di', require('dap').step_into, { desc = 'Step into' })
+      vim.keymap.set('n', '<leader>dd', require('dap').step_out, { desc = 'Step out' })
       vim.keymap.set('n', '<F10>', require('dap').repl.open, { desc = 'Open REPL' })
     end
   },
@@ -397,22 +393,23 @@ return {
           {
             elements = {
               -- Elements can be strings or table with id and size keys.
-              { id = "scopes", size = 0.25 },
-              "breakpoints",
               "stacks",
+              "breakpoints",
               "watches",
+              { id = "scopes", size = 0.25 },
             },
-            size = 40, -- 40 columns
+            size = 60, -- 40 columns
             position = "left",
           },
-          {
-            elements = {
-              "repl",
-              "console",
-            },
-            size = 0.25, -- 25% of total lines
-            position = "bottom",
-          },
+          -- Убираем второй layout с repl и console
+          -- {
+          --   elements = {
+          --     "repl",
+          --     "console",
+          --   },
+          --   size = 0.25, -- 25% of total lines
+          --   position = "bottom",
+          -- },
         },
         floating = {
           max_height = nil,  -- These can be integers or a float between 0 and 1.
