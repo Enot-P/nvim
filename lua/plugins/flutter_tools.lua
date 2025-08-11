@@ -443,5 +443,13 @@ return {
       vim.keymap.set('n', '<leader>ds', dap.terminate, { desc = 'Stop debugging session' })
       vim.keymap.set('n', '<leader>dR', dap.restart, { desc = 'Restart debugging session' })
     end
+  },
+  --- For pubspec
+  {
+    'akinsho/pubspec-assist.nvim',
+    requires = 'plenary.nvim',
+    config = function()
+      require('pubspec-assist').setup()
+    end,
   }
 }

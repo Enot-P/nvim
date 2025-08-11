@@ -74,3 +74,5 @@ end, { desc = "Предыдущее слово" })
 vim.keymap.set("n", "<leader>tt", "<cmd>TodoTelescope<cr>", { desc = "Search Todos" })
 vim.keymap.set("n", "]t", function() require("todo-comments").jump_next() end, { desc = "Next todo" })
 vim.keymap.set("n", "[t", function() require("todo-comments").jump_prev() end, { desc = "Previous todo" })
+
+vim.api.nvim_set_keymap('n', '<leader>pv', ':PubspecAssistPickVersion<CR>', { noremap = true, silent = true })

@@ -1,28 +1,40 @@
 return {
-  "NvChad/nvim-colorizer.lua",
-  event = "VeryLazy",
+  'NvChad/nvim-colorizer.lua',
   config = function()
-    require("colorizer").setup {
+    require("colorizer").setup({
+      filetypes = {
+        "*",
+        dart = { mode = "virtualtext" }, -- специально для dart
+      },
       user_default_options = {
-        RGB = true, -- #RGB hex codes
-        RRGGBB = true, -- #RRGGBB hex codes
-        names = false, -- "Name" codes like Blue or Thistle
-        RRGGBBAA = true, -- #RRGGBBAA hex codes
-        AARRGGBB = true, -- 0xAARRGGBB hex codes
-        rgb_fn = true, -- CSS rgb() and rgba() functions
-        hsl_fn = true, -- CSS hsl() and hsla() functions
-        css = true, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-        css_fn = true, -- Enable all CSS functions: rgb_fn, hsl_fn
-        mode = "virtualtext", -- | background | virtualtext.  "virtualtext" is a default value
+        RGB = true,
+        RRGGBB = true,
+        RRGGBBAA = true,
+        AARRGGBB = true, -- для Color.fromARGB
+        rgb_fn = true,
+        css = true,
+        css_fn = true,
+        mode = "virtualtext", -- квадратики справа
+        virtualtext = "■",
+        always_update = true,
+        custom = {
+          ["Color.fromARGB"] = {
+            regex = "[%w%s%p]*Color%.fromARGB%((%d+), (%d+), (%d+), (%d+)%)",
+            parse = function(color)
+              local a, r, g, b = color:match("Color%.fromARGB%((%d+), (%d+), (%d+), (%d+)%)")
+              return { a = a, r = r, g = g, b = b }
+            end,
+          },
+        },
       },
-      -- set to true if you want to enable a certain mode for the whole file
-      -- set to false to disable a certain mode only for the current file
-      modes = {
-        "css",
-        "scss",
-        "html",
-        "lua",
-      },
-    }
-  end,
+    })
+
+    -- Принудительная активация для dart
+    vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged", "TextChangedI" }, {
+      pattern = "*.dart",
+      callback = function()
+        vim.cmd("ColorizerAttachToBuffer")
+      end,
+    })
+  end
 }
