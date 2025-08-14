@@ -1,7 +1,8 @@
 require("me.remap")
 require("me.sets")
 require("me.lazy")
-require("me.utils")
+require("me.utils") -- Просто загружаем утилиты
+require("me.utils.utils_keymaps").setup() -- Отдельно настраиваем кеймапы
 
 -- Format on save
 local format_on_save_group = vim.api.nvim_create_augroup("FormatOnSave", { clear = true })

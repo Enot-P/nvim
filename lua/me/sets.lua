@@ -50,4 +50,3 @@ vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost" }, {
   end,
   desc = "Auto save file on leave",
 })
-
