@@ -44,21 +44,4 @@ function M.generate_exports()
   end
 end
 
-
-
-function M.on_attach(client, bufnr)
-  local telescope_builtin = require("telescope.builtin")
-  vim.keymap.set('n', 'gd', telescope_builtin.lsp_definitions, { buffer = bufnr, desc = "Перейти к определению (Telescope)" })
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = bufnr, desc = "Показать документацию" })
-  vim.keymap.set('n', 'gi', telescope_builtin.lsp_implementations, { buffer = bufnr, desc = "Перейти к реализации (Telescope)" })
-  vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, { buffer = bufnr, desc = "Переименовать" })
-  vim.keymap.set('n', 'ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = "Действия с кодом" })
-  vim.keymap.set('n', 'gr', telescope_builtin.lsp_references, { buffer = bufnr, desc = "Показать использования (Telescope)" })
-end
-
-vim.keymap.set("n", "<leader>ge", function()
-  package.loaded["me.utils"] = nil
-  require("me.utils").generate_exports()
-end, { desc = "Сгенерировать экспортный файл" })
-
 return M
