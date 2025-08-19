@@ -60,6 +60,7 @@ return {
           open_cmd = "30vnew",
           auto_open = false
         },
+        -- In your flutter_tools.lua, update the lsp section:
         lsp = {
           color = {
             enabled = false,
@@ -67,27 +68,32 @@ return {
             background_color = nil,
             foreground = false,
             virtual_text = true,
-            virtual_text_str = "■",
+            virtual_text_str = "■ ",
           },
           capabilities = require('cmp_nvim_lsp').default_capabilities(),
           on_attach = require('me.utils').on_attach,
           settings = {
             dart = {
-              lineLength = 80,       -- Из первого файла
-              flutterOutline = true, -- Из первого файла
-              closingLabels = true,  -- Из первого файла
+              lineLength = 80,
+              flutterOutline = true,
+              closingLabels = true,
+              -- Add these to improve stability:
+              analysisExcludedFolders = {
+                vim.fn.expand("$HOME/.pub-cache"),
+                vim.fn.expand("$HOME/AppData/Local/Pub/Cache"),
+                vim.fn.expand("$HOME/fvm"), -- If you use FVM
+              },
+              enableSdkFormatter = true,
+              enableServerSnippets = true,
+              includeDependenciesInWorkspaceSymbols = false, -- Can help with performance
             },
             showTodos = true,
             completeFunctionCalls = true,
-            analysisExcludedFolders = {
-              vim.fn.expand("$HOME/.pub-cache"),
-              vim.fn.expand("$HOME/AppData/Local/Pub/Cache"),
-            },
             renameFilesWithClasses = "prompt",
             enableSnippets = true,
             updateImportsOnRename = true,
           }
-        }
+        },
       })
 
       -- Улучшенная функция поиска Flutter VM Services во всех tmux окнах
