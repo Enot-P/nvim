@@ -6,7 +6,6 @@ local M = {}
 M.dart_data_class = require("me.utils.dart_data_class_generate")
 M.dart_export = require("me.utils.dart_export_file_generate")
 M.lsp_keymaps = require("me.utils.lsp_dart_keymaps")
-M.flutter_tree = require("me.utils.flutter_tree")
 
 -- Для обратной совместимости с вашими текущими конфигами,
 -- которые используют require('me.utils').on_attach

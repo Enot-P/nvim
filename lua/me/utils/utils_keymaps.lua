@@ -5,7 +5,6 @@ function M.setup()
   -- Загружаем утилиты напрямую, чтобы избежать циклической зависимости
   local data_class_gen = require("me.utils.dart_data_class_generate")
   local export_gen = require("me.utils.dart_export_file_generate")
-  local flutter_tree = require("me.utils.flutter_tree")
 
   --
   -- Пользовательские команды для генерации Dart кода
@@ -33,10 +32,6 @@ function M.setup()
     { desc = "Генерировать конструктор" })
 
   --
-  -- Flutter Tree команда
-  vim.api.nvim_create_user_command("FlutterTree", flutter_tree.run,
-    { desc = "Flutter: Сгенерировать дерево виджетов из аббревиатуры" })
-
   -- Кеймапы
   --
 
@@ -60,12 +55,6 @@ function M.setup()
 
       vim.keymap.set('n', '<leader>dC', data_class_gen.generate_constructor,
         vim.tbl_extend('force', opts, { desc = "Dart: Генерировать конструктор" }))
-
-      -- Flutter Tree на текущей строке/выделении
-      vim.keymap.set('n', '<leader>ft', flutter_tree.run,
-        vim.tbl_extend('force', opts, { desc = "Flutter: Сгенерировать дерево из аббревиатуры" }))
-      vim.keymap.set('v', '<leader>ft', flutter_tree.run,
-        vim.tbl_extend('force', opts, { desc = "Flutter: Сгенерировать дерево из выделения" }))
     end,
   })
 end
