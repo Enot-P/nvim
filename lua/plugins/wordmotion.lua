@@ -14,4 +14,3 @@ return {
     vim.keymap.set(modes, "ge", "<Plug>WordMotion_ge", vim.tbl_extend("force", opts, { desc = "Конец предыдущей части" }))
   end,
 }
-
