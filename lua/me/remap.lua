@@ -36,7 +36,7 @@ vim.keymap.set("n", "<A-h>", ":vertical resize +2<CR>", { desc = "Увеличи
 vim.keymap.set("n", "<A-l>", ":vertical resize -2<CR>", { desc = "Уменьшить ширину окна" })
 vim.keymap.set("n", "<leader>dj", vim.diagnostic.open_float, { desc = "Показать ошибку под курсором" })
 vim.keymap.set("n", "<leader>ge", function()
-  require("me.exports").generate_exports()
+  require("me.utils.dart_export_file_generate").generate_exports()
 end, { desc = "Сгенерировать экспортный файл" })
 vim.keymap.set(
   "n",

@@ -24,7 +24,7 @@ vim.opt.termguicolors = true
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
-vim.opt.iskeyword:remove("_") -- Разбиваем snake_case на слова для w/e/b
+-- vim.opt.iskeyword:remove("_") -- Разбиваем snake_case на слова для w/e/b
 
 vim.opt.updatetime = 50
 
