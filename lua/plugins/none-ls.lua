@@ -1,223 +1,221 @@
 return {
-  "nvimtools/none-ls.nvim",
-  dependencies = { "nvim-lua/plenary.nvim" },
-  config = function()
-    local ok_null, null_ls = pcall(require, "null-ls")
-    if not ok_null then return end
+  -- "nvimtools/none-ls.nvim",
+  -- dependencies = { "nvim-lua/plenary.nvim" },
+  -- config = function()
+  --   local ok_null, null_ls = pcall(require, "null-ls")
+  --   if not ok_null then return end
 
-    local helpers = require("null-ls.helpers")
-    local methods = null_ls.methods
+  --   local helpers = require("null-ls.helpers")
+  --   local methods = null_ls.methods
 
-    local function wrap_current_line_with(lines_before, lines_after)
-      local bufnr = vim.api.nvim_get_current_buf()
-      local row = vim.api.nvim_win_get_cursor(0)[1] - 1
-      local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
-      local indent = line:match("^%s*") or ""
+  --   local function wrap_current_line_with(lines_before, lines_after)
+  --     local bufnr = vim.api.nvim_get_current_buf()
+  --     local row = vim.api.nvim_win_get_cursor(0)[1] - 1
+  --     local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
+  --     local indent = line:match("^%s*") or ""
 
-      local new_lines = {}
-      for _, l in ipairs(lines_before) do
-        table.insert(new_lines, indent .. l)
-      end
-      table.insert(new_lines, indent .. (line:gsub("^%s*", "")))
-      for _, l in ipairs(lines_after) do
-        table.insert(new_lines, indent .. l)
-      end
+  --     local new_lines = {}
+  --     for _, l in ipairs(lines_before) do
+  --       table.insert(new_lines, indent .. l)
+  --     end
+  --     table.insert(new_lines, indent .. (line:gsub("^%s*", "")))
+  --     for _, l in ipairs(lines_after) do
+  --       table.insert(new_lines, indent .. l)
+  --     end
 
-      vim.api.nvim_buf_set_lines(bufnr, row, row + 1, false, new_lines)
-    end
+  --     vim.api.nvim_buf_set_lines(bufnr, row, row + 1, false, new_lines)
+  --   end
 
-    local bloc_code_actions = helpers.make_builtin({
-      name = "bloc_code_actions",
-      meta = {
-        url = "https://github.com/nvimtools/none-ls.nvim",
-        description = "Пользовательские Code Actions для Flutter Bloc/Cubit",
-      },
-      method = methods.CODE_ACTION,
-      filetypes = { "dart" },
-      can_run = function(params)
-        return params and params.bufname and params.bufname:match("%.dart$") ~= nil
-      end,
-      generator = {
-        fn = function(params)
-          local actions = {}
+  --   local bloc_code_actions = helpers.make_builtin({
+  --     name = "bloc_code_actions",
+  --     meta = {
+  --       url = "https://github.com/nvimtools/none-ls.nvim",
+  --       description = "Пользовательские Code Actions для Flutter Bloc/Cubit",
+  --     },
+  --     method = methods.CODE_ACTION,
+  --     filetypes = { "dart" },
+  --     can_run = function(params)
+  --       return params and params.bufname and params.bufname:match("%.dart$") ~= nil
+  --     end,
+  --     generator = {
+  --       fn = function(params)
+  --         local actions = {}
 
-          table.insert(actions, {
-            title = "Bloc: Wrap with BlocBuilder<Bloc, State>",
-            action = function()
-              wrap_current_line_with(
-                {
-                  "BlocBuilder<Bloc, State>(",
-                  "  builder: (context, state) {",
-                },
-                {
-                  "    ",
-                  "  },",
-                  ")",
-                }
-              )
-            end,
-          })
+  --         table.insert(actions, {
+  --           title = "Bloc: Wrap with BlocBuilder<Bloc, State>",
+  --           action = function()
+  --             wrap_current_line_with(
+  --               {
+  --                 "BlocBuilder<Bloc, State>(",
+  --                 "  builder: (context, state) {",
+  --               },
+  --               {
+  --                 "    ",
+  --                 "  },",
+  --                 ")",
+  --               }
+  --             )
+  --           end,
+  --         })
 
-          table.insert(actions, {
-            title = "Bloc: Wrap with BlocSelector<Bloc, T>",
-            action = function()
-              wrap_current_line_with(
-                {
-                  "BlocSelector<Bloc, T>(",
-                  "  selector: (context, state) {",
-                  "    return state as T;",
-                  "  },",
-                  "  builder: (context, selected) {",
-                },
-                {
-                  "    ",
-                  "  },",
-                  ")",
-                }
-              )
-            end,
-          })
+  --         table.insert(actions, {
+  --           title = "Bloc: Wrap with BlocSelector<Bloc, T>",
+  --           action = function()
+  --             wrap_current_line_with(
+  --               {
+  --                 "BlocSelector<Bloc, T>(",
+  --                 "  selector: (context, state) {",
+  --                 "    return state as T;",
+  --                 "  },",
+  --                 "  builder: (context, selected) {",
+  --               },
+  --               {
+  --                 "    ",
+  --                 "  },",
+  --                 ")",
+  --               }
+  --             )
+  --           end,
+  --         })
 
-          table.insert(actions, {
-            title = "Bloc: Wrap with BlocListener<Bloc, State>",
-            action = function()
-              local bufnr = vim.api.nvim_get_current_buf()
-              local row = vim.api.nvim_win_get_cursor(0)[1] - 1
-              local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
-              local indent = line:match("^%s*") or ""
-              local trimmed = line:gsub("^%s*", "")
-              local new_lines = {
-                indent .. "BlocListener<Bloc, State>(",
-                indent .. "  listener: (context, state) {",
-                indent .. "    ",
-                indent .. "  },",
-                indent .. "  child: " .. trimmed .. ",",
-                indent .. ")",
-              }
-              vim.api.nvim_buf_set_lines(bufnr, row, row + 1, false, new_lines)
-            end,
-          })
+  --         table.insert(actions, {
+  --           title = "Bloc: Wrap with BlocListener<Bloc, State>",
+  --           action = function()
+  --             local bufnr = vim.api.nvim_get_current_buf()
+  --             local row = vim.api.nvim_win_get_cursor(0)[1] - 1
+  --             local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
+  --             local indent = line:match("^%s*") or ""
+  --             local trimmed = line:gsub("^%s*", "")
+  --             local new_lines = {
+  --               indent .. "BlocListener<Bloc, State>(",
+  --               indent .. "  listener: (context, state) {",
+  --               indent .. "    ",
+  --               indent .. "  },",
+  --               indent .. "  child: " .. trimmed .. ",",
+  --               indent .. ")",
+  --             }
+  --             vim.api.nvim_buf_set_lines(bufnr, row, row + 1, false, new_lines)
+  --           end,
+  --         })
 
-          table.insert(actions, {
-            title = "Bloc: Wrap with BlocConsumer<Bloc, State>",
-            action = function()
-              wrap_current_line_with(
-                {
-                  "BlocConsumer<Bloc, State>(",
-                  "  listener: (context, state) {",
-                  "    ",
-                  "  },",
-                  "  builder: (context, state) {",
-                },
-                {
-                  "    ",
-                  "  },",
-                  ")",
-                }
-              )
-            end,
-          })
+  --         table.insert(actions, {
+  --           title = "Bloc: Wrap with BlocConsumer<Bloc, State>",
+  --           action = function()
+  --             wrap_current_line_with(
+  --               {
+  --                 "BlocConsumer<Bloc, State>(",
+  --                 "  listener: (context, state) {",
+  --                 "    ",
+  --                 "  },",
+  --                 "  builder: (context, state) {",
+  --               },
+  --               {
+  --                 "    ",
+  --                 "  },",
+  --                 ")",
+  --               }
+  --             )
+  --           end,
+  --         })
 
-          table.insert(actions, {
-            title = "Bloc: Wrap with BlocProvider<Bloc>",
-            action = function()
-              wrap_current_line_with(
-                {
-                  "BlocProvider<Bloc>(",
-                  "  create: (context) => Bloc(),",
-                  "  child:",
-                },
-                {
-                  ")",
-                }
-              )
-            end,
-          })
+  --         table.insert(actions, {
+  --           title = "Bloc: Wrap with BlocProvider<Bloc>",
+  --           action = function()
+  --             wrap_current_line_with(
+  --               {
+  --                 "BlocProvider<Bloc>(",
+  --                 "  create: (context) => Bloc(),",
+  --                 "  child:",
+  --               },
+  --               {
+  --                 ")",
+  --               }
+  --             )
+  --           end,
+  --         })
 
-          table.insert(actions, {
-            title = "Bloc: Wrap with RepositoryProvider<Repository>",
-            action = function()
-              wrap_current_line_with(
-                {
-                  "RepositoryProvider<Repository>(",
-                  "  create: (context) => Repository(),",
-                  "  child:",
-                },
-                {
-                  ")",
-                }
-              )
-            end,
-          })
+  --         table.insert(actions, {
+  --           title = "Bloc: Wrap with RepositoryProvider<Repository>",
+  --           action = function()
+  --             wrap_current_line_with(
+  --               {
+  --                 "RepositoryProvider<Repository>(",
+  --                 "  create: (context) => Repository(),",
+  --                 "  child:",
+  --               },
+  --               {
+  --                 ")",
+  --               }
+  --             )
+  --           end,
+  --         })
 
-          table.insert(actions, {
-            title = "Bloc: Convert to MultiBlocListener",
-            action = function()
-              local bufnr = vim.api.nvim_get_current_buf()
-              local row = vim.api.nvim_win_get_cursor(0)[1] - 1
-              local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
-              local indent = line:match("^%s*") or ""
-              local trimmed = line:gsub("^%s*", "")
-              local new_lines = {
-                indent .. "MultiBlocListener(",
-                indent .. "  listeners: const [],",
-                indent .. "  child: " .. trimmed .. ",",
-                indent .. ")",
-              }
-              vim.api.nvim_buf_set_lines(bufnr, row, row + 1, false, new_lines)
-            end,
-          })
+  --         table.insert(actions, {
+  --           title = "Bloc: Convert to MultiBlocListener",
+  --           action = function()
+  --             local bufnr = vim.api.nvim_get_current_buf()
+  --             local row = vim.api.nvim_win_get_cursor(0)[1] - 1
+  --             local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
+  --             local indent = line:match("^%s*") or ""
+  --             local trimmed = line:gsub("^%s*", "")
+  --             local new_lines = {
+  --               indent .. "MultiBlocListener(",
+  --               indent .. "  listeners: const [],",
+  --               indent .. "  child: " .. trimmed .. ",",
+  --               indent .. ")",
+  --             }
+  --             vim.api.nvim_buf_set_lines(bufnr, row, row + 1, false, new_lines)
+  --           end,
+  --         })
 
-          table.insert(actions, {
-            title = "Bloc: Convert to MultiBlocProvider",
-            action = function()
-              local bufnr = vim.api.nvim_get_current_buf()
-              local row = vim.api.nvim_win_get_cursor(0)[1] - 1
-              local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
-              local indent = line:match("^%s*") or ""
-              local trimmed = line:gsub("^%s*", "")
-              local new_lines = {
-                indent .. "MultiBlocProvider(",
-                indent .. "  providers: const [],",
-                indent .. "  child: " .. trimmed .. ",",
-                indent .. ")",
-              }
-              vim.api.nvim_buf_set_lines(bufnr, row, row + 1, false, new_lines)
-            end,
-          })
+  --         table.insert(actions, {
+  --           title = "Bloc: Convert to MultiBlocProvider",
+  --           action = function()
+  --             local bufnr = vim.api.nvim_get_current_buf()
+  --             local row = vim.api.nvim_win_get_cursor(0)[1] - 1
+  --             local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
+  --             local indent = line:match("^%s*") or ""
+  --             local trimmed = line:gsub("^%s*", "")
+  --             local new_lines = {
+  --               indent .. "MultiBlocProvider(",
+  --               indent .. "  providers: const [],",
+  --               indent .. "  child: " .. trimmed .. ",",
+  --               indent .. ")",
+  --             }
+  --             vim.api.nvim_buf_set_lines(bufnr, row, row + 1, false, new_lines)
+  --           end,
+  --         })
 
-          table.insert(actions, {
-            title = "Bloc: Convert to MultiRepositoryProvider",
-            action = function()
-              local bufnr = vim.api.nvim_get_current_buf()
-              local row = vim.api.nvim_win_get_cursor(0)[1] - 1
-              local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
-              local indent = line:match("^%s*") or ""
-              local trimmed = line:gsub("^%s*", "")
-              local new_lines = {
-                indent .. "MultiRepositoryProvider(",
-                indent .. "  providers: const [],",
-                indent .. "  child: " .. trimmed .. ",",
-                indent .. ")",
-              }
-              vim.api.nvim_buf_set_lines(bufnr, row, row + 1, false, new_lines)
-            end,
-          })
+  --         table.insert(actions, {
+  --           title = "Bloc: Convert to MultiRepositoryProvider",
+  --           action = function()
+  --             local bufnr = vim.api.nvim_get_current_buf()
+  --             local row = vim.api.nvim_win_get_cursor(0)[1] - 1
+  --             local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
+  --             local indent = line:match("^%s*") or ""
+  --             local trimmed = line:gsub("^%s*", "")
+  --             local new_lines = {
+  --               indent .. "MultiRepositoryProvider(",
+  --               indent .. "  providers: const [],",
+  --               indent .. "  child: " .. trimmed .. ",",
+  --               indent .. ")",
+  --             }
+  --             vim.api.nvim_buf_set_lines(bufnr, row, row + 1, false, new_lines)
+  --           end,
+  --         })
 
-          return actions
-        end,
-      },
-      condition = function(utils)
-        return utils.root_has_file({ "pubspec.yaml" })
-      end,
-    })
+  --         return actions
+  --       end,
+  --     },
+  --     condition = function(utils)
+  --       return utils.root_has_file({ "pubspec.yaml" })
+  --     end,
+  --   })
 
-    null_ls.setup({
-      sources = {
-        bloc_code_actions,
-      },
-    })
-  end,
+  --   null_ls.setup({
+  --     sources = {
+  --       bloc_code_actions,
+  --     },
+  --   })
+  -- end,
 }
-
-

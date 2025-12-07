@@ -7,7 +7,7 @@ return {
       default_file_explorer = true,
       -- Oil будет принимать во внимание .gitignore файлы
       view_options = {
-        show_hidden = false,
+        show_hidden = true,
         is_hidden_file = function(name, bufnr)
           return vim.startswith(name, ".")
         end,

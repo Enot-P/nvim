@@ -44,7 +44,11 @@ return {
 
       -- Настройки файловой системы
       filesystem = {
-        bind_to_cwd = false,                      -- Не привязываться к текущей рабочей директории
+        bind_to_cwd = false, -- Не привязываться к текущей рабочей директории
+        visible = true,
+        hide_dotfiles = false,
+        hide_gitignored = false,
+        hide_ignored = false,
         follow_current_file = { enabled = true }, -- Следить за текущим файлом
         use_libuv_file_watcher = true,            -- Использовать libuv для отслеживания изменений
         hijack_netrw_behavior = "disabled",

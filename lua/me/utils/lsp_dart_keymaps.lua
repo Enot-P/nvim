@@ -31,7 +31,6 @@ function M.on_attach(client, bufnr)
     { buffer = bufnr, desc = "Показать использования (Telescope)" })
 end
 
-
 function M.on_attach_flutter(client, bufnr)
   local flutter_tools = require("flutter-tools")
   local telescope_builtin = require("telescope.builtin")
