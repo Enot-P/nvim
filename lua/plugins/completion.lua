@@ -1,3 +1,7 @@
+--- A completion engine plugin for neovim written in Lua.
+--- Completion sources are installed from external repositories and "sourced".
+
+--- Also support my own snippets
 return {
   {
     "hrsh7th/nvim-cmp",
@@ -34,6 +38,8 @@ return {
       })
     end,
   },
+
+  --- My personal snippets
   {
     "L3MON4D3/LuaSnip",
     config = function()
@@ -41,3 +47,4 @@ return {
     end,
   },
 }
+

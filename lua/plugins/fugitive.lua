@@ -1,4 +1,5 @@
+--- for   :Git  comands
 return {
-	-- Git
-	"tpope/vim-fugitive",
+  -- Git
+  "tpope/vim-fugitive",
 }
