@@ -275,5 +275,3 @@ function T.cubit_state_equatable(class_name)
 end
 
 return T
-
-
