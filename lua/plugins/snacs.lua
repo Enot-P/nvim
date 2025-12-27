@@ -7,29 +7,36 @@ return {
   opts = {
     bigfile = { enabled = true },
     dashboard = { enabled = true },
-    explorer = { enabled = true },
-    indent = { enabled = true }, -- Визуально показывает отступы вертикальной линией
+    indent = { enabled = true },
     input = { enabled = true },
     notifier = {
       enabled = true,
       timeout = 3000,
     },
-    picker = { enabled = true },
-    
-    -- Открывает файл как можно быстрее, параллельно загружая плагины
-    -- Лучше чем ждать загрузку плагинов, а потом уже видеть файл
-    quickfile = { enabled = true }, 
+    picker = {
+        sources = {
+          explorer = {
+            auto_close = true,
+	    replace_netrw = true, -- Replace netrw with the snacks explorer
+	    trash = true, -- Use the system trash when deleting files,
+	    layout ="right",
+	    hidden = false,
+          },
+        },
+      },
+    quickfile = { enabled = true },
     scope = { enabled = true },
     scroll = { enabled = true },
     statuscolumn = { enabled = true },
     words = { enabled = true },
+
   },
   keys = {
     -- Top Pickers & Explorer
     { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
-    { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffers" },
+    -- { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffers" },
     { "<leader>/", function() Snacks.picker.grep() end, desc = "Grep" },
-    { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
+    -- { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
     { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
     { "<leader>e", function() Snacks.explorer() end, desc = "File Explorer" },
     -- find
@@ -53,7 +60,7 @@ return {
     { "<leader>gp", function() Snacks.picker.gh_pr() end, desc = "GitHub Pull Requests (open)" },
     { "<leader>gP", function() Snacks.picker.gh_pr({ state = "all" }) end, desc = "GitHub Pull Requests (all)" },
     -- Grep
-  { "<leader>sb", function() Snacks.picker.lines() end, desc = "Buffer Lines" },
+    { "<leader>sb", function() Snacks.picker.lines() end, desc = "Buffer Lines" },
     { "<leader>sB", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers" },
     { "<leader>sg", function() Snacks.picker.grep() end, desc = "Grep" },
     { "<leader>sw", function() Snacks.picker.grep_word() end, desc = "Visual selection or word", mode = { "n", "x" } },
@@ -137,8 +144,9 @@ return {
         -- Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
         -- Snacks.toggle.inlay_hints():map("<leader>uh")
         -- Snacks.toggle.indent():map("<leader>ug")
-        -- Snacks.toggle.dim():map("<leader>uD")
+        Snacks.toggle.dim():map("<leader>uD")
       end,
     })
   end,
-}}
+}
+}
