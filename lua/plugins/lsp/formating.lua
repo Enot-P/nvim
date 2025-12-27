@@ -9,7 +9,7 @@ return {
         yaml = { "prettier" },
         markdown = { "prettier" },
         lua = { "stylua" },
-        dart = { "dcm_fix", "dart_format" },
+        -- dart = { "dcm_fix", "dart_format" },
       },
       format_on_save = {
         lsp_fallback = true,

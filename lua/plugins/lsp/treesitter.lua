@@ -10,7 +10,7 @@ return {
     -- Установка парсеров
     local parsers = {
       -- Основные
-      "dart", -- Flutter/Dart
+      -- "dart", -- Flutter/Dart
       "lua", -- Neovim конфиги
       "vim", -- Vim скрипты
       "vimdoc", -- Vim документация
@@ -55,7 +55,7 @@ return {
     -- Включение подсветки
     vim.api.nvim_create_autocmd("FileType", {
       pattern = {
-        "dart",
+        -- "dart",
         "lua",
         "vim",
         "vimdoc",
@@ -83,25 +83,29 @@ return {
         "swift",
       },
       callback = function()
-        vim.treesitter.start()
+        pcall(vim.treesitter.start)
       end,
     })
 
-    -- Включение отступов
+    -- Включение отступов "dart"
     vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "dart", "lua", "javascript", "typescript", "json", "yaml", "kotlin", "swift" },
+      pattern = { "lua", "javascript", "typescript", "json", "yaml", "kotlin", "swift" },
       callback = function()
-        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        pcall(function()
+          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end)
       end,
     })
 
-    -- Сворачивание кода (folding)
+    -- Сворачивание кода (folding) "dart"
     vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "dart", "kotlin", "swift", "lua", "javascript", "typescript", "json", "yaml" },
+      pattern = { "kotlin", "swift", "lua", "javascript", "typescript", "json", "yaml" },
       callback = function()
-        vim.wo.foldmethod = "expr"
-        vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-        vim.wo.foldlevel = 99 -- Открывать все фолды по умолчанию
+        pcall(function()
+          vim.wo.foldmethod = "expr"
+          vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+          vim.wo.foldlevel = 99 -- Открывать все фолды по умолчанию
+        end)
       end,
     })
 
