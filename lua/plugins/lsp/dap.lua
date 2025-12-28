@@ -59,6 +59,25 @@ return {
       vim.api.nvim_set_hl(0, "DapLogPoint", {
         fg = "#61afef",
       })
+
+      -- Хоткеи для Debugger
+      vim.keymap.set("n", "<F5>", function() dap.continue() end, { desc = "Debug: Continue" })
+      vim.keymap.set("n", "<F1>", function() dap.step_into() end, { desc = "Debug: Step Into" })
+      vim.keymap.set("n", "<F2>", function() dap.step_over() end, { desc = "Debug: Step Over" })
+      vim.keymap.set("n", "<F3>", function() dap.step_out() end, { desc = "Debug: Step Out" })
+      vim.keymap.set("n", "<leader>db", function() dap.toggle_breakpoint() end, { desc = "Debug: Toggle Breakpoint" })
+      vim.keymap.set("n", "<leader>dB", function()
+        dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
+      end, { desc = "Debug: Set Conditional Breakpoint" })
+      vim.keymap.set("n", "<leader>dc", function() dap.continue() end, { desc = "Debug: Continue" })
+      vim.keymap.set("n", "<leader>di", function() dap.step_into() end, { desc = "Debug: Step Into" })
+      vim.keymap.set("n", "<leader>do", function() dap.step_over() end, { desc = "Debug: Step Over" })
+      vim.keymap.set("n", "<leader>dO", function() dap.step_out() end, { desc = "Debug: Step Out" })
+      vim.keymap.set("n", "<leader>dr", function() dap.repl.toggle() end, { desc = "Debug: Toggle REPL" })
+      vim.keymap.set("n", "<leader>dl", function() dap.run_last() end, { desc = "Debug: Run Last" })
+      vim.keymap.set("n", "<leader>du", function() require("dapui").toggle() end, { desc = "Debug: Toggle UI" })
+      vim.keymap.set("n", "<leader>dx", function() dap.terminate() end, { desc = "Debug: Terminate" })
+      vim.keymap.set("n", "<leader>dC", function() dap.clear_breakpoints() end, { desc = "Debug: Clear Breakpoints" })
     end,
   },
   {
