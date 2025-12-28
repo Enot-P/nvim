@@ -63,6 +63,9 @@ return {
         "shellcheck", -- Для Bash/Zsh
         "yamllint", -- Для YAML
         "jsonlint", -- Для JSON
+        "markdownlint", -- Для Markdown
+        "vale", -- Для Markdown (проверка стиля и грамматики)
+        "cspell", -- Проверка орфографии для всех файлов
       },
     },
     dependencies = {

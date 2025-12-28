@@ -4,7 +4,7 @@ return {
   config = function()
     require("lint").linters_by_ft = {
       -- Markdown / документация
-      markdown = { "vale", "markdownlint-cli2" },
+      markdown = { "markdownlint", "vale" },
       -- Dockerfile
       dockerfile = { "hadolint" },
       -- Shell скрипты
@@ -16,7 +16,7 @@ return {
       -- Lua
       lua = { "luacheck" },
       -- Git commit messages (нужен filetype=commitmsg)
-      gitcommit = { "commitlint" },
+      -- gitcommit = { "commitlint" }, -- Раскомментируйте, если установите commitlint
       -- Глобально для всех буферов (орфография)
       ["*"] = { "cspell" },
     }
