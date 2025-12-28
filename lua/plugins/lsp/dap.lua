@@ -8,6 +8,57 @@ return {
       local dap = require("dap")
       -- Базовая конфигурация DAP
       -- Адаптер для Dart будет настроен автоматически flutter-tools
+
+      -- Визуальное выделение текущей строки выполнения
+      -- Настройка highlight для строки, на которой остановился дебаггер
+      vim.fn.sign_define("DapBreakpoint", {
+        text = "🔴",
+        texthl = "DapBreakpoint",
+        linehl = "",
+        numhl = "",
+      })
+      vim.fn.sign_define("DapBreakpointCondition", {
+        text = "🟡",
+        texthl = "DapBreakpointCondition",
+        linehl = "",
+        numhl = "",
+      })
+      vim.fn.sign_define("DapBreakpointRejected", {
+        text = "⚫",
+        texthl = "DapBreakpointRejected",
+        linehl = "",
+        numhl = "",
+      })
+      vim.fn.sign_define("DapLogPoint", {
+        text = "📝",
+        texthl = "DapLogPoint",
+        linehl = "",
+        numhl = "",
+      })
+      vim.fn.sign_define("DapStopped", {
+        text = "→",
+        texthl = "DapStopped",
+        linehl = "DapStoppedLine", -- выделение всей строки
+        numhl = "DapStoppedLine",
+      })
+
+      -- Настройка цветов для выделения
+      vim.api.nvim_set_hl(0, "DapStoppedLine", {
+        bg = "#3e1e6e",
+        bold = true,
+      })
+      vim.api.nvim_set_hl(0, "DapBreakpoint", {
+        fg = "#993939",
+      })
+      vim.api.nvim_set_hl(0, "DapBreakpointCondition", {
+        fg = "#d4a373",
+      })
+      vim.api.nvim_set_hl(0, "DapBreakpointRejected", {
+        fg = "#808080",
+      })
+      vim.api.nvim_set_hl(0, "DapLogPoint", {
+        fg = "#61afef",
+      })
     end,
   },
   {
@@ -104,6 +155,42 @@ return {
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
       end
+    end,
+  },
+  {
+    "theHamsta/nvim-dap-virtual-text",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "nvim-treesitter/nvim-treesitter", -- для лучшей работы с виртуальным текстом
+    },
+    config = function()
+      require("nvim-dap-virtual-text").setup({
+        enabled = true,
+        -- Показывать виртуальный текст для всех буферов, а не только для текущего
+        enabled_commands = true,
+        -- Подсветка измененных значений
+        highlight_changed_variables = true,
+        -- Подсветка новых переменных
+        highlight_new_as_changed = false,
+        -- Показывать виртуальный текст для остановок
+        show_stop_reason = true,
+        -- Комментировать виртуальный текст
+        commented = false,
+        -- Только для определенных типов файлов (nil = все)
+        only_first_definition = true,
+        -- Все определения
+        all_references = false,
+        -- Фильтр для очистки виртуального текста
+        clear_on_continue = false,
+        -- Отступ для виртуального текста
+        virt_text_pos = "eol", -- eol, overlay, right_align
+        -- Максимальная длина виртуального текста
+        all_frames = false,
+        -- Виртуальный текст для всех фреймов
+        virt_lines = false,
+        -- Виртуальные линии
+        virt_text_win_col = nil,
+      })
     end,
   },
   {
