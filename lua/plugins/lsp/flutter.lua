@@ -93,8 +93,7 @@ return {
         filter = log_filter,
         -- Уведомлять об ошибках
         notify_errors = true,
-        -- Открываем буфер в Neovim (нужен для работы плагина)
-        -- Но мы также создадим новое окно tmux через автокоманду
+        -- Буфер будет создан, но мы закроем окно через автокоманду
         open_cmd = "15split",
         -- Не фокусироваться на окне логов в Neovim (так как они в новом окне tmux)
         focus_on_open = false,
@@ -102,16 +101,38 @@ return {
       -- Другие настройки можно добавить здесь при необходимости
     })
     
-    -- Автокоманда для создания нового окна tmux когда открывается буфер логов Flutter
-    vim.api.nvim_create_autocmd("BufEnter", {
+    -- Автокоманда для создания окна tmux когда создается буфер логов
+    vim.api.nvim_create_autocmd("BufNew", {
       pattern = "__FLUTTER_DEV_LOG__",
       callback = function()
-        -- Небольшая задержка, чтобы файл успел начать заполняться
+        -- Создаем окно tmux с логами
         vim.defer_fn(function()
           create_tmux_log_window()
         end, 500)
       end,
-      once = true, -- Выполнить только один раз
+      once = true,
+    })
+    
+    -- Автокоманда для автоматического закрытия окна с буфером логов
+    -- (так как логи должны отображаться только в окне tmux)
+    vim.api.nvim_create_autocmd("BufWinEnter", {
+      pattern = "__FLUTTER_DEV_LOG__",
+      callback = function()
+        -- Закрываем окно с буфером логов сразу после его открытия
+        vim.defer_fn(function()
+          local buf = vim.fn.bufnr("__FLUTTER_DEV_LOG__")
+          if buf ~= -1 then
+            -- Находим все окна с этим буфером
+            local wins = vim.fn.win_findbuf(buf)
+            if #wins > 0 then
+              -- Закрываем все окна с буфером логов
+              for _, win in ipairs(wins) do
+                vim.api.nvim_win_close(win, false)
+              end
+            end
+          end
+        end, 50) -- Небольшая задержка, чтобы окно успело открыться
+      end,
     })
     
     -- Автокоманда для очистки файла логов при очистке буфера Flutter
