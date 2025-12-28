@@ -5,6 +5,7 @@ return {
       -- list of servers for mason to install
       ensure_installed = {
         "lua_ls",
+        -- Dart/Flutter управляется через flutter-tools.nvim, не добавляем сюда
         "ts_ls", -- TypeScript/JavaScript
         "jsonls", -- JSON
         "kotlin_language_server", -- Kotlin
@@ -12,7 +13,7 @@ return {
         "yamlls", -- YAML
         "taplo", -- TOML
         "dockerls", -- Dockerfile
-        "bashls", -- Bash
+        "bashls", -- Bash/Zsh
         "sqlls", -- SQL
         "graphql", -- GraphQL
         "html", -- HTML
@@ -47,12 +48,21 @@ return {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     opts = {
       ensure_installed = {
+        -- Форматтеры
         "stylua", -- Для lua
-        "luacheck", -- Для lua
-        "prettier", -- Для большинства языков
+        "prettier", -- Для JSON, YAML, Markdown, GraphQL
+        "taplo", -- Для TOML
+        "shfmt", -- Для Bash/Zsh
+        "google-java-format", -- Для Java
+        "ktlint", -- Для Kotlin
+        "sql-formatter", -- Для SQL
         "dart-debug-adapter", -- Для отладки Dart/Flutter
-        -- "dart_format", -- Для форматирования dart согласно доке
-        -- "dcm_fix", -- Для автоматического fix, также подсвечивает analys options ограничения если таковые заданы        "luacheck", -- Для линтинга Lua
+        -- Линтеры
+        "luacheck", -- Для линтинга Lua
+        "hadolint", -- Для Dockerfile
+        "shellcheck", -- Для Bash/Zsh
+        "yamllint", -- Для YAML
+        "jsonlint", -- Для JSON
       },
     },
     dependencies = {
