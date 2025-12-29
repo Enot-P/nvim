@@ -20,14 +20,14 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.wrap = false
 
--- Перносить на другую строку если больше 80 символов
-vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
-  callback = function()
-    vim.opt_local.textwidth = 80
-    vim.opt_local.formatoptions:append("t") -- wrap text
-    vim.opt_local.smartindent = false
-  end,
-})
+-- -- Перносить на другую строку если больше 80 символов
+-- vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+--   callback = function()
+--     vim.opt_local.textwidth = 80
+--     vim.opt_local.formatoptions:append("t") -- wrap text
+--     vim.opt_local.smartindent = false
+--   end,
+-- })
 
 -- Позволит сохранить undo буффер между сессиями
 vim.opt.swapfile = false
