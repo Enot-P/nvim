@@ -567,4 +567,26 @@ return {
       })
     end,
   },
+  -- NOTE: todo comments w/ snacks
+  {
+    "folke/todo-comments.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    optional = true,
+    keys = {
+      {
+        "<leader>st",
+        function()
+          require("snacks").picker.todo_comments()
+        end,
+        desc = "All",
+      },
+      {
+        "<leader>sT",
+        function()
+          require("snacks").picker.todo_comments({ keywords = { "TODO", "FORGETNOT", "FIXME" } })
+        end,
+        desc = "mains",
+      },
+    },
+  },
 }
