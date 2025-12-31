@@ -1,3 +1,15 @@
+-- Автоматическая очистка лог-файла LSP при старте
+local lsp_log_path = vim.fn.stdpath("log") .. "/lsp.log"
+local log_file = io.open(lsp_log_path, "r")
+if log_file then
+  log_file:close()
+  -- Очищаем файл, если он больше 10MB
+  local file_size = vim.fn.getfsize(lsp_log_path)
+  if file_size > 10 * 1024 * 1024 then -- 10MB
+    io.open(lsp_log_path, "w"):close()
+  end
+end
+
 -- Визуально моргнет при копировании
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight when yanking (copying) text",

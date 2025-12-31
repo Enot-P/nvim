@@ -3,161 +3,161 @@ return {
   lazy = false,
   dependencies = {
     "nvim-lua/plenary.nvim",
-    "stevearc/dressing.nvim", -- optional for vim.ui.select
-    "mfussenegger/nvim-dap", -- для интеграции с дебаггером
+    "stevearc/dressing.nvim",
+    "mfussenegger/nvim-dap",
   },
   config = function()
-    -- Путь к файлу для логов Flutter
     local log_file = vim.fn.tempname() .. "_flutter.log"
     local tmux_pane_created = false
-    
-    -- Создаем файл логов заранее
+
     local file = io.open(log_file, "w")
     if file then
       file:close()
     end
-    
-    -- Функция фильтра для записи логов в файл
+
     local function log_filter(log_line)
       if log_line then
-        -- Записываем лог в файл
         local file = io.open(log_file, "a")
         if file then
           file:write(log_line .. "\n")
-          file:flush() -- Принудительно записываем в файл
+          file:flush()
           file:close()
         end
       end
-      -- Возвращаем true, чтобы логи также отображались в буфере Neovim (если нужно)
       return true
     end
-    
-    -- Функция для создания нового окна tmux с логами (как вкладка в браузере)
+
     local function create_tmux_log_window()
-      -- Проверяем, что мы в tmux сессии
       if vim.env.TMUX == nil then
         vim.notify("Не в tmux сессии. Логи будут отображаться только в Neovim буфере.", vim.log.levels.WARN)
         return
       end
-      
-      -- Проверяем, не создано ли уже окно
+
       if tmux_pane_created then
         return
       end
-      
-      -- Создаем новое окно tmux (как вкладку в браузере)
-      -- и запускаем tail -f для мониторинга файла логов
-      -- tmux new-window принимает команду как строку в кавычках
-      local cmd = string.format(
-        "tmux new-window -n 'Flutter Logs' 'tail -f %s'",
-        vim.fn.shellescape(log_file)
-      )
-      
-      -- Выполняем команду через системный вызов
-      -- Используем vim.fn.system для синхронного выполнения
+
+      local cmd = string.format("tmux new-window -n 'Flutter Logs' 'tail -f %s'", vim.fn.shellescape(log_file))
+
       local result = vim.fn.system(cmd)
       if vim.v.shell_error == 0 then
         tmux_pane_created = true
-        vim.notify("Окно tmux с логами Flutter создано (можно переключиться через Ctrl-a + номер окна)", vim.log.levels.INFO)
+        vim.notify("Окно tmux с логами Flutter создано", vim.log.levels.INFO)
       else
         vim.notify("Не удалось создать окно tmux: " .. (result or "неизвестная ошибка"), vim.log.levels.ERROR)
       end
     end
-    
+
+    -- Фильтрация известных некритичных ошибок RangeError от Dart LSP
+    -- Эти ошибки возникают при синхронизации документа (особенно при использовании сниппетов)
+    -- и не влияют на работу LSP, но засоряют интерфейс уведомлениями
+    --
+    -- ВАЖНО: Это только скрывает уведомления в UI. Ошибки всё ещё записываются в лог-файл
+    -- (~/.local/state/nvim/lsp.log). Это не критично, но если нужно, можно периодически
+    -- чистить лог вручную или настроить автоматическую очистку в autocmds.lua
+    local original_notify = vim.notify
+    vim.notify = function(msg, level, opts)
+      -- Фильтруем уведомления об ошибках RangeError от dartls
+      if type(msg) == "string" then
+        -- Проверяем, что это сообщение об ошибке от dartls
+        local is_dartls_error = string.match(msg, "%[dartls%]") or string.match(msg, "LSP.*dartls")
+        if is_dartls_error then
+          -- Игнорируем ошибки синхронизации документа
+          if
+            string.match(msg, "RangeError")
+            or string.match(msg, "edit starts past the end")
+            or string.match(msg, "edit extends past the end")
+            or string.match(msg, "An error occurred while handling textDocument/didChange")
+          then
+            return -- Игнорируем эти уведомления (но они всё равно логируются!)
+          end
+        end
+      end
+      return original_notify(msg, level, opts)
+    end
+
     require("flutter-tools").setup({
+      lsp = {
+        color = {
+          enabled = true,
+        },
+        on_attach = function(client, bufnr)
+          -- Дополнительные настройки при подключении LSP
+        end,
+        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+        settings = {
+          showTodos = true,
+          completeFunctionCalls = true,
+          analysisExcludedFolders = {
+            vim.fn.expand("$HOME/.pub-cache"),
+            vim.fn.expand("$HOME/flutter"),
+          },
+          renameFilesWithClasses = "prompt",
+          enableSnippets = true,
+          updateImportsOnRename = true,
+        },
+      },
       debugger = {
-        -- Включаем интеграцию с nvim-dap
         enabled = true,
-        -- Остановка на исключениях (пустой список = не останавливаться на исключениях)
         exception_breakpoints = {},
-        -- Вызывать toString() на объектах в debug views (hover, variables list)
-        -- Это может замедлить работу, но полезно для отладки
         evaluate_to_string_in_debug_views = true,
-        -- flutter-tools автоматически регистрирует конфигурации DAP для Dart/Flutter
-        -- Можно переопределить через register_configurations, если нужны кастомные настройки
-        -- register_configurations = function(paths)
-        --   require("dap").configurations.dart = {
-        --     {
-        --       type = "dart",
-        --       request = "launch",
-        --       name = "Launch Flutter",
-        --       program = "${workspaceFolder}/lib/main.dart",
-        --       cwd = "${workspaceFolder}",
-        --     }
-        --   }
-        -- end,
       },
       dev_log = {
         enabled = true,
-        -- Фильтр для записи логов в файл
         filter = log_filter,
-        -- Уведомлять об ошибках
         notify_errors = true,
-        -- Буфер будет создан, но мы закроем окно через автокоманду
         open_cmd = "15split",
-        -- Не фокусироваться на окне логов в Neovim (так как они в новом окне tmux)
         focus_on_open = false,
       },
-      -- Другие настройки можно добавить здесь при необходимости
     })
-    
-    -- Автокоманда для создания окна tmux когда создается буфер логов
+
+    -- Остальной код без изменений...
     vim.api.nvim_create_autocmd("BufNew", {
       pattern = "__FLUTTER_DEV_LOG__",
       callback = function()
-        -- Создаем окно tmux с логами
         vim.defer_fn(function()
           create_tmux_log_window()
         end, 500)
       end,
       once = true,
     })
-    
-    -- Автокоманда для автоматического закрытия окна с буфером логов
-    -- (так как логи должны отображаться только в окне tmux)
+
     vim.api.nvim_create_autocmd("BufWinEnter", {
       pattern = "__FLUTTER_DEV_LOG__",
       callback = function()
-        -- Закрываем окно с буфером логов сразу после его открытия
         vim.defer_fn(function()
           local buf = vim.fn.bufnr("__FLUTTER_DEV_LOG__")
           if buf ~= -1 then
-            -- Находим все окна с этим буфером
             local wins = vim.fn.win_findbuf(buf)
             if #wins > 0 then
-              -- Закрываем все окна с буфером логов
               for _, win in ipairs(wins) do
                 vim.api.nvim_win_close(win, false)
               end
             end
           end
-        end, 50) -- Небольшая задержка, чтобы окно успело открыться
+        end, 50)
       end,
     })
-    
-    -- Автокоманда для очистки файла логов при очистке буфера Flutter
-    -- Используем событие BufWritePost для буфера логов как альтернативу
+
     vim.api.nvim_create_autocmd("BufWipeout", {
       pattern = "__FLUTTER_DEV_LOG__",
       callback = function()
-        -- Очищаем файл логов при закрытии буфера
         local file = io.open(log_file, "w")
         if file then
           file:close()
         end
-        tmux_pane_created = false -- Сбрасываем флаг
+        tmux_pane_created = false
       end,
     })
-    
-    -- Команда для ручного создания нового окна tmux с логами
+
     vim.api.nvim_create_user_command("FlutterTmuxLogs", function()
-      tmux_pane_created = false -- Сбрасываем флаг, чтобы можно было создать новое окно
+      tmux_pane_created = false
       create_tmux_log_window()
     end, {
-      desc = "Создать новое окно tmux с логами Flutter (как вкладку)",
+      desc = "Создать новое окно tmux с логами Flutter",
     })
 
-    -- Хоткеи для Flutter
+    -- Хоткеи
     vim.keymap.set("n", "<leader>flr", ":FlutterRun<CR>", { desc = "Flutter: Run" })
     vim.keymap.set("n", "<leader>flR", ":FlutterRestart<CR>", { desc = "Flutter: Restart" })
     vim.keymap.set("n", "<leader>flh", ":FlutterHotReload<CR>", { desc = "Flutter: Hot Reload" })
