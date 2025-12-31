@@ -9,25 +9,22 @@ vim.opt.splitright = true -- открывать новый буффер спра
 vim.opt.splitbelow = true -- открывать новый буффер снизу при hsplit
 vim.opt.isfname:append("@-@") -- позволяет Vim воспринимать строки вроде "user@-@domain" как единое имя файла
 vim.opt.mouse = "a" -- Поддержка мыши во всех режимах
+vim.opt.smoothscroll = true -- Улучшение скролла
 vim.opt.scrolloff = 8 -- Для улучшения скролла
+
+vim.opt.swapfile = false -- Теперь не будет свапфайлов, которые создаются в период изменения файла до его сохраннения
+vim.opt.updatetime = 50 -- Быстрая время обновы для автокомплитов и т.д.
 
 -- Настройка отступов
 vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-vim.opt.smartindent = true
+vim.opt.expandtab = true -- Все табы превращаются в пробелы
+vim.opt.smartindent = true -- умный indent при переносе строк
+vim.opt.smarttab = true -- Если нажать на пробел в начале строки, то вставится табуляция для переноса строк согласно синтаксису
+vim.opt.cindent = true -- Табы будут вставляться в C-lang стиле
 vim.opt.wrap = false
-
--- -- Перносить на другую строку если больше 80 символов
--- vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
---   callback = function()
---     vim.opt_local.textwidth = 80
---     vim.opt_local.formatoptions:append("t") -- wrap text
---     vim.opt_local.smartindent = false
---   end,
--- })
 
 -- Позволит сохранить undo буффер между сессиями
 vim.opt.swapfile = false

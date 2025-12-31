@@ -33,16 +33,27 @@ vim.keymap.set("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally"
 vim.keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- make split windows equal width & height
 vim.keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" }) -- close current split window
 
+-- Перемещение по split окнам
+vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move left" })
+vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move down" })
+vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move up" })
+vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move right" })
+
+-- Размер окон
+vim.keymap.set("n", "<M-l>", "<cmd>vertical resize -6<CR>", { desc = "Resize right" })
+vim.keymap.set("n", "<M-k>", "<cmd>resize -3<CR>", { desc = "Resize up" })
+vim.keymap.set("n", "<M-j>", "<cmd>resize +3<CR>", { desc = "Resize down" })
+vim.keymap.set("n", "<M-h>", "<cmd>vertical resize +6<CR>", { desc = "Resize left" })
+
+-- Buffer команды
+vim.keymap.set("n", "<leader>bn", "<cmd>bnext<cr>", { desc = "next buffer" })
+vim.keymap.set("n", "<leader>bp", "<cmd>bprev<cr>", { desc = "prev buffer" })
+vim.keymap.set("n", "<leader>bx", "<cmd>bdelete<cr>", { desc = "remove buffer" })
+
 -- Сохранение по Ctrl+S во всех режимах (:update — сохраняет только при изменениях)
 vim.keymap.set("n", "<C-s>", ":update<CR>", { silent = true, desc = "Сохранить файл" })
 vim.keymap.set("i", "<C-s>", "<Esc>:update<CR>a", { silent = true, desc = "Сохранить и вернуться в insert" })
 vim.keymap.set("v", "<C-s>", "<Esc>:update<CR>gv", { silent = true, desc = "Сохранить и сохранить выделение" })
 
--- Визуально моргнет при копировании
-vim.api.nvim_create_autocmd("TextYankPost", {
-  desc = "Highlight when yanking (copying) text",
-  group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
-  callback = function()
-    vim.hl.on_yank()
-  end,
-})
+vim.keymap.set("n", "<C-Return>", "o<Esc>", { desc = "Новая строка снизу" })
+vim.keymap.set("n", "<C-;>", "A;<Esc>", { desc = "Точка с запятой в конце" })

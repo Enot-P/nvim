@@ -24,7 +24,7 @@ return {
         "json",
         "kotlin",
         "java",
-        "swift",
+        -- "swift",
 
         -- Конфиги и DevOps
         "yaml",

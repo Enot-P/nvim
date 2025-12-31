@@ -1,3 +1,4 @@
-require('config.options')
-require('config.keybinds')
-require('lazy_setup')
+require("config.options")
+require("config.keybinds")
+require("config.autocmds")
+require("lazy_setup")
