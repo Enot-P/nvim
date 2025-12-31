@@ -3,111 +3,81 @@ return {
   lazy = false,
   build = ":TSUpdate",
   config = function()
-    require("nvim-treesitter").setup({
-      install_dir = vim.fn.stdpath("data") .. "/site",
-    })
+    require("nvim-treesitter.configs").setup({
+      -- Автоматическая установка парсеров при открытии файла
+      ensure_installed = {
+        -- Основные
+        "dart", -- Flutter/Dart
+        "lua", -- Neovim конфиги
+        "vim", -- Vim скрипты
+        "vimdoc", -- Vim документация
 
-    -- Установка парсеров
-    local parsers = {
-      -- Основные
-      "dart", -- Flutter/Dart
-      "lua", -- Neovim конфиги
-      "vim", -- Vim скрипты
-      "vimdoc", -- Vim документация
-
-      -- Документация и заметки
-      "markdown",
-      "markdown_inline",
-
-      -- Веб (для Flutter Web, документации, и натива)
-      "html",
-      "css",
-      "javascript",
-      "typescript",
-      "json",
-      "jsonc", -- JSON с комментариями
-      "kotlin",
-      "java",
-      "swift",
-
-      -- Конфиги и DevOps
-      "yaml",
-      "toml",
-      "dockerfile",
-      "bash",
-
-      -- Git
-      "git_config",
-      "git_rebase",
-      "gitcommit",
-      "gitignore",
-      "diff",
-
-      -- Дополнительные полезные
-      "regex", -- Для регулярок
-      "query", -- Treesitter queries
-      "sql", -- Если работаешь с БД
-      "graphql", -- Если используешь GraphQL API
-      "comment", -- Лучшая подсветка комментариев
-    }
-    require("nvim-treesitter").install(parsers)
-
-    -- Включение подсветки
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = {
-        "dart",
-        "lua",
-        "vim",
-        "vimdoc",
+        -- Документация и заметки
         "markdown",
+        "markdown_inline",
+
+        -- Веб
         "html",
         "css",
         "javascript",
         "typescript",
         "json",
-        "jsonc",
+        "kotlin",
+        "java",
+        "swift",
+
+        -- Конфиги и DevOps
         "yaml",
         "toml",
         "dockerfile",
         "bash",
-        "sh",
-        "zsh",
+
+        -- Git
+        "git_config",
+        "git_rebase",
         "gitcommit",
-        "gitconfig",
         "gitignore",
         "diff",
+
+        -- Дополнительные
+        "regex",
+        "query",
         "sql",
         "graphql",
-        "kotlin",
-        "java",
-        "swift",
+        "comment",
       },
-      callback = function()
-        pcall(vim.treesitter.start)
-      end,
+
+      -- Автоматическая установка при открытии нового типа файла
+      auto_install = true,
+
+      -- Подсветка синтаксиса
+      highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = false,
+      },
+
+      -- Улучшенные отступы
+      indent = {
+        enable = true,
+      },
+
+      -- Инкрементальное выделение
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = "<CR>",
+          node_incremental = "<CR>",
+          scope_incremental = "<S-CR>",
+          node_decremental = "<BS>",
+        },
+      },
     })
 
-    -- Включение отступов
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "dart", "lua", "javascript", "typescript", "json", "yaml", "kotlin", "java", "swift", "bash", "sh", "zsh", "sql", "graphql", "markdown" },
-      callback = function()
-        pcall(function()
-          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-        end)
-      end,
-    })
-
-    -- Сворачивание кода (folding)
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "dart", "kotlin", "java", "swift", "lua", "javascript", "typescript", "json", "yaml", "bash", "sh", "zsh", "sql", "graphql", "markdown" },
-      callback = function()
-        pcall(function()
-          vim.wo.foldmethod = "expr"
-          vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-          vim.wo.foldlevel = 99 -- Открывать все фолды по умолчанию
-        end)
-      end,
-    })
+    -- Сворачивание кода через Treesitter
+    vim.opt.foldmethod = "expr"
+    vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+    vim.opt.foldenable = false -- Не сворачивать при открытии
+    vim.opt.foldlevel = 99
 
     -- Регистрация парсеров для похожих языков
     vim.treesitter.language.register("bash", "zsh")
