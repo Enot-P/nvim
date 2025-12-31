@@ -57,3 +57,17 @@ vim.keymap.set("v", "<C-s>", "<Esc>:update<CR>gv", { silent = true, desc = "Со
 
 vim.keymap.set("n", "<C-Return>", "o<Esc>", { desc = "Новая строка снизу" })
 vim.keymap.set("n", "<C-;>", "A;<Esc>", { desc = "Точка с запятой в конце" })
+
+vim.keymap.set("n", "gl", function()
+  vim.diagnostic.open_float(nil, {
+    scope = "line",
+    focus = false,
+    close_events = {
+      "CursorMoved",
+      "CursorMovedI",
+      "BufHidden",
+      "BufLeave",
+      "InsertEnter",
+    },
+  })
+end, { desc = "Show line diagnostic" })

@@ -35,7 +35,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
--- -- Перносить на другую строку если больше 80 символов
+-- Перносить на другую строку если больше 80 символов
 -- vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 --   callback = function()
 --     vim.opt_local.textwidth = 80
