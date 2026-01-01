@@ -1,0 +1,4 @@
+-- -- Горячие клавиши для утилит
+-- vim.keymap.set("n", "<leader>ep", function()
+--   require("utils.explorer_path").get_current_path()
+-- end, { desc = "Скопировать путь к файлу в Explorer" })

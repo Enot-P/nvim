@@ -20,7 +20,8 @@ return {
             replace_netrw = true, -- Replace netrw with the snacks explorer
             trash = true, -- Use the system trash when deleting files,
             layout = "right",
-            hidden = false,
+            hidden = true,
+            git_untracked = false, -- Убирает подсветку текста
           },
         },
       },
@@ -31,6 +32,23 @@ return {
       words = { enabled = true },
     },
     keys = {
+      -- В блоке keys вашего snacs.lua
+      {
+        "<leader>p",
+        function()
+          -- Согласно документации: Snacks.picker.get(opts) возвращает список активных пикеров
+          local pickers = Snacks.picker.get()
+          local active_picker = pickers[1] -- Берем самый верхний/активный
+
+          if active_picker then
+            require("utils.explorer_path").save_path_from_picker(active_picker)
+          else
+            -- Если проводник не открыт, выдаем уведомление
+            Snacks.notify.warn("Сначала откройте Explorer (<leader>e)")
+          end
+        end,
+        desc = "Сохранить путь в переменную",
+      },
       -- Top Pickers & Explorer
       {
         "<leader><space>",
