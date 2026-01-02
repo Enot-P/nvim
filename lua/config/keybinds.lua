@@ -1,7 +1,7 @@
 local opts = { noremap = true, silent = true }
 
 vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.g.maplocalleade = "."
 
 -- Перемещение строк в визуальном режиме
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "moves lines down in visual selection" })
