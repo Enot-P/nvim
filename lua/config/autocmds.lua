@@ -42,16 +42,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   pattern = { "*.txt" },
   callback = function()
     if vim.bo.filetype == "help" then
-      vim.cmd.wincmd("")
+      vim.cmd.wincmd("L") -- Move window to the rightmost position
     end
   end,
 })
-
--- Перносить на другую строку если больше 80 символов
--- vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
---   callback = function()
---     vim.opt_local.textwidth = 80
---     vim.opt_local.formatoptions:append("t") -- wrap text
---     vim.opt_local.smartindent = false
---   end,
--- })
