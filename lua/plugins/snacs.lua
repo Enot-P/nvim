@@ -32,9 +32,21 @@ return {
       words = { enabled = true },
     },
     keys = {
-      -- В блоке keys вашего snacs.lua
       {
-        "<leader>de",
+        "<leader>dgb",
+        function()
+          local picker = Snacks.picker.get({ source = "explorer" })[1]
+          if picker then
+            require("utils.generate_bloc").generate_flutter_logic(picker)
+          else
+            Snacks.notify.warn("Откройте Explorer")
+          end
+        end,
+        desc = "Генерировать Bloc/Cubit",
+      },
+      -- Генерация экспорт файлов
+      {
+        "<leader>dge",
         function()
           -- Согласно документации: Snacks.picker.get(opts) возвращает список активных пикеров
           local pickers = Snacks.picker.get()
@@ -47,7 +59,7 @@ return {
             Snacks.notify.warn("Сначала откройте Explorer (<leader>e)")
           end
         end,
-        desc = "Сохранить путь в переменную",
+        desc = "Сгенерировать экспорт файлы (dart)",
       },
       -- Top Pickers & Explorer
       {
