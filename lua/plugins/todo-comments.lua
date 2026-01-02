@@ -50,10 +50,33 @@ return {
       },
     })
 
+    -- {
+    --   "<leader>st",
+    --   function()
+    --     require("snacks").picker.todo_comments()
+    --   end,
+    --   desc = "All",
+    -- },
+    -- {
+    --   "<leader>sT",
+    --   function()
+    --     require("snacks").picker.todo_comments({ keywords = { "TODO", "FORGETNOT", "FIXME" } })
+    --   end,
+    --   desc = "mains",
+    -- },
+
     -- keymaps
     vim.keymap.set("n", "]t", function()
       todo_comments.jump_next()
     end, { desc = "Next todo comment" })
+
+    vim.keymap.set("n", "<leader>st", function()
+      require("snacks").picker.todo_comments()
+    end, { desc = "get all todo_comments" })
+
+    vim.keymap.set("n", "<leader>sT", function()
+      require("snacks").picker.todo_comments({ keywords = { "TODO", "FORGETNOT", "FIXME" } })
+    end, { desc = "get main TODO comments" })
 
     vim.keymap.set("n", "[t", function()
       todo_comments.jump_prev()
