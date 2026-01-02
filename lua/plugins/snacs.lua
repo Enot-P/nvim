@@ -34,14 +34,14 @@ return {
     keys = {
       -- В блоке keys вашего snacs.lua
       {
-        "<leader>p",
+        "<leader>de",
         function()
           -- Согласно документации: Snacks.picker.get(opts) возвращает список активных пикеров
           local pickers = Snacks.picker.get()
           local active_picker = pickers[1] -- Берем самый верхний/активный
 
           if active_picker then
-            require("utils.explorer_path").save_path_from_picker(active_picker)
+            require("utils.explorer_path").generate_exports(active_picker)
           else
             -- Если проводник не открыт, выдаем уведомление
             Snacks.notify.warn("Сначала откройте Explorer (<leader>e)")
