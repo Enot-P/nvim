@@ -7,6 +7,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     "sidlatau/neotest-dart", -- Адаптер для Dart/Flutter тестов
   },
+  enabled = vim.fn.argv(0) ~= "leetcode.nvim", -- Не грузится в leet
   config = function()
     require("neotest").setup({
       adapters = {

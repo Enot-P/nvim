@@ -4,6 +4,7 @@ return {
     "lewis6991/gitsigns.nvim", -- Опционально: поддержка статуса Git
     "nvim-tree/nvim-web-devicons", -- Обязательно: иконки файлов
   },
+  enabled = vim.fn.argv(0) ~= "leetcode.nvim", -- Не грузится в leet
   event = "VeryLazy",
   init = function()
     vim.g.barbar_auto_setup = 0 -- Отключаем авто-настройку, чтобы lazy.nvim корректно применил настройки

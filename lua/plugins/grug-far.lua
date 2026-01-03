@@ -1,5 +1,6 @@
 return {
   "MagicDuck/grug-far.nvim",
+  enabled = vim.fn.argv(0) ~= "leetcode.nvim", -- Не грузится в leet
   event = "VeryLazy", -- или cmd = "GrugFar", если хотите ленивее
   config = function()
     require("grug-far").setup({

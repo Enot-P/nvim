@@ -1,6 +1,7 @@
 return {
   -- Quickly Jump through the todo tags
   "folke/todo-comments.nvim",
+  enabled = vim.fn.argv(0) ~= "leetcode.nvim", -- Не грузится в leet
   event = { "BufReadPre", "BufNewFile" },
   dependencies = { "nvim-lua/plenary.nvim" },
   config = function()
