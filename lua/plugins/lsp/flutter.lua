@@ -81,10 +81,7 @@ return {
         color = {
           enabled = true,
         },
-        on_attach = function(client, bufnr)
-          vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, bufopts) -- в нормальном режиме
-          -- vim.keymap.set("v", "<leader>ca", vim.lsp.buf.code_action, bufopts) -- в визуальном режиме (для выделенного кода)
-        end,
+        on_attach = function(client, bufnr) end,
         capabilities = require("cmp_nvim_lsp").default_capabilities(),
         settings = {
           showTodos = true,
