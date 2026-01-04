@@ -48,22 +48,22 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 })
 
 -- Команды для LSP
-vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup("LspAttach_keymaps", { clear = true }),
-  callback = function(event)
-    local opts = { noremap = true, silent = true, buffer = event.buf }
-    local buf = event.buf
-    local client = vim.lsp.get_client_by_id(event.data.client_id)
-
-    -- Стандартные LSP-функции
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
-    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-    vim.keymap.set("n", "<leader>f", function()
-      vim.lsp.buf.format({ async = true })
-    end, opts)
-  end,
-})
+-- vim.api.nvim_create_autocmd("LspAttach", {
+--   group = vim.api.nvim_create_augroup("LspAttach_keymaps", { clear = true }),
+--   callback = function(event)
+--     local opts = { noremap = true, silent = true, buffer = event.buf }
+--     local buf = event.buf
+--     local client = vim.lsp.get_client_by_id(event.data.client_id)
+--
+--     -- Стандартные LSP-функции
+--     vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+--     vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+--     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+--     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+--     vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+--     vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+--     vim.keymap.set("n", "<leader>f", function()
+--       vim.lsp.buf.format({ async = true })
+--     end, opts)
+--   end,
+-- })

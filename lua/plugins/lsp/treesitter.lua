@@ -1,86 +1,101 @@
 return {
-  "nvim-treesitter/nvim-treesitter",
-  lazy = false,
-  build = ":TSUpdate",
-  config = function()
-    require("nvim-treesitter.configs").setup({
-      -- Автоматическая установка парсеров при открытии файла
-      ensure_installed = {
-        -- Основные
-        "dart", -- Flutter/Dart
-        "lua", -- Neovim конфиги
-        "vim", -- Vim скрипты
-        "vimdoc", -- Vim документация
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter-textobjects",
+    },
+    config = function()
+      -- Add support for Hyprland configuration files
+      vim.filetype.add({
+        pattern = { [".*/hypr/.*%.conf"] = "hyprlang" },
+      })
 
-        -- Документация и заметки
-        "markdown",
-        "markdown_inline",
+      require("nvim-treesitter.configs").setup({
+        modules = {},
+        sync_install = false,
+        ignore_install = {},
 
-        -- Веб
-        "html",
-        "css",
-        "javascript",
-        "typescript",
-        "json",
-        "kotlin",
-        "java",
-        -- "swift",
-
-        -- Конфиги и DevOps
-        "yaml",
-        "toml",
-        "dockerfile",
-        "bash",
-
-        -- Git
-        "git_config",
-        "git_rebase",
-        "gitcommit",
-        "gitignore",
-        "diff",
-
-        -- Дополнительные
-        "regex",
-        "query",
-        "sql",
-        "graphql",
-        "comment",
-      },
-
-      -- Автоматическая установка при открытии нового типа файла
-      auto_install = true,
-
-      -- Подсветка синтаксиса
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-      },
-
-      -- Улучшенные отступы
-      indent = {
-        enable = true,
-      },
-
-      -- Инкрементальное выделение
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "<CR>",
-          node_incremental = "<CR>",
-          scope_incremental = "<S-CR>",
-          node_decremental = "<BS>",
+        ensure_installed = {
+          "c",
+          "lua",
+          "vim",
+          "vimdoc",
+          "query",
+          "markdown",
+          "markdown_inline",
+          "python",
+          "javascript",
+          "dart",
+          "typescript",
+          "bash",
+          "go",
+          "rust",
+          "html",
+          "css",
         },
-      },
-    })
 
-    -- Сворачивание кода через Treesitter
-    vim.opt.foldmethod = "expr"
-    vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-    vim.opt.foldenable = false -- Не сворачивать при открытии
-    vim.opt.foldlevel = 99
+        auto_install = true,
 
-    -- Регистрация парсеров для похожих языков
-    vim.treesitter.language.register("bash", "zsh")
-    vim.treesitter.language.register("markdown", "mdx")
-  end,
+        highlight = {
+          enable = true,
+          -- disable highlighting for large files
+          disable = function(_, buf)
+            local max_filesize = 100 * 1024 -- 100 kb
+            local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
+            if ok and stats and stats.size > max_filesize then
+              return true
+            end
+          end,
+        },
+
+        indent = {
+          enable = true,
+        },
+
+        incremental_selection = {
+          enable = true,
+          keymaps = {
+            init_selection = "<c-space>",
+            node_incremental = "<c-space>",
+            scope_incremental = false,
+            node_decremental = "<bs>",
+          },
+        },
+
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+            keymaps = {
+              ["af"] = { query = "@function.outer", desc = "Select outer part of a function" },
+              ["if"] = { query = "@function.inner", desc = "Select inner part of a function" },
+              ["ac"] = { query = "@class.outer", desc = "Select outer part of a class" },
+              ["ic"] = { query = "@class.inner", desc = "Select inner part of a class" },
+            },
+          },
+          move = {
+            enable = true,
+            set_jumps = true, -- whether to set jumps in the jumplist
+            goto_next_start = {
+              ["]m"] = "@function.outer",
+              ["]]"] = "@class.outer",
+            },
+            goto_next_end = {
+              ["]M"] = "@function.outer",
+              ["]["] = "@class.outer",
+            },
+            goto_previous_start = {
+              ["[m"] = "@function.outer",
+              ["[["] = "@class.outer",
+            },
+            goto_previous_end = {
+              ["[M"] = "@function.outer",
+              ["[]"] = "@class.outer",
+            },
+          },
+        },
+      })
+    end,
+  },
 }

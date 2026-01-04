@@ -14,7 +14,6 @@ return {
     if file then
       file:close()
     end
-
     local function log_filter(log_line)
       if log_line then
         local file = io.open(log_file, "a")

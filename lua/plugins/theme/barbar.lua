@@ -37,8 +37,8 @@ return {
     { "<A-4>", "<Cmd>BufferGoto 4<CR>", desc = "Go to Buffer 4" },
     { "<A-5>", "<Cmd>BufferGoto 5<CR>", desc = "Go to Buffer 5" },
     { "<A-0>", "<Cmd>BufferLast<CR>", desc = "Go to Last Buffer" },
-    -- Закрытие буфера (Alt + c)
     { "<A-x>", "<Cmd>BufferClose<CR>", desc = "Close Buffer" },
+    { "<A-X>", "<Cmd>BufferCloseAllButCurrent<CR>", desc = "Close All Buffers Except Current" },
     -- Магический выбор (Alt + p) — позволяет выбрать буфер по букве
     { "<A-p>", "<Cmd>BufferPick<CR>", desc = "Pick Buffer" },
   },

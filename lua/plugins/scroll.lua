@@ -2,7 +2,7 @@ return {
   "petertriho/nvim-scrollbar",
   event = { "BufReadPost", "BufNewFile" }, -- Загружать при открытии буфера
   dependencies = {
-    "lewis6991/gitsigns.nvim", -- Для git-знаков
+    -- "lewis6991/gitsigns.nvim", -- Для git-знаков
     "kevinhwang91/nvim-hlslens", -- Для поиска
   },
   config = function()
@@ -10,12 +10,6 @@ return {
       show = true,
       handle = {
         blend = 30,
-      },
-      marks = {
-        GitAdd = { text = "┆" },
-        GitChange = { text = "┆" },
-        GitDelete = { text = "▁" },
-        Search = { text = { "-", "=" } },
       },
       excluded_filetypes = {
         "prompt",
@@ -28,14 +22,14 @@ return {
       handlers = {
         cursor = true, -- Показывать позицию курсора
         diagnostic = true, -- Диагностика LSP
-        gitsigns = true, -- Включаем интеграцию с gitsigns
+        gitsigns = false, -- Интеграция с gitsigns
         handle = true, -- Сама полоса прокрутки
         search = true, -- Включаем интеграцию с hlslens
         ale = false,
       },
     })
 
-    require("scrollbar.handlers.gitsigns").setup()
+    -- require("scrollbar.handlers.gitsigns").setup()
 
     require("scrollbar.handlers.search").setup({})
   end,
