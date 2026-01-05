@@ -34,10 +34,13 @@ return {
           map("gD", vim.lsp.buf.declaration, "Goto Declaration")
 
           vim.keymap.set("n", "<C-s>", function()
-            vim.lsp.buf.format({ async = true })
-            vim.cmd("w")
-          end, { buffer = event.buf })
-
+            require("conform").format({
+              lsp_fallback = true, -- Если нет форматера в conform, попробует LSP
+              async = false,
+              timeout_ms = 1000,
+            })
+            vim.cmd("w") -- Сохраняем файл
+          end, { desc = "Format and Save" })
           map("<leader>d", vim.diagnostic.open_float, "Open Diagnostic Float")
           map("[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
           map("]d", vim.diagnostic.goto_next, "Next Diagnostic")
@@ -58,8 +61,8 @@ return {
           },
         },
         pylsp = {},
+        -- sqlls = {},
       }
-
       require("mason").setup()
       require("mason-lspconfig").setup({
         ensure_installed = vim.tbl_keys(servers),
