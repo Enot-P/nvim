@@ -1,35 +1,86 @@
 return {
   {
     "saghen/blink.cmp",
-    dependencies = { "rafamadriz/friendly-snippets" },
-
     version = "1.*",
     build = "cargo build --release",
+
+    dependencies = {
+      "rafamadriz/friendly-snippets",
+      "saghen/blink.compat",
+      {
+        "MattiasMTS/cmp-dbee",
+        dependencies = {
+          "kndndrj/nvim-dbee",
+        },
+        ft = "sql",
+        opts = {},
+      },
+    },
+
     opts = {
-      -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
-      -- 'super-tab' for mappings similar to vscode (tab to accept)
-      -- 'enter' for enter to accept
-      -- 'none' for no mappings
-      --
-      -- All presets have the following mappings:
-      -- C-space: Open menu or open docs if already open
-      -- C-n/C-p or Up/Down: Select next/previous item
-      -- C-e: Hide menu
-      -- C-k: Toggle signature help (if signature.enabled = true)
-      --
-      -- See :h blink-cmp-config-keymap for defining your own keymap
-      keymap = { preset = "super-tab" },
+      keymap = {
+        preset = "none",
+
+        -- открыть completion
+        ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
+
+        -- TAB / Shift-TAB — навигация по списку
+        ["<Tab>"] = {
+          "select_next",
+          "snippet_forward",
+          "fallback",
+        },
+        ["<S-Tab>"] = {
+          "select_prev",
+          "snippet_backward",
+          "fallback",
+        },
+
+        -- ENTER — принять
+        ["<CR>"] = {
+          "accept",
+          "fallback",
+        },
+
+        -- закрыть меню
+        ["<C-e>"] = { "hide", "fallback" },
+
+        -- документация
+        ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+
+        -- сигнатуры
+        ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
+      },
 
       appearance = {
         nerd_font_variant = "mono",
       },
 
-      -- (Default) Only show the documentation popup when manually triggered
-      completion = { documentation = { auto_show = false } },
+      completion = {
+        documentation = { auto_show = true },
+      },
 
-      -- See the fuzzy documentation for more information
-      fuzzy = { implementation = "prefer_rust_with_warning" },
+      fuzzy = {
+        implementation = "prefer_rust_with_warning",
+      },
+
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+
+        per_filetype = {
+          sql = { "dbee", "buffer" },
+        },
+
+        providers = {
+          dbee = {
+            name = "cmp-dbee",
+            module = "blink.compat.source",
+          },
+        },
+      },
     },
+
     opts_extend = { "sources.default" },
   },
 }
