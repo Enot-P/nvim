@@ -12,9 +12,9 @@ return {
         -- и т.д.
       },
     })
-    vim.keymap.set("n", "<leader>fr", ":GrugFar<CR>", { desc = "GrugFar: Find & Replace" })
-    vim.keymap.set("x", "<leader>fr", ":<C-u>GrugFar visual<CR>", { desc = "GrugFar: с выделением" })
+    vim.keymap.set("n", "<leader>rf", ":GrugFar<CR>", { desc = "GrugFar: Find & Replace" })
+    vim.keymap.set("x", "<leader>rf", ":<C-u>GrugFar visual<CR>", { desc = "GrugFar: с выделением" })
     -- Или поиск только внутри выделенного диапазона:
-    vim.keymap.set("x", "<leader>fi", ":GrugFarWithin<CR>", { desc = "GrugFar: внутри выделения" })
+    vim.keymap.set("x", "<leader>ri", ":GrugFarWithin<CR>", { desc = "GrugFar: внутри выделения" })
   end,
 }
