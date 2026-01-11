@@ -24,7 +24,7 @@ return {
                 'javascript',
                 'typescript',
                 'toml',
-                'sql'
+                -- 'sql'
             }
 
             -- 2. Установка парсеров (асинхронно)
