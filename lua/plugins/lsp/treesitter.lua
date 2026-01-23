@@ -24,7 +24,9 @@ return {
                 'javascript',
                 'typescript',
                 'toml',
-                'sql'
+                'sql',
+                'qmljs',
+                'hyprlang'
             }
 
             -- 2. Установка парсеров (асинхронно)

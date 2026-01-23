@@ -52,6 +52,7 @@ return {
             local capabilities = vim.lsp.protocol.make_client_capabilities()
 
             local servers = {
+                hyprls = {},
                 lua_ls = {
                     settings = {
                         Lua = {
@@ -73,6 +74,7 @@ return {
                 taplo = {},
                 -- sqls = {},
                 pylsp = {},
+                qmlls = {}
             }
             require("mason").setup()
             require("mason-lspconfig").setup({
