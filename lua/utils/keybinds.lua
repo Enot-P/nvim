@@ -1,4 +1,4 @@
 -- -- Горячие клавиши для утилит
--- vim.keymap.set("n", "<leader>ep", function()
---   require("utils.explorer_path").get_current_path()
--- end, { desc = "Скопировать путь к файлу в Explorer" })
+vim.keymap.set("n", "<leader>dgc", function()
+    require("utils.dart_class_gen").generate_data_class_methods()
+end, { desc = "Генерировать Dart класс" })
