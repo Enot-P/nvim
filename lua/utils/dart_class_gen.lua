@@ -1,49 +1,34 @@
 local M = {}
 
--- Функция для парсинга полей класса
+-- 1. Извлекаем только поля класса
 local function parse_class_fields(class_content)
     local fields = {}
-
-    -- Ищем все поля класса (например: "  String name;" или "  final int age;")
     for line in class_content:gmatch("[^\r\n]+") do
-        -- Пропускаем комментарии и пустые строки
-        if not line:match("^%s*//") and not line:match("^%s*$") then
-            -- Ищем объявления полей: [final] Type name;
-            local final_modifier = line:match("^%s*(final)%s+")
-            local field_type, field_name = line:match("%s*(?:final%s+)?([%w<>%[%]?,]+)%s+([%w_]+)%s*;")
-
-            if not field_type then
-                -- Попытка без final
-                field_type, field_name = line:match("%s*([%w<>%[%]?,]+)%s+([%w_]+)%s*;")
-            end
-
+        -- Ищем строки вида: "String name;" или "final int? id;"
+        -- Исключаем строки с методами (содержат "(") и аннотации
+        if line:match(";%s*$") and not line:match("%(") and not line:match("@") then
+            local field_type, field_name = line:match("%s*([%w<>%[%]?,]+)%s+([%w_]+)%s*;")
             if field_type and field_name then
                 table.insert(fields, {
                     type = field_type,
                     name = field_name,
-                    is_final = final_modifier ~= nil,
                     is_nullable = field_type:match("%?$") ~= nil
                 })
             end
         end
     end
-
     return fields
 end
 
--- Функция для получения имени класса и его содержимого
+-- 2. Получаем границы и имя класса
 local function get_class_info()
     local bufnr = vim.api.nvim_get_current_buf()
     local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
     local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
 
-    -- Ищем начало класса (идём вверх от курсора)
-    local class_start = nil
-    local class_name = nil
-
+    local class_start, class_name = nil, nil
     for i = cursor_line, 1, -1 do
-        local line = lines[i]
-        local name = line:match("^%s*class%s+([%w_]+)")
+        local name = lines[i]:match("^%s*class%s+([%w_]+)")
         if name then
             class_name = name
             class_start = i
@@ -51,19 +36,11 @@ local function get_class_info()
         end
     end
 
-    if not class_name or not class_start then
-        return nil, nil, nil, nil
-    end
+    if not class_name then return nil end
 
-    -- Ищем конец класса (первую закрывающую скобку на том же уровне)
-    local class_end = nil
-    local brace_count = 0
-    local found_opening = false
-
+    local class_end, brace_count, found_opening = nil, 0, false
     for i = class_start, #lines do
-        local line = lines[i]
-
-        for char in line:gmatch(".") do
+        for char in lines[i]:gmatch(".") do
             if char == "{" then
                 brace_count = brace_count + 1
                 found_opening = true
@@ -75,259 +52,127 @@ local function get_class_info()
                 end
             end
         end
-
-        if class_end then
-            break
-        end
+        if class_end then break end
     end
 
-    if not class_end then
-        return nil, nil, nil, nil
-    end
-
-    -- Получаем содержимое класса
-    local class_lines = {}
-    for i = class_start, class_end do
-        table.insert(class_lines, lines[i])
-    end
-    local class_content = table.concat(class_lines, "\n")
-
-    return class_name, class_content, class_start, class_end
+    return class_name, class_start, class_end
 end
 
--- Генерация конструктора
+-- 3. Функции генерации (без изменений в логике)
 local function generate_constructor(class_name, fields)
     local params = {}
-
-    for _, field in ipairs(fields) do
-        if field.is_nullable then
-            table.insert(params, "    this." .. field.name .. ",")
-        else
-            table.insert(params, "    required this." .. field.name .. ",")
-        end
+    for _, f in ipairs(fields) do
+        table.insert(params, f.is_nullable and ("    this." .. f.name .. ",") or ("    required this." .. f.name .. ","))
     end
-
-    local constructor = "  " .. class_name .. "({\n"
-        .. table.concat(params, "\n") .. "\n"
-        .. "  });"
-
-    return constructor
+    return "  " .. class_name .. "({\n" .. table.concat(params, "\n") .. "\n  });"
 end
 
--- Генерация copyWith
 local function generate_copy_with(class_name, fields)
-    local params = {}
-    local assignments = {}
-
-    for _, field in ipairs(fields) do
-        table.insert(params, "    " .. field.type .. "? " .. field.name .. ",")
-        table.insert(assignments, "      " .. field.name .. ": " .. field.name .. " ?? this." .. field.name .. ",")
+    local params, assignments = {}, {}
+    for _, f in ipairs(fields) do
+        table.insert(params, "    " .. f.type .. "? " .. f.name .. ",")
+        table.insert(assignments, "      " .. f.name .. ": " .. f.name .. " ?? this." .. f.name .. ",")
     end
-
-    local copy_with = "  " .. class_name .. " copyWith({\n"
-        .. table.concat(params, "\n") .. "\n"
-        .. "  }) {\n"
-        .. "    return " .. class_name .. "(\n"
-        .. table.concat(assignments, "\n") .. "\n"
-        .. "    );\n"
-        .. "  }"
-
-    return copy_with
+    return "  " .. class_name .. " copyWith({\n" .. table.concat(params, "\n") .. "\n  }) {\n    return " ..
+        class_name .. "(\n" .. table.concat(assignments, "\n") .. "\n    );\n  }"
 end
 
--- Генерация toJson
 local function generate_to_json(fields)
-    local map_entries = {}
-
-    for _, field in ipairs(fields) do
-        table.insert(map_entries, "      '" .. field.name .. "': " .. field.name .. ",")
-    end
-
-    local to_json = "  Map<String, dynamic> toJson() {\n"
-        .. "    return {\n"
-        .. table.concat(map_entries, "\n") .. "\n"
-        .. "    };\n"
-        .. "  }"
-
-    return to_json
+    local entries = {}
+    for _, f in ipairs(fields) do table.insert(entries, "      '" .. f.name .. "': " .. f.name .. ",") end
+    return "  Map<String, dynamic> toJson() {\n    return {\n" .. table.concat(entries, "\n") .. "\n    };\n  }"
 end
 
--- Генерация fromJson
 local function generate_from_json(class_name, fields)
     local assignments = {}
-
-    for _, field in ipairs(fields) do
-        local json_key = "json['" .. field.name .. "']"
-        local base_type = field.type:gsub("%?$", "")
-
-        -- Определяем, нужно ли приведение типа
-        if base_type == "int" or base_type == "double" or base_type == "num" then
-            if field.is_nullable then
-                table.insert(assignments, "      " .. field.name .. ": " .. json_key .. " as " .. field.type .. ",")
-            else
-                table.insert(assignments, "      " .. field.name .. ": " .. json_key .. " as " .. base_type .. ",")
-            end
-        elseif base_type == "String" or base_type == "bool" then
-            if field.is_nullable then
-                table.insert(assignments, "      " .. field.name .. ": " .. json_key .. " as " .. field.type .. ",")
-            else
-                table.insert(assignments, "      " .. field.name .. ": " .. json_key .. " as " .. base_type .. ",")
-            end
+    for _, f in ipairs(fields) do
+        local key = "json['" .. f.name .. "']"
+        local base = f.type:gsub("%?$", "")
+        if base == "int" or base == "double" or base == "String" or base == "bool" or base == "num" then
+            table.insert(assignments, "      " .. f.name .. ": " .. key .. " as " .. f.type .. ",")
         else
-            -- Для пользовательских типов предполагаем, что у них есть fromJson
-            if field.is_nullable then
-                table.insert(assignments,
-                    "      " ..
-                    field.name ..
-                    ": " .. json_key .. " != null ? " .. base_type .. ".fromJson(" .. json_key .. ") : null,")
+            local call = base .. ".fromJson(" .. key .. ")"
+            if f.is_nullable then
+                table.insert(assignments, "      " .. f.name .. ": " .. key .. " != nil ? " .. call .. " : null,")
             else
-                table.insert(assignments, "      " .. field.name .. ": " .. base_type .. ".fromJson(" .. json_key .. "),")
+                table.insert(assignments, "      " .. f.name .. ": " .. call .. ",")
             end
         end
     end
-
-    local from_json = "  factory " .. class_name .. ".fromJson(Map<String, dynamic> json) {\n"
-        .. "    return " .. class_name .. "(\n"
-        .. table.concat(assignments, "\n") .. "\n"
-        .. "    );\n"
-        .. "  }"
-
-    return from_json
+    return "  factory " .. class_name .. ".fromJson(Map<String, dynamic> json) {\n    return " ..
+        class_name .. "(\n" .. table.concat(assignments, "\n") .. "\n    );\n  }"
 end
 
--- Генерация toString
 local function generate_to_string(class_name, fields)
-    local field_strings = {}
-
-    for _, field in ipairs(fields) do
-        table.insert(field_strings, field.name .. ": $" .. field.name)
-    end
-
-    local to_string = "  @override\n"
-        .. "  String toString() {\n"
-        .. "    return '" .. class_name .. "(" .. table.concat(field_strings, ", ") .. ")';\n"
-        .. "  }"
-
-    return to_string
+    local f_str = {}
+    for _, f in ipairs(fields) do table.insert(f_str, f.name .. ": $" .. f.name) end
+    return "  @override\n  String toString() {\n    return '" ..
+        class_name .. "(" .. table.concat(f_str, ", ") .. ")';\n  }"
 end
 
--- Генерация operator ==
-local function generate_equals(class_name, fields)
-    local comparisons = {}
-
-    for _, field in ipairs(fields) do
-        table.insert(comparisons, "        " .. field.name .. " == other." .. field.name)
-    end
-
-    local equals = "  @override\n"
-        .. "  bool operator ==(Object other) {\n"
-        .. "    if (identical(this, other)) return true;\n"
-        .. "    return other is " .. class_name .. " &&\n"
-        .. table.concat(comparisons, " &&\n") .. ";\n"
-        .. "  }"
-
-    return equals
+local function generate_equality(class_name, fields)
+    local conds = {}
+    for _, f in ipairs(fields) do table.insert(conds, "        " .. f.name .. " == other." .. f.name) end
+    local eq = "  @override\n  bool operator ==(Object other) {\n    if (identical(this, other)) return true;\n" ..
+        "    return other is " .. class_name .. " &&\n" .. table.concat(conds, " &&\n") .. ";\n  }"
+    local hash = "  @override\n  int get hashCode => Object.hash(" ..
+        table.concat(vim.tbl_map(function(f) return f.name end, fields), ", ") .. ");"
+    return eq .. "\n\n" .. hash
 end
 
--- Генерация hashCode
-local function generate_hash_code(fields)
-    local field_names = {}
-
-    for _, field in ipairs(fields) do
-        table.insert(field_names, field.name)
-    end
-
-    local hash_code = "  @override\n"
-        .. "  int get hashCode => Object.hash(" .. table.concat(field_names, ", ") .. ");"
-
-    return hash_code
-end
-
--- Основная функция
+-- 4. Главная логика: Полная переборка класса
 M.generate_data_class_methods = function()
-    local class_name, class_content, class_start, class_end = get_class_info()
-
+    local class_name, start_idx, end_idx = get_class_info()
     if not class_name then
-        Snacks.notify.error("Курсор не находится в классе")
-        return
+        return Snacks.notify.error("Курсор не в классе Dart")
     end
 
-    local fields = parse_class_fields(class_content)
+    local bufnr = vim.api.nvim_get_current_buf()
+    local original_lines = vim.api.nvim_buf_get_lines(bufnr, start_idx - 1, end_idx, false)
 
-    if #fields == 0 then
-        Snacks.notify.error("Не найдено полей в классе " .. class_name)
-        return
+    -- Шаг 1: Извлекаем поля
+    local fields = parse_class_fields(table.concat(original_lines, "\n"))
+    if #fields == 0 then return Snacks.notify.error("Поля не найдены") end
+
+    -- Шаг 2: Создаем новый чистый список строк (только заголовок класса и поля)
+    local new_content = {}
+    table.insert(new_content, "class " .. class_name .. " {")
+
+    for _, f in ipairs(fields) do
+        table.insert(new_content, "  " .. f.type .. " " .. f.name .. ";")
     end
 
-    -- Показываем список методов для генерации
-    local method_options = {
-        "Все методы",
-        "Конструктор",
-        "copyWith",
-        "toJson",
-        "fromJson",
-        "toString",
-        "operator ==",
-        "hashCode",
-        "toJson + fromJson",
-        "Equatable (== + hashCode)",
-    }
+    -- Шаг 3: Выбор методов для добавления
+    local options = { "Обновить всё", "Конструктор", "JSON", "copyWith", "Equality" }
 
-    Snacks.picker.select(method_options, { prompt = "Выберите что генерировать" }, function(choice)
-        if not choice then
-            return
+    Snacks.picker.select(options, { prompt = "Data Class Generator (" .. class_name .. ")" }, function(choice)
+        if not choice then return end
+
+        local function add_section(text)
+            table.insert(new_content, "")
+            for line in text:gmatch("[^\r\n]+") do table.insert(new_content, line) end
         end
 
-        local methods = {}
-
-        if choice == "Все методы" then
-            table.insert(methods, generate_constructor(class_name, fields))
-            table.insert(methods, generate_copy_with(class_name, fields))
-            table.insert(methods, generate_to_json(fields))
-            table.insert(methods, generate_from_json(class_name, fields))
-            table.insert(methods, generate_to_string(class_name, fields))
-            table.insert(methods, generate_equals(class_name, fields))
-            table.insert(methods, generate_hash_code(fields))
-        elseif choice == "Конструктор" then
-            table.insert(methods, generate_constructor(class_name, fields))
-        elseif choice == "copyWith" then
-            table.insert(methods, generate_copy_with(class_name, fields))
-        elseif choice == "toJson" then
-            table.insert(methods, generate_to_json(fields))
-        elseif choice == "fromJson" then
-            table.insert(methods, generate_from_json(class_name, fields))
-        elseif choice == "toString" then
-            table.insert(methods, generate_to_string(class_name, fields))
-        elseif choice == "operator ==" then
-            table.insert(methods, generate_equals(class_name, fields))
-        elseif choice == "hashCode" then
-            table.insert(methods, generate_hash_code(fields))
-        elseif choice == "toJson + fromJson" then
-            table.insert(methods, generate_to_json(fields))
-            table.insert(methods, generate_from_json(class_name, fields))
-        elseif choice == "Equatable (== + hashCode)" then
-            table.insert(methods, generate_equals(class_name, fields))
-            table.insert(methods, generate_hash_code(fields))
+        if choice == "Обновить всё" or choice == "Конструктор" then add_section(generate_constructor(class_name, fields)) end
+        if choice == "Обновить всё" or choice == "copyWith" then add_section(generate_copy_with(class_name, fields)) end
+        if choice == "Обновить всё" or choice == "JSON" then
+            add_section(generate_to_json(fields))
+            add_section(generate_from_json(class_name, fields))
         end
+        if choice == "Обновить всё" then add_section(generate_to_string(class_name, fields)) end
+        if choice == "Обновить всё" or choice == "Equality" then add_section(generate_equality(class_name, fields)) end
 
-        -- Вставляем методы перед закрывающей скобкой класса
-        local bufnr = vim.api.nvim_get_current_buf()
-        local insert_line = class_end - 1
+        table.insert(new_content, "}")
 
-        -- Разбиваем каждый метод на отдельные строки
-        local lines_to_insert = {}
-        table.insert(lines_to_insert, "") -- Пустая строка перед методами
+        -- Шаг 4: Полная замена старого кода новым
+        vim.api.nvim_buf_set_lines(bufnr, start_idx - 1, end_idx, false, new_content)
 
-        for _, method in ipairs(methods) do
-            -- Разбиваем метод по символам переноса строки
-            for line in method:gmatch("[^\r\n]+") do
-                table.insert(lines_to_insert, line)
-            end
-        end
+        -- Вызываем форматирование через небольшую паузу
+        vim.defer_fn(function()
+            vim.cmd("normal! =ap")
+        end, 50)
 
-        vim.api.nvim_buf_set_lines(bufnr, insert_line, insert_line, false, lines_to_insert)
-
-        Snacks.notify.info("Методы успешно добавлены в класс " .. class_name)
+        Snacks.notify.info("Класс " .. class_name .. " полностью пересобран!")
     end)
 end
 
