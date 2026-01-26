@@ -39,9 +39,8 @@ return {
                     -- Подсветка синтаксиса (от Neovim)
                     vim.treesitter.start()
 
-                    -- Фолдинг (от Neovim)
-                    vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-                    vim.wo.foldmethod = 'expr'
+                    -- Фолдинг полностью отключен (конфликт с nvim-dbee)
+                    -- используем ручной фолдинг вместо этого
 
                     -- Индентация (от nvim-treesitter)
                     vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"

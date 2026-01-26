@@ -41,7 +41,7 @@ return {
     },
 
     -- Принудительный выход из insert при бездействии (чтобы не залипать)
-    force_exit_insert_mode = true,
-    max_insert_idle_ms = 5000, -- 5 секунд
+    -- force_exit_insert_mode = true,
+    -- max_insert_idle_ms = 5000, -- 5 секунд
   },
 }
