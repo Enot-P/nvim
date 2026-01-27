@@ -2,68 +2,47 @@
 local lsp_log_path = vim.fn.stdpath("log") .. "/lsp.log"
 local log_file = io.open(lsp_log_path, "r")
 if log_file then
-  log_file:close()
-  -- Очищаем файл, если он больше 10MB
-  local file_size = vim.fn.getfsize(lsp_log_path)
-  if file_size > 10 * 1024 * 1024 then -- 10MB
-    io.open(lsp_log_path, "w"):close()
-  end
+    log_file:close()
+    -- Очищаем файл, если он больше 10MB
+    local file_size = vim.fn.getfsize(lsp_log_path)
+    if file_size > 10 * 1024 * 1024 then -- 10MB
+        io.open(lsp_log_path, "w"):close()
+    end
 end
 
 -- Визуально моргнет при копировании
 vim.api.nvim_create_autocmd("TextYankPost", {
-  desc = "Highlight when yanking (copying) text",
-  group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
-  callback = function()
-    vim.hl.on_yank()
-  end,
+    desc = "Highlight when yanking (copying) text",
+    group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
+    callback = function()
+        vim.hl.on_yank()
+    end,
 })
 
 -- Более удобная работа в markdown
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "markdown",
-  callback = function()
-    vim.opt_local.wrap = true
-    vim.keymap.set("n", "k", "gk")
-    vim.keymap.set("n", "j", "gj")
-  end,
+    pattern = "markdown",
+    callback = function()
+        vim.opt_local.wrap = true
+        vim.keymap.set("n", "k", "gk")
+        vim.keymap.set("n", "j", "gj")
+    end,
 })
 
 -- Выключает подсветку курсора, когда покидаешь окно
 vim.api.nvim_create_autocmd("WinLeave", {
-  pattern = "*",
-  callback = function()
-    vim.wo.cursorline = false
-  end,
+    pattern = "*",
+    callback = function()
+        vim.wo.cursorline = false
+    end,
 })
 
 -- Открывает help файлы вертикально справа
 vim.api.nvim_create_autocmd("BufWinEnter", {
-  pattern = { "*.txt" },
-  callback = function()
-    if vim.bo.filetype == "help" then
-      vim.cmd.wincmd("L") -- Move window to the rightmost position
-    end
-  end,
+    pattern = { "*.txt" },
+    callback = function()
+        if vim.bo.filetype == "help" then
+            vim.cmd.wincmd("L") -- Move window to the rightmost position
+        end
+    end,
 })
-
--- Команды для LSP
--- vim.api.nvim_create_autocmd("LspAttach", {
---   group = vim.api.nvim_create_augroup("LspAttach_keymaps", { clear = true }),
---   callback = function(event)
---     local opts = { noremap = true, silent = true, buffer = event.buf }
---     local buf = event.buf
---     local client = vim.lsp.get_client_by_id(event.data.client_id)
---
---     -- Стандартные LSP-функции
---     vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
---     vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
---     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
---     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
---     vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
---     vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
---     vim.keymap.set("n", "<leader>f", function()
---       vim.lsp.buf.format({ async = true })
---     end, opts)
---   end,
--- })

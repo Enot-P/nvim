@@ -1,461 +1,239 @@
 {
-  "stateless-widget": {
-    "prefix": "stlss",
-    "body": [
-      "class ${1:name} extends StatelessWidget {",
-      "\tconst ${1:name}({Key? key}) : super(key: key);",
-      "",
-      "\t@override",
-      "\tWidget build(BuildContext context) {",
-      "\t\treturn ${2:Container()};",
-      "\t}",
-      "}"
-    ],
-    "description": "Create stateless widget"
-  },
-  "stateful-widget": {
-    "prefix": "stful",
-    "body": [
-      "class ${1:name} extends StatefulWidget {",
-      "\t${1:name}({Key? key}) : super(key: key);",
-      "",
-      "\t@override",
-      "\t_${1:name}State createState() => _${1:name}State();",
-      "}",
-      "",
-      "class _${1:name}State extends State<${1:name}> {",
-      "\t@override",
-      "\tWidget build(BuildContext context) {",
-      "\t\treturn ${2:Container()};",
-      "\t}",
-      "}"
-    ],
-    "description": "Create a stateful widget"
-  },
-  "build": {
-    "prefix": "build",
-    "body": [
-      "@override",
-      "Widget build(BuildContext context) {",
-      "\treturn ${1:Container()};",
-      "}"
-    ],
-    "description": "Part of the UI represented by this widget"
-  },
-  "custom-painter": {
-    "prefix": "customPainter",
-    "body": [
-      "class ${1:name}Painter extends CustomPainter {",
-      "\t@override",
-      "\tvoid paint(Canvas canvas, Size size) {",
-      "\t\t${2:}",
-      "\t}",
-      "",
-      "\t@override",
-      "\tbool shouldRepaint(${1:name}Painter oldDelegate) => false;",
-      "",
-      "\t@override",
-      "\tbool shouldRebuildSemantics(${1:name}Painter oldDelegate) => false;",
-      "}"
-    ],
-    "description": "Used for creating custom paint"
-  },
-  "custom-clipper": {
-    "prefix": "customClipper",
-    "body": [
-      "class ${1:name}Clipper extends CustomClipper<Path> {",
-      "\t@override",
-      "\tPath getClip(Size size) {",
-      "\t\t${2:}",
-      "\t}",
-      "",
-      "\t@override",
-      "\tbool shouldReclip(CustomClipper<Path> oldClipper) => false;",
-      "}"
-    ],
-    "description": "Used for creating custom shapes"
-  },
-  "initState": {
-    "prefix": "initS",
-    "body": [
-      "@override",
-      "void initState() {",
-      "\tsuper.initState();",
-      "\t${1:}",
-      "}"
-    ],
-    "description": "Called when this object is inserted into the tree"
-  },
-  "dispose": {
-    "prefix": "dis",
-    "body": [
-      "@override",
-      "void dispose() {",
-      "\t${1:}",
-      "\tsuper.dispose();",
-      "}"
-    ],
-    "description": "Called when this object is removed from the tree permanently"
-  },
-  "reassemble": {
-    "prefix": "reassemble",
-    "body": [
-      "@override",
-      "void reassemble() {",
-      "\tsuper.reassemble();",
-      "\t${1:}",
-      "}"
-    ],
-    "description": "Called during hot reload"
-  },
-  "didChangeDependencies": {
-    "prefix": "didChangeD",
-    "body": [
-      "@override",
-      "void didChangeDependencies() {",
-      "\tsuper.didChangeDependencies();",
-      "\t${1:}",
-      "}"
-    ],
-    "description": "Called when a dependency of this State object changes"
-  },
-  "didUpdateWidget": {
-    "prefix": "didUpdateW",
-    "body": [
-      "@override",
-      "void didUpdateWidget(${1:Type} ${2:oldWidget}) {",
-      "\tsuper.didUpdateWidget(${2:oldWidget});",
-      "\t${3:}",
-      "}"
-    ],
-    "description": "Called whenever the widget configuration changes"
-  },
-  "listview-builder": {
-    "prefix": "listViewB",
-    "body": [
-      "ListView.builder(",
-      "\titemCount: ${1:items.length},",
-      "\titemBuilder: (BuildContext context, int index) {",
-      "\t\treturn ${2:};",
-      "\t},",
-      ")"
-    ],
-    "description": "Create a scrollable linear array of widgets"
-  },
-  "listview-separated": {
-    "prefix": "listViewS",
-    "body": [
-      "ListView.separated(",
-      "\titemCount: ${1:items.length},",
-      "\tseparatorBuilder: (BuildContext context, int index) {",
-      "\t\treturn ${2:Divider()};",
-      "\t},",
-      "\titemBuilder: (BuildContext context, int index) {",
-      "\t\treturn ${3:};",
-      "\t},",
-      ")"
-    ],
-    "description": "Creates a fixed-length scrollable linear array with separators"
-  },
-  "gridview-builder": {
-    "prefix": "gridView",
-    "body": [
-      "GridView.builder(",
-      "\tgridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(",
-      "\t\tcrossAxisCount: ${1:2},",
-      "\t),",
-      "\titemCount: ${2:items.length},",
-      "\titemBuilder: (BuildContext context, int index) {",
-      "\t\treturn ${3:};",
-      "\t},",
-      ")"
-    ],
-    "description": "Creates a scrollable, 2D array of widgets"
-  },
-  "gridview-count": {
-    "prefix": "gridViewC",
-    "body": [
-      "GridView.count(",
-      "\tcrossAxisCount: ${1:2},",
-      "\tcrossAxisSpacing: ${2:8},",
-      "\tmainAxisSpacing: ${3:8},",
-      "\tchildren: <Widget>[",
-      "\t\t${4:}",
-      "\t],",
-      ")"
-    ],
-    "description": "Creates a scrollable 2D array with fixed number of tiles"
-  },
-  "gridview-extent": {
-    "prefix": "gridViewE",
-    "body": [
-      "GridView.extent(",
-      "\tmaxCrossAxisExtent: ${1:200},",
-      "\tchildren: <Widget>[",
-      "\t\t${2:}",
-      "\t],",
-      ")"
-    ],
-    "description": "Creates a 2D array of widgets with max cross-axis extent"
-  },
-  "custom-scrollview": {
-    "prefix": "customScrollV",
-    "body": [
-      "CustomScrollView(",
-      "\tslivers: <Widget>[",
-      "\t\t${1:}",
-      "\t],",
-      ")"
-    ],
-    "description": "Creates a ScrollView that creates custom scroll effects using slivers"
-  },
-  "stream-builder": {
-    "prefix": "streamBldr",
-    "body": [
-      "StreamBuilder(",
-      "\tstream: ${1:stream},",
-      "\tinitialData: ${2:null},",
-      "\tbuilder: (BuildContext context, AsyncSnapshot snapshot) {",
-      "\t\treturn ${3:Container()};",
-      "\t},",
-      ")"
-    ],
-    "description": "Creates a StreamBuilder"
-  },
-  "animated-builder": {
-    "prefix": "animatedBldr",
-    "body": [
-      "AnimatedBuilder(",
-      "\tanimation: ${1:animation},",
-      "\tchild: ${2:child},",
-      "\tbuilder: (BuildContext context, Widget? child) {",
-      "\t\treturn ${3:Container()};",
-      "\t},",
-      ")"
-    ],
-    "description": "Creates an AnimatedBuilder"
-  },
-  "stateful-builder": {
-    "prefix": "stateBldr",
-    "body": [
-      "StatefulBuilder(",
-      "\tbuilder: (BuildContext context, StateSetter setState) {",
-      "\t\treturn ${1:Container()};",
-      "\t},",
-      ")"
-    ],
-    "description": "Creates a widget that has state and delegates its build to a callback"
-  },
-  "orientation-builder": {
-    "prefix": "orientationBldr",
-    "body": [
-      "OrientationBuilder(",
-      "\tbuilder: (BuildContext context, Orientation orientation) {",
-      "\t\treturn ${1:Container()};",
-      "\t},",
-      ")"
-    ],
-    "description": "Creates a builder which allows for the orientation of the device"
-  },
-  "layout-builder": {
-    "prefix": "layoutBldr",
-    "body": [
-      "LayoutBuilder(",
-      "\tbuilder: (BuildContext context, BoxConstraints constraints) {",
-      "\t\treturn ${1:Container()};",
-      "\t},",
-      ")"
-    ],
-    "description": "Similar to builder widget but provides parent's constraints"
-  },
-  "single-child-scrollview": {
-    "prefix": "singleChildS",
-    "body": [
-      "SingleChildScrollView(",
-      "\tcontroller: ${1:controller},",
-      "\tchild: Column(",
-      "\t\tchildren: <Widget>[",
-      "\t\t\t${2:}",
-      "\t\t],",
-      "\t),",
-      ")"
-    ],
-    "description": "Creates a scroll view with a single child"
-  },
-  "future-builder": {
-    "prefix": "futureBldr",
-    "body": [
-      "FutureBuilder(",
-      "\tfuture: ${1:future},",
-      "\tinitialData: ${2:null},",
-      "\tbuilder: (BuildContext context, AsyncSnapshot snapshot) {",
-      "\t\treturn ${3:Container()};",
-      "\t},",
-      ")"
-    ],
-    "description": "Creates a FutureBuilder"
-  },
-  "nosuchmethod": {
-    "prefix": "nosm",
-    "body": [
-      "@override",
-      "dynamic noSuchMethod(Invocation invocation) {",
-      "\t${1:}",
-      "}"
-    ],
-    "description": "Invoked when a non-existent method or property is accessed"
-  },
-  "inherited-widget": {
-    "prefix": "inheritedW",
-    "body": [
-      "class ${1:name} extends InheritedWidget {",
-      "\tconst ${1:name}({Key? key, required this.child}) : super(key: key, child: child);",
-      "",
-      "\tfinal Widget child;",
-      "",
-      "\tstatic ${1:name}? of(BuildContext context) {",
-      "\t\treturn context.dependOnInheritedWidgetOfExactType<${1:name}>();",
-      "\t}",
-      "",
-      "\t@override",
-      "\tbool updateShouldNotify(${1:name} oldWidget) {",
-      "\t\treturn ${2:true};",
-      "\t}",
-      "}"
-    ],
-    "description": "Class used to propagate information down the widget tree"
-  },
-  "mounted": {
-    "prefix": "mounted",
-    "body": [
-      "@override",
-      "bool get mounted {",
-      "\t${1:}",
-      "}"
-    ],
-    "description": "Whether this state object is currently in a tree"
-  },
-  "sink": {
-    "prefix": "snk",
-    "body": [
-      "Sink<${1:type}> get ${2:name} => _${2:name}Controller.sink;",
-      "final _${2:name}Controller = StreamController<${1:type}>();"
-    ],
-    "description": "A sink is the input of a stream"
-  },
-  "stream": {
-    "prefix": "stm",
-    "body": [
-      "Stream<${1:type}> get ${2:name} => _${2:name}Controller.stream;",
-      "final _${2:name}Controller = StreamController<${1:type}>();"
-    ],
-    "description": "A source of asynchronous data events"
-  },
-  "subject": {
-    "prefix": "subj",
-    "body": [
-      "Stream<${1:type}> get ${2:name} => _${2:name}Subject.stream;",
-      "final _${2:name}Subject = BehaviorSubject<${1:type}}>();"
-    ],
-    "description": "A BehaviorSubject is a broadcast StreamController"
-  },
-  "tostring": {
-    "prefix": "toStr",
-    "body": [
-      "@override",
-      "String toString() {",
-      "\treturn ${1:'${1:name}()};",
-      "}"
-    ],
-    "description": "Return a string representation of this object"
-  },
-  "debugprint": {
-    "prefix": "debugP",
-    "body": [
-      "debugPrint(${1:statement});"
-    ],
-    "description": "Prints a message to the console"
-  },
-  "import": {
-    "prefix": "importDefault",
-    "body": [
-      "import '${1:package}';",
-      ""
-    ],
-    "description": "Import a package"
-  },
-  "material-app": {
-    "prefix": "mateapp",
-    "body": [
-      "import 'package:flutter/material.dart';",
-      "",
-      "void main() => runApp(const MaterialApp(",
-      "\ttitle: '${1:Title}',",
-      "\thome: ${2:Home}(),",
-      "\ttheme: ThemeData(",
-      "\t\tuseMaterial3: true,",
-      "\t),",
-      "));"
-    ],
-    "description": "A default Material App template"
-  },
-  "cupertino-app": {
-    "prefix": "cupeapp",
-    "body": [
-      "import 'package:flutter/cupertino.dart';",
-      "",
-      "void main() => runApp(const CupertinoApp(",
-      "\ttitle: '${1:title}',",
-      "\thome: CupertinoPageScaffold(",
-      "\t\tnavigationBar: CupertinoNavigationBar(",
-      "\t\t\tmiddle: Text('${2:Home}'),",
-      "\t\t),",
-      "\t\tchild: ${3:Center()}),",
-      "));"
-    ],
-    "description": "Create a default Cupertino app template"
-  },
-  "tween-animation-builder": {
-    "prefix": "tweenAnimationBuilder",
-    "body": [
-      "TweenAnimationBuilder(",
-      "\tduration: const Duration(${1:milliseconds: 500}),",
-      "\ttween: ${2:Tween()}",
-      "\tbuilder: (BuildContext context, dynamic value, Widget? child) {",
-      "\t\treturn ${3:Container()};",
-      "\t},",
-      ")"
-    ],
-    "description": "Widget builder that animates a property to a target value"
-  },
-  "value-listenable-builder": {
-    "prefix": "valueListenableBuilder",
-    "body": [
-      "ValueListenableBuilder(",
-      "\tvalueListenable: ${1:valueNotifier},",
-      "\tbuilder: (BuildContext context, dynamic value, Widget? child) {",
-      "\t\treturn ${2:Container()};",
-      "\t},",
-      ")"
-    ],
-    "description": "The text is exceeded"
-  },
-  "test-function": {
-    "prefix": "f-test",
-    "body": [
-      "test('${1:test description}', () {",
-      "\t${2:}",
-      "});"
-    ],
-    "description": "Create a test function"
-  },
-  "widget-test": {
-    "prefix": "widgetTest",
-    "body": [
-      "testWidgets('${1:test description}', (WidgetTester tester) async {",
-      "\t${2:}",
-      "});"
-    ],
-    "description": "Create a testWidget function"
-  }
+    "stateless-widget": {
+        "prefix": "stlss",
+        "body": [
+            "class ${1:Name} extends StatelessWidget {",
+            "\tconst ${1:Name}({super.key});",
+            "",
+            "\t@override",
+            "\tWidget build(BuildContext context) {",
+            "\t\treturn ${2:Container()};",
+            "\t}",
+            "}"
+        ]
+    },
+    "stateful-widget": {
+        "prefix": "stful",
+        "body": [
+            "class ${1:Name} extends StatefulWidget {",
+            "\tconst ${1:Name}({super.key});",
+            "",
+            "\t@override",
+            "\tState<${1:Name}> createState() => _${1:Name}State();",
+            "}",
+            "",
+            "class _${1:Name}State extends State<${1:Name}> {",
+            "\t@override",
+            "\tWidget build(BuildContext context) {",
+            "\t\treturn ${2:Container()};",
+            "\t}",
+            "}"
+        ]
+    },
+    "inherited-widget": {
+        "prefix": "inheritedW",
+        "body": [
+            "class ${1:Name} extends InheritedWidget {",
+            "\tconst ${1:Name}({",
+            "\t\trequired super.child,",
+            "\t\tsuper.key,",
+            "\t});",
+            "",
+            "\tstatic ${1:Name} watch(BuildContext context) {",
+            "\t\tfinal result = context.dependOnInheritedWidgetOfExactType<${1:Name}>();",
+            "\t\tassert(result != null, 'No ${1:Name} found in context');",
+            "\t\treturn result!;",
+            "\t}",
+            "",
+            "\tstatic ${1:Name} read(BuildContext context) {",
+            "\t\tfinal element = context.getElementForInheritedWidgetOfExactType<${1:Name}>();",
+            "\t\tassert(element != null, 'No ${1:Name} found in context');",
+            "\t\treturn element!.widget as ${1:Name};",
+            "\t}",
+            "",
+            "\t@override",
+            "\tbool updateShouldNotify(${1:Name} oldWidget) {",
+            "\t\treturn ${2:true};",
+            "\t}",
+            "}"
+        ]
+    },
+    "build": {
+        "prefix": "build",
+        "body": [
+            "@override",
+            "Widget build(BuildContext context) {",
+            "\treturn ${1:Container()};",
+            "}"
+        ]
+    },
+    "custom-painter": {
+        "prefix": "customPainter",
+        "body": [
+            "class ${1:Name}Painter extends CustomPainter {",
+            "\t@override",
+            "\tvoid paint(Canvas canvas, Size size) {",
+            "\t\t${2:}",
+            "\t}",
+            "",
+            "\t@override",
+            "\tbool shouldRepaint(${1:Name}Painter oldDelegate) => false;",
+            "}"
+        ]
+    },
+    "custom-clipper": {
+        "prefix": "customClipper",
+        "body": [
+            "class ${1:Name}Clipper extends CustomClipper<Path> {",
+            "\t@override",
+            "\tPath getClip(Size size) {",
+            "\t\t${2:return Path();}",
+            "\t}",
+            "",
+            "\t@override",
+            "\tbool shouldReclip(CustomClipper<Path> oldClipper) => false;",
+            "}"
+        ]
+    },
+    "initState": {
+        "prefix": "initS",
+        "body": [
+            "@override",
+            "void initState() {",
+            "\tsuper.initState();",
+            "\t${1:}",
+            "}"
+        ]
+    },
+    "dispose": {
+        "prefix": "dis",
+        "body": [
+            "@override",
+            "void dispose() {",
+            "\t${1:}",
+            "\tsuper.dispose();",
+            "}"
+        ]
+    },
+    "didUpdateWidget": {
+        "prefix": "didUpdateW",
+        "body": [
+            "@override",
+            "void didUpdateWidget(covariant ${1:Type} oldWidget) {",
+            "\tsuper.didUpdateWidget(oldWidget);",
+            "\t${2:}",
+            "}"
+        ]
+    },
+    "listview-builder": {
+        "prefix": "listViewB",
+        "body": [
+            "ListView.builder(",
+            "\titemCount: ${1:items.length},",
+            "\titemBuilder: (context, index) {",
+            "\t\treturn ${2:const SizedBox()};",
+            "\t},",
+            ")"
+        ]
+    },
+    "listview-separated": {
+        "prefix": "listViewS",
+        "body": [
+            "ListView.separated(",
+            "\titemCount: ${1:items.length},",
+            "\tseparatorBuilder: (context, index) => ${2:const Divider()},",
+            "\titemBuilder: (context, index) {",
+            "\t\treturn ${3:const SizedBox()};",
+            "\t},",
+            ")"
+        ]
+    },
+    "gridview-builder": {
+        "prefix": "gridViewB",
+        "body": [
+            "GridView.builder(",
+            "\tgridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(",
+            "\t\tcrossAxisCount: ${1:2},",
+            "\t\tmainAxisSpacing: ${2:8.0},",
+            "\t\tcrossAxisSpacing: ${3:8.0},",
+            "\t),",
+            "\titemCount: ${4:items.length},",
+            "\titemBuilder: (context, index) {",
+            "\t\treturn ${5:const SizedBox()};",
+            "\t},",
+            ")"
+        ]
+    },
+    "stream-builder": {
+        "prefix": "streamBldr",
+        "body": [
+            "StreamBuilder<${1:Type}>(",
+            "\tstream: ${2:stream},",
+            "\tbuilder: (context, snapshot) {",
+            "\t\tif (snapshot.hasData) {",
+            "\t\t\treturn ${3:const SizedBox()};",
+            "\t\t}",
+            "\t\treturn ${4:const Center(child: CircularProgressIndicator())};",
+            "\t},",
+            ")"
+        ]
+    },
+    "future-builder": {
+        "prefix": "futureBldr",
+        "body": [
+            "FutureBuilder<${1:Type}>(",
+            "\tfuture: ${2:future},",
+            "\tbuilder: (context, snapshot) {",
+            "\t\tif (snapshot.connectionState == ConnectionState.waiting) {",
+            "\t\t\treturn ${3:const Center(child: CircularProgressIndicator())};",
+            "\t\t}",
+            "\t\treturn ${4:const SizedBox()};",
+            "\t},",
+            ")"
+        ]
+    },
+    "material-app": {
+        "prefix": "mateapp",
+        "body": [
+            "import 'package:flutter/material.dart';",
+            "",
+            "void main() {",
+            "\trunApp(",
+            "\t\tconst MaterialApp(",
+            "\t\t\tdebugShowCheckedModeBanner: false,",
+            "\t\t\ttitle: '${1:Title}',",
+            "\t\t\thome: ${2:Home}(),",
+            "\t\t),",
+            "\t);",
+            "}"
+        ]
+    },
+    "value-listenable-builder": {
+        "prefix": "valueListenableBuilder",
+        "body": [
+            "ValueListenableBuilder(",
+            "\tvalueListenable: ${1:valueNotifier},",
+            "\tbuilder: (context, value, child) {",
+            "\t\treturn ${2:Container()};",
+            "\t},",
+            ")"
+        ]
+    },
+    "test-function": {
+        "prefix": "f-test",
+        "body": [
+            "test('${1:description}', () {",
+            "\t${2:}",
+            "});"
+        ]
+    },
+    "widget-test": {
+        "prefix": "widgetTest",
+        "body": [
+            "testWidgets('${1:description}', (tester) async {",
+            "\tawait tester.pumpWidget(${2:const MyApp()});",
+            "\t${3:}",
+            "});"
+        ]
+    }
 }

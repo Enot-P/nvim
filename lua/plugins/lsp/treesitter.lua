@@ -7,6 +7,7 @@ return {
             -- 1. Список языков для Flutter-разработки
             local languages = {
                 'lua',
+                'make',
                 'dart',
                 'yaml',
                 'json',

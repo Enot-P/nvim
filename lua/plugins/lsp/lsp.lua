@@ -74,7 +74,8 @@ return {
                 taplo = {},
                 -- sqls = {},
                 pylsp = {},
-                qmlls = {}
+                qmlls = {},
+                autotools_ls = {},
             }
             require("mason").setup()
             require("mason-lspconfig").setup({

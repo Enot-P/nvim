@@ -112,7 +112,6 @@ return {
             },
         })
 
-        -- Остальной код без изменений...
         vim.api.nvim_create_autocmd("BufNew", {
             pattern = "__FLUTTER_DEV_LOG__",
             callback = function()
@@ -161,8 +160,8 @@ return {
         -- Хоткеи
         vim.keymap.set("n", "<leader>flr", ":FlutterRun<CR>", { desc = "Flutter: Run" })
         vim.keymap.set("n", "<leader>flR", ":FlutterRestart<CR>", { desc = "Flutter: Restart" })
-        vim.keymap.set("n", "<leader>flh", ":FlutterHotReload<CR>", { desc = "Flutter: Hot Reload" })
-        vim.keymap.set("n", "<leader>flH", ":FlutterHotRestart<CR>", { desc = "Flutter: Hot Restart" })
+        -- vim.keymap.set("n", "<leader>flh", ":FlutterHotReload<CR>", { desc = "Flutter: Hot Reload" })
+        -- vim.keymap.set("n", "<leader>flH", ":FlutterHotRestart<CR>", { desc = "Flutter: Hot Restart" })
         vim.keymap.set("n", "<leader>flq", ":FlutterQuit<CR>", { desc = "Flutter: Quit" })
         vim.keymap.set("n", "<leader>fld", ":FlutterDevices<CR>", { desc = "Flutter: Devices" })
         vim.keymap.set("n", "<leader>fle", ":FlutterEmulators<CR>", { desc = "Flutter: Emulators" })
