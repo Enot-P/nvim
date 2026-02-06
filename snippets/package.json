@@ -7,6 +7,10 @@
                 "path": "./dart.json"
             },
             {
+                "language": "dart",
+                "path": "./riverpod.json"
+            },
+            {
                 "language": "all",
                 "path": "./all.json"
             }

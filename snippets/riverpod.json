@@ -1,0 +1,615 @@
+{
+    "Riverpod: AsyncNotifier": {
+        "scope": "dart",
+        "prefix": "asyncNotifier",
+        "description": "Creates an AsyncNotifier",
+        "body": [
+            "class $1Notifier extends AsyncNotifier<$2> {",
+            "\t@override",
+            "\tFutureOr<$2> build() {",
+            "\t\t$3",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod: Family AsyncNotifier": {
+        "scope": "dart",
+        "prefix": "asyncNotifierFamily",
+        "description": "Creates a parametrized AsyncNotifier",
+        "body": [
+            "class $1Notifier extends AsyncNotifier<$2> {",
+            "\t$1Notifier(this.$4);",
+            "\tfinal $3 $4;",
+            "\t@override",
+            "\tFutureOr<$2> build() {",
+            "\t\t$5",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod: AsyncNotifierProvider": {
+        "scope": "dart",
+        "prefix": "asyncNotifierProvider",
+        "description": "Creates an autodispose AsyncNotifierProvider",
+        "body": [
+            "final $1Provider = AsyncNotifierProvider.autoDispose<$2, $3>($2.new);"
+        ]
+    },
+    "Riverpod: Keep Alive AsyncNotifierProvider": {
+        "scope": "dart",
+        "prefix": "asyncNotifierProviderKeepAlive",
+        "description": "Creates a non-autodispose AsyncNotifierProvider",
+        "body": [
+            "final $1Provider = AsyncNotifierProvider<$2, $3>($2.new);"
+        ]
+    },
+    "Riverpod: .family AsyncNotifierProvider": {
+        "scope": "dart",
+        "prefix": "asyncNotifierProviderFamily",
+        "description": "Creates an autodispose family AsyncNotifierProvider",
+        "body": [
+            "final $1Provider = AsyncNotifierProvider.autoDispose.family<$2, $3, $4>($2.new);"
+        ]
+    },
+    "Riverpod (legacy): Change Notifier": {
+        "scope": "dart",
+        "prefix": "changeNotifier",
+        "description": "Creates a ChangeNotifier",
+        "body": [
+            "class $1Notifier extends ChangeNotifier {",
+            "\t$2",
+            "}"
+        ]
+    },
+    "Riverpod (legacy): ChangeNotifier Provider": {
+        "scope": "dart",
+        "prefix": "changeNotifierProvider",
+        "description": "Creates an autodispose ChangeNotifierProvider",
+        "body": [
+            "final $1Provider = ChangeNotifierProvider.autoDispose<$2>((ref) {",
+            "\treturn $2();",
+            "});"
+        ]
+    },
+    "Riverpod (legacy): Keep Alive ChangeNotifier Provider": {
+        "scope": "dart",
+        "prefix": "changeNotifierProviderKeepAlive",
+        "description": "Creates a non-autodispose ChangeNotifierProvider",
+        "body": [
+            "final $1Provider = ChangeNotifierProvider<$2>((ref) {",
+            "\treturn $2();",
+            "});"
+        ]
+    },
+    "Riverpod (legacy): .family ChangeNotifier Provider": {
+        "scope": "dart",
+        "prefix": "changeNotifierProviderFamily",
+        "description": "Creates an autodispose family ChangeNotifierProvider",
+        "body": [
+            "final $1Provider = ChangeNotifierProvider.autoDispose.family<$2, $3>((ref, $4) {",
+            "\treturn $5($4);",
+            "});"
+        ]
+    },
+    "Riverpod (codegen): part statement": {
+        "scope": "dart",
+        "prefix": "riverpodPart",
+        "description": "Creates a part statement for Riverpod (codegen)",
+        "body": [
+            "part '${TM_FILENAME_BASE}.g.dart';"
+        ]
+    },
+    "Riverpod (codegen): Provider": {
+        "scope": "dart",
+        "prefix": "riverpod",
+        "description": "Creates a Provider (codegen)",
+        "body": [
+            "@riverpod",
+            "$1 $2(Ref ref) {",
+            "\t$3;",
+            "}"
+        ]
+    },
+    "Riverpod (codegen): Keep Alive Provider": {
+        "scope": "dart",
+        "prefix": "riverpodKeepAlive",
+        "description": "Creates a non-autodispose Provider (codegen)",
+        "body": [
+            "@Riverpod(keepAlive: true)",
+            "$1 $2(Ref ref) {",
+            "\t$3;",
+            "}"
+        ]
+    },
+    "Riverpod (codegen): FutureProvider": {
+        "scope": "dart",
+        "prefix": "riverpodFuture",
+        "description": "Creates a FutureProvider (codegen)",
+        "body": [
+            "@riverpod",
+            "FutureOr<$1> $2(Ref ref) {",
+            "\t$3;",
+            "}"
+        ]
+    },
+    "Riverpod (codegen): Keep Alive FutureProvider": {
+        "scope": "dart",
+        "prefix": "riverpodFutureKeepAlive",
+        "description": "Creates a non-autodispose FutureProvider (codegen)",
+        "body": [
+            "@Riverpod(keepAlive: true)",
+            "FutureOr<$1> $2(Ref ref) {",
+            "\t$3;",
+            "}"
+        ]
+    },
+    "Riverpod (codegen): StreamProvider": {
+        "scope": "dart",
+        "prefix": "riverpodStream",
+        "description": "Creates a StreamProvider (codegen)",
+        "body": [
+            "@riverpod",
+            "Stream<$1> $2(Ref ref) {",
+            "\t$3;",
+            "}"
+        ]
+    },
+    "Riverpod (codegen): Keep Alive StreamProvider": {
+        "scope": "dart",
+        "prefix": "riverpodStreamKeepAlive",
+        "description": "Creates a non-autodispose StreamProvider (codegen)",
+        "body": [
+            "@Riverpod(keepAlive: true)",
+            "Stream<$1> $2(Ref ref) {",
+            "\t$3;",
+            "}"
+        ]
+    },
+    "Riverpod (codegen): Notifier / NotifierProvider": {
+        "scope": "dart",
+        "prefix": "riverpodClass",
+        "description": "Creates an autodispose Notifier/NotifierProvider (codegen)",
+        "body": [
+            "@riverpod",
+            "class $1 extends _$$1 {",
+            "\t@override",
+            "\t$2 build() {",
+            "\t\t$3;",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod (codegen): Keep Alive Notifier / NotifierProvider": {
+        "scope": "dart",
+        "prefix": "riverpodClassKeepAlive",
+        "description": "Creates a non-autodispose Notifier/NotifierProvider (codegen)",
+        "body": [
+            "@Riverpod(keepAlive: true)",
+            "class $1 extends _$$1 {",
+            "\t@override",
+            "\t$2 build() {",
+            "\t\t$3;",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod (codegen): AsyncNotifier / AsyncNotifierProvider": {
+        "scope": "dart",
+        "prefix": "riverpodAsyncClass",
+        "description": "Creates an autodispose AsyncNotifier/AsyncNotifierProvider (codegen)",
+        "body": [
+            "@riverpod",
+            "class $1 extends _$$1 {",
+            "\t@override",
+            "\tFutureOr<$2> build() {",
+            "\t\t$3;",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod (codegen): Keep Alive AsyncNotifier / AsyncNotifierProvider": {
+        "scope": "dart",
+        "prefix": "riverpodAsyncClassKeepAlive",
+        "description": "Creates a non-autodispose AsyncNotifier/AsyncNotifierProvider (codegen)",
+        "body": [
+            "@Riverpod(keepAlive: true)",
+            "class $1 extends _$$1 {",
+            "\t@override",
+            "\tFutureOr<$2> build() {",
+            "\t\t$3;",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod (codegen): StreamNotifier / StreamNotifierProvider": {
+        "scope": "dart",
+        "prefix": "riverpodStreamClass",
+        "description": "Creates an autodispose StreamNotifier/StreamNotifierProvider (codegen)",
+        "body": [
+            "@riverpod",
+            "class $1 extends _$$1 {",
+            "\t@override",
+            "\tStream<$2> build() {",
+            "\t\t$3;",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod (codegen): Keep Alive StreamNotifier / StreamNotifierProvider": {
+        "scope": "dart",
+        "prefix": "riverpodStreamClassKeepAlive",
+        "description": "Creates a non-autodispose StreamNotifier/StreamNotifierProvider (codegen)",
+        "body": [
+            "@Riverpod(keepAlive: true)",
+            "class $1 extends _$$1 {",
+            "\t@override",
+            "\tStream<$2> build() {",
+            "\t\t$3;",
+            "\t}",
+            "}"
+        ]
+    },
+    "create provider": {
+        "scope": "dart",
+        "prefix": "consumer",
+        "body": [
+            "Consumer(",
+            "\tbuilder: (context, ref, child) {",
+            "\t\treturn $1;",
+            "\t},",
+            ")"
+        ],
+        "description": "Creates a consumer"
+    },
+    "Consumer Stateless": {
+        "scope": "dart",
+        "prefix": "statelessConsumerWidget",
+        "description": "Creates a ConsumerWidget",
+        "body": [
+            "class $1 extends ConsumerWidget {",
+            "\tconst $1({super.key});\n",
+            "\t@override",
+            "\tWidget build(BuildContext context, WidgetRef ref) {",
+            "\t\treturn Container();",
+            "\t}",
+            "}"
+        ]
+    },
+    "Consumer Stateful": {
+        "scope": "dart",
+        "prefix": "statefulConsumerWidget",
+        "description": "Creates a ConsumerStatefulWidget",
+        "body": [
+            "class $1 extends ConsumerStatefulWidget {",
+            "\tconst $1({super.key});\n",
+            "\t@override",
+            "\tConsumerState<$1> createState() => _$1State();",
+            "}\n",
+            "class _$1State extends ConsumerState<$1> {\n",
+            "\t@override",
+            "\tWidget build(BuildContext context) {",
+            "\t\treturn Container();",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod: FutureProvider": {
+        "scope": "dart",
+        "prefix": "futureProvider",
+        "description": "Creates an autodispose FutureProvider",
+        "body": [
+            "final $1Provider = FutureProvider.autoDispose<$2>((ref) async {",
+            "\t$3",
+            "});"
+        ]
+    },
+    "Riverpod: Keep Alive FutureProvider": {
+        "scope": "dart",
+        "prefix": "futureProviderKeepAlive",
+        "description": "Creates a non-autodispose FutureProvider",
+        "body": [
+            "final $1Provider = FutureProvider<$2>((ref) async {",
+            "\t$3",
+            "});"
+        ]
+    },
+    "Riverpod: .family FutureProvider": {
+        "scope": "dart",
+        "prefix": "futureProviderFamily",
+        "description": "Creates an autodispose family FutureProvider",
+        "body": [
+            "final $1Provider = FutureProvider.autoDispose.family<$2, $3>((ref, $4) async {",
+            "\t$5",
+            "});"
+        ]
+    },
+    "Hook Consumer Stateless Widget": {
+        "scope": "dart",
+        "prefix": "statelessHookConsumerWidget",
+        "description": "Creates a HookConsumerWidget",
+        "body": [
+            "class $1 extends HookConsumerWidget {",
+            "\tconst $1({super.key});",
+            "\t@override",
+            "\tWidget build(BuildContext context, WidgetRef ref) {",
+            "\t\treturn Container();",
+            "\t}",
+            "}"
+        ]
+    },
+    "Hook Consumer Stateful Widget": {
+        "scope": "dart",
+        "prefix": "statefulHookConsumerWidget",
+        "description": "Creates a StatefulHookConsumerWidget",
+        "body": [
+            "class $1 extends StatefulHookConsumerWidget {",
+            "\tconst $1({super.key});\n",
+            "\t@override",
+            "\tConsumerState<ConsumerStatefulWidget> createState() => _$1State();",
+            "}",
+            "class _$1State extends ConsumerState<$1> {",
+            "\t@override",
+            "\tWidget build(BuildContext context) {",
+            "\t\treturn Container();",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod: Notifier": {
+        "scope": "dart",
+        "prefix": "notifier",
+        "description": "Creates a Notifier",
+        "body": [
+            "class $1Notifier extends Notifier<$2> {",
+            "\t@override",
+            "\t$2 build() {",
+            "\t\t$3",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod: Family Notifier": {
+        "scope": "dart",
+        "prefix": "notifierFamily",
+        "description": "Creates a parametrized Notifier",
+        "body": [
+            "class $1Notifier extends Notifier<$2> {",
+            "\t$1Notifier(this.$4);",
+            "\tfinal $3 $4;",
+            "\t@override",
+            "\t$2 build() {",
+            "\t\t$5",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod: NotifierProvider": {
+        "scope": "dart",
+        "prefix": "notifierProvider",
+        "description": "Creates an autodispose NotifierProvider",
+        "body": [
+            "final $1Provider = NotifierProvider.autoDispose<$2, $3>($2.new);"
+        ]
+    },
+    "Riverpod: Keep Alive NotifierProvider": {
+        "scope": "dart",
+        "prefix": "notifierProviderKeepAlive",
+        "description": "Creates a non-autodispose NotifierProvider",
+        "body": [
+            "final $1Provider = NotifierProvider<$2, $3>($2.new);"
+        ]
+    },
+    "Riverpod: .family NotifierProvider": {
+        "scope": "dart",
+        "prefix": "notifierProviderFamily",
+        "description": "Creates an autodispose family NotifierProvider",
+        "body": [
+            "final $1Provider = NotifierProvider.autoDispose.family<$2, $3, $4>($2.new);"
+        ]
+    },
+    "Riverpod: Provider": {
+        "scope": "dart",
+        "prefix": "provider",
+        "description": "Creates an autodispose Provider",
+        "body": [
+            "final $1Provider = Provider.autoDispose<$2>((ref) {",
+            "\t$3",
+            "});"
+        ]
+    },
+    "Riverpod: Keep Alive Provider": {
+        "scope": "dart",
+        "prefix": "providerKeepAlive",
+        "description": "Creates a non-autodispose Provider",
+        "body": [
+            "final $1Provider = Provider<$2>((ref) {",
+            "\t$3",
+            "});"
+        ]
+    },
+    "Riverpod: .family Provider": {
+        "scope": "dart",
+        "prefix": "providerFamily",
+        "description": "Creates an autodispose family Provider",
+        "body": [
+            "final $1Provider = Provider.autoDispose.family<$2, $3>((ref, $4) {",
+            "\t$5",
+            "});"
+        ]
+    },
+    "Riverpod: Listener": {
+        "scope": "dart",
+        "prefix": "listen",
+        "description": "Listen to a provider",
+        "body": [
+            "ref.listen<$1>($2, (previous, next) { ",
+            "\t$3",
+            "});"
+        ]
+    },
+    "Riverpod (legacy): State Notifier": {
+        "scope": "dart",
+        "prefix": "stateNotifier",
+        "description": "Creates a StateNotifier",
+        "body": [
+            "class $1Notifier extends StateNotifier<$2> {",
+            "\t$1Notifier(): super($3);",
+            "\t$4",
+            "}"
+        ]
+    },
+    "Riverpod (legacy): .family State Notifier": {
+        "scope": "dart",
+        "prefix": "stateNotifierFamily",
+        "description": "Creates a parametrized StateNotifier",
+        "body": [
+            "class $1Notifier extends StateNotifier<$2> {",
+            "\t$1Notifier(this.$5): super($3);",
+            "\tfinal $4 $5;",
+            "\t$6",
+            "}"
+        ]
+    },
+    "Riverpod (legacy): StateNotifier Provider": {
+        "scope": "dart",
+        "prefix": "stateNotifierProvider",
+        "description": "Creates an autodispose StateNotifierProvider",
+        "body": [
+            "final $1Provider = StateNotifierProvider.autoDispose<$2, $3>((ref) {",
+            "\treturn $2();",
+            "});"
+        ]
+    },
+    "Riverpod (legacy): Keep Alive StateNotifier Provider": {
+        "scope": "dart",
+        "prefix": "stateNotifierProviderKeepAlive",
+        "description": "Creates a non-autodispose StateNotifierProvider",
+        "body": [
+            "final $1Provider = StateNotifierProvider<$2, $3>((ref) {",
+            "\treturn $2();",
+            "});"
+        ]
+    },
+    "Riverpod (legacy): .family StateNotifier Provider": {
+        "scope": "dart",
+        "prefix": "stateNotifierProviderFamily",
+        "description": "Creates an autodispose family StateNotifierProvider",
+        "body": [
+            "final $1Provider = StateNotifierProvider.autoDispose.family<$2, $3, $4>((ref, $5) {",
+            "\treturn $2($5);",
+            "});"
+        ]
+    },
+    "Riverpod (legacy): State Provider": {
+        "scope": "dart",
+        "prefix": "stateProvider",
+        "description": "Creates an autodispose StateProvider",
+        "body": [
+            "final $1Provider = StateProvider.autoDispose<$2>((ref) {",
+            "\t$3",
+            "});"
+        ]
+    },
+    "Riverpod (legacy): Keep Alive State Provider": {
+        "scope": "dart",
+        "prefix": "stateProviderKeepAlive",
+        "description": "Creates a non-autodispose StateProvider",
+        "body": [
+            "final $1Provider = StateProvider<$2>((ref) {",
+            "\t$3",
+            "});"
+        ]
+    },
+    "Riverpod (legacy): State Provider Family": {
+        "scope": "dart",
+        "prefix": "stateProviderFamily",
+        "description": "Creates an autodispose family StateProvider",
+        "body": [
+            "final $1Provider = StateProvider.autoDispose.family<$2, $3>((ref, $4) {",
+            "\t$5",
+            "});"
+        ]
+    },
+    "Riverpod: StreamNotifier": {
+        "scope": "dart",
+        "prefix": "streamNotifier",
+        "description": "Creates a StreamNotifier",
+        "body": [
+            "class $1Notifier extends StreamNotifier<$2> {",
+            "\t@override",
+            "\tStream<$2> build() {",
+            "\t\t$3",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod: Family StreamNotifier": {
+        "scope": "dart",
+        "prefix": "streamNotifierFamily",
+        "description": "Creates a parametrized StreamNotifier",
+        "body": [
+            "class $1Notifier extends StreamNotifier<$2> {",
+            "\t$1Notifier(this.$4);",
+            "\tfinal $3 $4;",
+            "\t@override",
+            "\tStream<$2> build() {",
+            "\t\t$5",
+            "\t}",
+            "}"
+        ]
+    },
+    "Riverpod: StreamNotifierProvider": {
+        "scope": "dart",
+        "prefix": "streamNotifierProvider",
+        "description": "Creates an autodispose StreamNotifierProvider",
+        "body": [
+            "final $1Provider = StreamNotifierProvider.autoDispose<$2, $3>($2.new);"
+        ]
+    },
+    "Riverpod: Keep Alive StreamNotifierProvider": {
+        "scope": "dart",
+        "prefix": "streamNotifierProviderKeepAlive",
+        "description": "Creates a non-autodispose StreamNotifierProvider",
+        "body": [
+            "final $1Provider = StreamNotifierProvider<$2, $3>($2.new);"
+        ]
+    },
+    "Riverpod: .family StreamNotifierProvider": {
+        "scope": "dart",
+        "prefix": "streamNotifierProviderFamily",
+        "description": "Creates an autodispose family StreamNotifierProvider",
+        "body": [
+            "final $1Provider = StreamNotifierProvider.autoDispose.family<$2, $3, $4>($2.new);"
+        ]
+    },
+    "Riverpod: StreamProvider": {
+        "scope": "dart",
+        "prefix": "streamProvider",
+        "description": "Creates an autodispose StreamProvider",
+        "body": [
+            "final $1Provider = StreamProvider.autoDispose<$2>((ref) {",
+            "\t$3",
+            "});"
+        ]
+    },
+    "Riverpod: Keep Alive StreamProvider": {
+        "scope": "dart",
+        "prefix": "streamProviderKeepAlive",
+        "description": "Creates a non-autodispose StreamProvider",
+        "body": [
+            "final $1Provider = StreamProvider<$2>((ref) {",
+            "\t$3",
+            "});"
+        ]
+    },
+    "Riverpod: .family StreamProvider": {
+        "scope": "dart",
+        "prefix": "streamProviderFamily",
+        "description": "Creates an autodispose family StreamProvider",
+        "body": [
+            "final $1Provider = StreamProvider.autoDispose.family<$2, $3>((ref, $4) {",
+            "\t$5",
+            "});"
+        ]
+    }
+}
