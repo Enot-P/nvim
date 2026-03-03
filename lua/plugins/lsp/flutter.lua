@@ -5,6 +5,7 @@ return {
         "nvim-lua/plenary.nvim",
         "stevearc/dressing.nvim",
         "mfussenegger/nvim-dap",
+        "nvim-telescope/telescope.nvim",
     },
     config = function()
         local log_file = vim.fn.tempname() .. "_flutter.log"
@@ -80,6 +81,21 @@ return {
         end
 
         require("flutter-tools").setup({
+            decorations = {
+                statusline = {
+                    -- set to true to be able use the 'flutter_tools_decorations.app_version' in your statusline
+                    -- this will show the current version of the flutter app from the pubspec.yaml file
+                    app_version = true,
+                    -- set to true to be able use the 'flutter_tools_decorations.device' in your statusline
+                    -- this will show the currently running device if an application was started with a specific
+                    -- device
+                    device = true,
+                    -- set to true to be able use the 'flutter_tools_decorations.project_config' in your statusline
+                    -- this will show the currently selected project configuration
+                    project_config = true,
+                }
+            },
+            fvm = true,
             lsp = {
                 color = {
                     enabled = true,
@@ -111,6 +127,7 @@ return {
                 focus_on_open = false,
             },
         })
+        require("telescope").load_extension("flutter")
 
         vim.api.nvim_create_autocmd("BufNew", {
             pattern = "__FLUTTER_DEV_LOG__",
@@ -157,8 +174,74 @@ return {
             desc = "Создать новое окно tmux с логами Flutter",
         })
 
+        vim.api.nvim_create_user_command("FlutterRunMake", function()
+            -- Проверяем наличие Makefile в текущей директории
+            local makefile_path = vim.fn.filereadable("Makefile") == 1 and "Makefile" or
+                (vim.fn.filereadable("makefile") == 1 and "makefile" or nil)
+
+            if not makefile_path then
+                vim.notify("Makefile не найден в проекте", vim.log.levels.WARN)
+                return
+            end
+
+            -- Читаем Makefile и извлекаем цели
+            local file = io.open(makefile_path, "r")
+            if not file then
+                vim.notify("Не удалось прочитать Makefile", vim.log.levels.ERROR)
+                return
+            end
+
+            local targets = {}
+            local content = file:read("*a")
+            file:close()
+
+            -- Ищем .PHONY цели
+            for phony_targets in content:gmatch("%.PHONY:%s*([^\n]+)") do
+                for target in phony_targets:gmatch("%S+") do
+                    table.insert(targets, target)
+                end
+            end
+
+            -- Если .PHONY не найдена, ищем все цели (паттерн: target:)
+            if #targets == 0 then
+                for target in content:gmatch("^([%w_-]+)%s*:") do
+                    -- Исключаем внутренние цели и комментарии
+                    if target ~= "" and not target:match("^%.") then
+                        table.insert(targets, target)
+                    end
+                end
+            end
+
+            if #targets == 0 then
+                vim.notify("Цели не найдены в Makefile", vim.log.levels.WARN)
+                return
+            end
+
+            -- Показываем UI для выбора цели
+            vim.ui.select(targets, {
+                prompt = "Выберите make цель: ",
+            }, function(selected)
+                if selected then
+                    -- Выполняем make и затем запускаем FlutterRun
+                    local make_cmd = "make " .. selected
+                    vim.fn.system(make_cmd)
+
+                    if vim.v.shell_error == 0 then
+                        vim.notify("Make выполнена успешно: " .. selected, vim.log.levels.INFO)
+                        -- Запускаем FlutterRun для обработки логов и управления процессом
+                        vim.cmd("FlutterRun")
+                    else
+                        vim.notify("Ошибка при выполнении: " .. selected, vim.log.levels.ERROR)
+                    end
+                end
+            end)
+        end, {
+            desc = "Flutter: Run через Makefile (выбор цели)",
+        })
+
         -- Хоткеи
         vim.keymap.set("n", "<leader>flr", ":FlutterRun<CR>", { desc = "Flutter: Run" })
+        vim.keymap.set("n", "<leader>flm", ":FlutterRunMake<CR>", { desc = "Flutter: Run (Make)" })
         vim.keymap.set("n", "<leader>flR", ":FlutterRestart<CR>", { desc = "Flutter: Restart" })
         -- vim.keymap.set("n", "<leader>flh", ":FlutterHotReload<CR>", { desc = "Flutter: Hot Reload" })
         -- vim.keymap.set("n", "<leader>flH", ":FlutterHotRestart<CR>", { desc = "Flutter: Hot Restart" })
@@ -169,5 +252,6 @@ return {
         vim.keymap.set("n", "<leader>fls", ":FlutterSuper<CR>", { desc = "Flutter: Super" })
         vim.keymap.set("n", "<leader>flw", ":FlutterWidgetInspector<CR>", { desc = "Flutter: Widget Inspector" })
         vim.keymap.set("n", "<leader>flc", ":FlutterClearLogs<CR>", { desc = "Flutter: Clear Logs" })
+        vim.keymap.set("n", "<leader>flv", ":Telescope flutter fvm<CR>", { desc = "Flutter: FVM version" })
     end,
 }
