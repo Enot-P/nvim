@@ -13,6 +13,7 @@ return {
         dependencies = {
             { "williamboman/mason.nvim", config = true },
             "williamboman/mason-lspconfig.nvim",
+            "WhoIsSethDaniel/mason-tool-installer.nvim",
             "j-hui/fidget.nvim",
         },
         config = function()
@@ -61,6 +62,18 @@ return {
                         },
                     },
                 },
+                gopls = {
+                    settings = {
+                        gopls = {
+                            gofumpt = true,
+                            staticcheck = true,
+                            analyses = {
+                                unusedparams = true,
+                                shadow = true,
+                            },
+                        },
+                    },
+                },
                 yamlls = {},
                 jsonls = {},
                 lemminx = {},
@@ -78,6 +91,20 @@ return {
                 autotools_ls = {},
             }
             require("mason").setup()
+            local ok_tool_installer, mason_tool_installer = pcall(require, "mason-tool-installer")
+            if ok_tool_installer then
+                mason_tool_installer.setup({
+                    ensure_installed = {
+                        "goimports",
+                        "gofumpt",
+                        "golangci-lint",
+                        "delve",
+                    },
+                    run_on_start = true,
+                    start_delay = 3000,
+                    debounce_hours = 12,
+                })
+            end
             require("mason-lspconfig").setup({
                 ensure_installed = vim.tbl_keys(servers),
                 handlers = {

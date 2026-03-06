@@ -5,6 +5,7 @@ return {
         local conform = require("conform")
         conform.setup({
             formatters_by_ft = {
+                go = { "gofumpt", "goimports", "gofmt" },
                 sql = { "pg_format" },
             },
             format_on_save = {

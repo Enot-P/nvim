@@ -4,11 +4,31 @@ return {
         lazy = false,
         build = ':TSUpdate',
         config = function()
+            -- Hyprland (hyprlang) не всегда входит в дефолтный набор парсеров nvim-treesitter,
+            -- поэтому регистрируем парсер вручную.
+            local ok_parsers, parsers = pcall(require, "nvim-treesitter.parsers")
+            if ok_parsers and type(parsers.get_parser_configs) == "function" then
+                local parser_configs = parsers.get_parser_configs()
+                parser_configs.hyprlang = parser_configs.hyprlang
+                    or {
+                        install_info = {
+                            url = "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang",
+                            files = { "src/parser.c" },
+                            branch = "master",
+                        },
+                        filetype = "hyprlang",
+                    }
+            end
+
             -- 1. Список языков для Flutter-разработки
             local languages = {
                 'lua',
                 'make',
                 'dart',
+                'go',
+                'gomod',
+                'gosum',
+                'gowork',
                 'yaml',
                 'json',
                 'xml',
@@ -38,7 +58,10 @@ return {
                 pattern = languages,
                 callback = function()
                     -- Подсветка синтаксиса (от Neovim)
-                    vim.treesitter.start()
+                    local ok_start = pcall(vim.treesitter.start)
+                    if not ok_start then
+                        return
+                    end
 
                     -- Фолдинг полностью отключен (конфликт с nvim-dbee)
                     -- используем ручной фолдинг вместо этого

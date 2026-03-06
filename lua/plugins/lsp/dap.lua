@@ -3,6 +3,7 @@ return {
     "mfussenegger/nvim-dap",
     dependencies = {
       "williamboman/mason.nvim",
+      "leoluz/nvim-dap-go",
     },
     -- enabled = vim.fn.argv(0) ~= "leetcode.nvim", -- Не грузится в leet
     config = function()
@@ -107,6 +108,18 @@ return {
       vim.keymap.set("n", "<leader>dC", function()
         dap.clear_breakpoints()
       end, { desc = "Debug: Clear Breakpoints" })
+
+      -- Go DAP adapter and configurations
+      local ok_dap_go, dap_go = pcall(require, "dap-go")
+      if ok_dap_go then
+        dap_go.setup()
+        vim.keymap.set("n", "<leader>dgt", function()
+          dap_go.debug_test()
+        end, { desc = "Debug Go: nearest test" })
+        vim.keymap.set("n", "<leader>dgl", function()
+          dap_go.debug_last()
+        end, { desc = "Debug Go: last test" })
+      end
     end,
   },
   {
@@ -251,6 +264,7 @@ return {
       -- Автоматическая установка адаптеров через Mason
       ensure_installed = {
         -- dart-debug-adapter уже установлен через mason-tool-installer
+        "delve",
       },
       automatic_installation = true,
     },
