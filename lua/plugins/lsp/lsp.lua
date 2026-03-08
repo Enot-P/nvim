@@ -42,7 +42,7 @@ return {
                         })
                         vim.cmd("w") -- Сохраняем файл
                     end, { desc = "Format and Save" })
-                    map("<leader>d", vim.diagnostic.open_float, "Open Diagnostic Float")
+                    map("<leader>gj", vim.diagnostic.open_float, "Open Diagnostic Float")
                     map("[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
                     map("]d", vim.diagnostic.goto_next, "Next Diagnostic")
                     map("<leader>q", vim.diagnostic.setqflist, "Open Diagnostic Quickfix")

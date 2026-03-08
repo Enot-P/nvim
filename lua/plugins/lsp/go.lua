@@ -27,6 +27,14 @@ return {
             vim.keymap.set("n", "<leader>goe", "<cmd>GoIfErr<CR>", { desc = "Go: обернуть в if err" })
             vim.keymap.set("n", "<leader>goi", "<cmd>GoImpl<CR>", { desc = "Go: сгенерировать реализацию интерфейса" })
             vim.keymap.set("n", "<leader>got", "<cmd>GoTestsAll<CR>", { desc = "Go: сгенерировать тесты для файла" })
+            vim.keymap.set("n", "<leader>gor", function()
+                local file = vim.fn.expand("%:p")
+                local cmd = { "go", "run", file }
+                Snacks.terminal(cmd, {
+                    auto_close = false,
+                    title = "go run " .. vim.fn.expand("%"),
+                })
+            end, { desc = "Побыстрому запустить" })
         end,
     },
 }

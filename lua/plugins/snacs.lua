@@ -6,6 +6,30 @@ return {
         ---@type snacks.Config
         opts = {
             bigfile = { enabled = true },
+            terminal = {
+                win = {
+                    position = "float",
+                    border   = "rounded",
+                    backdrop = 70,
+                    width    = 0.85,
+                    height   = 0.80,
+                    zindex   = 60,
+                },
+
+                stack = true,
+                bo = { filetype = "snacks_terminal" },
+                keys = {
+                    q = "hide",
+                    ["<esc>"] = { "<esc>", mode = "t" }, -- пример
+                },
+            },
+            styles = {
+                float = {
+                    backdrop = 65,
+                    border   = "rounded",
+                    zindex   = 50,
+                },
+            },
             dashboard = {
                 enabled = true,
                 preset = {
@@ -41,11 +65,11 @@ return {
                 sources = {
                     explorer = {
                         auto_close = true,
-                        replace_netrw = true, -- Replace netrw with the snacks explorer
-                        trash = true,         -- Use the system trash when deleting files,
+                        replace_netrw = true,
+                        trash = true,
                         layout = "right",
                         hidden = true,
-                        git_untracked = false, -- Убирает подсветку текста
+                        git_untracked = false,
                     },
                 },
             },
@@ -68,11 +92,9 @@ return {
                 end,
                 desc = "Генерировать Bloc/Cubit",
             },
-            -- Генерация экспорт файлов
             {
                 "<leader>dge",
                 function()
-                    -- Согласно документации: Snacks.picker.get(opts) возвращает список активных пикеров
                     local pickers = Snacks.picker.get()
                     local active_picker = pickers[1] -- Берем самый верхний/активный
 
