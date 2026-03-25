@@ -9,6 +9,10 @@
       "rev": "d1e7c7c45d45c6b6a25427bf62db4db73b03ff3d",
       "src": "https://github.com/saghen/blink.nvim"
     },
+    "friendly-snippets": {
+      "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
+      "src": "https://github.com/rafamadriz/friendly-snippets"
+    },
     "lualine.nvim": {
       "rev": "47f91c416daef12db467145e16bed5bbfe00add8",
       "src": "https://github.com/nvim-lualine/lualine.nvim"

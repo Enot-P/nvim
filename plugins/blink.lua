@@ -1,5 +1,6 @@
 vim.pack.add {
-    { src = 'https://github.com/saghen/blink.cmp', version = vim.version.range('^1'), build = 'cargo build --release', },
+    { src = 'https://github.com/saghen/blink.cmp',            version = vim.version.range('^1'), build = 'cargo build --release', },
+    { src = 'https://github.com/rafamadriz/friendly-snippets' },
 }
 
 require('blink.cmp').setup({
@@ -18,7 +19,22 @@ require('blink.cmp').setup({
         nerd_font_variant = 'mono'
     },
     completion = {
-        documentation = { auto_show = false }
+        accept = {
+            auto_brackets = { enabled = true },
+        },
+        documentation = { auto_show = true },
+        ghost_text = { enabled = true },
+
+        menu = {
+            draw = {
+                treesitter = { 'lsp' },
+                columns = {
+                    { 'kind_icon' },
+                    { 'label',      'label_description', gap = 1 },
+                    { 'source_name' },
+                },
+            },
+        },
     },
     sources = {
         default = { 'lsp', 'path', 'snippets', 'buffer' },
