@@ -30,12 +30,12 @@ local move = require("nvim-treesitter-textobjects.move")
 
 -- select (работает в visual и operator-pending режимах)
 for lhs, query in pairs({
-    ["af"] = "@function.outer", -- вся функция
-    ["if"] = "@function.inner", -- тело функции
-    ["ac"] = "@class.outer",    -- весь класс
-    ["ic"] = "@class.inner",    -- тело класса
-    ["aa"] = "@parameter.outer",-- аргумент с запятой
-    ["ia"] = "@parameter.inner",-- только значение аргумента
+    ["af"] = "@function.outer",  -- вся функция
+    ["if"] = "@function.inner",  -- тело функции
+    ["ac"] = "@class.outer",     -- весь класс
+    ["ic"] = "@class.inner",     -- тело класса
+    ["aa"] = "@parameter.outer", -- аргумент с запятой
+    ["ia"] = "@parameter.inner", -- только значение аргумента
 }) do
     vim.keymap.set({ "x", "o" }, lhs, function()
         select.select_textobject(query, "textobjects")
