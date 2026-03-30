@@ -1,8 +1,6 @@
-print("hello")
-require("lua.autocmds")
-require("lua.keybinds")
-require("lua.options")
-require( "lua.lsp")
-
+require("autocmds")
+require("keybinds")
+require("options")
+require("lsp")
 
 require("plugins.init")

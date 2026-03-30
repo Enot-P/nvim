@@ -1,5 +1,7 @@
+require("plugins.colorscheme")
 require("plugins.lualine")
 require("plugins.mason")
-require("plugins.colorscheme")
 require("plugins.blink")
 require("plugins.tressiter")
+require("plugins.which-key")
+require("plugins.autopairs")
