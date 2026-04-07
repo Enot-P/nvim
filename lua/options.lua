@@ -1,37 +1,142 @@
-vim.opt.number = true             -- Отображает номер строки
-vim.opt.cursorline = true         -- Подсветка текущей строки
-vim.opt.relativenumber = true     -- Номерация идет относительно строки
-vim.opt.clipboard = "unnamedplus" -- Синхронизация для копирования
-vim.opt.autowrite = true          -- автосохранение при переключении буферов
-vim.opt.autowriteall = true       -- автосохранение при выходе
-vim.opt.inccommand =
-"split"                           -- включает предварительный просмотр изменений в реальном времени для команд вроде поиска (/) или замены (:s)
-vim.opt.splitright = true         -- открывать новый буффер справа при vsplit
-vim.opt.splitbelow = true         -- открывать новый буффер снизу при hsplit
-vim.opt.isfname:append("@-@")     -- позволяет Vim воспринимать строки вроде "user@-@domain" как единое имя файла
-vim.opt.mouse = "a"               -- Поддержка мыши во всех режимах
-vim.opt.smoothscroll = true       -- Улучшение скролла
-vim.opt.scrolloff = 8             -- Для улучшения скролла
-vim.wo.foldlevel = 99             -- Всё будет раскрыто при открытии
+-- ============================================================================
+-- UI / ОТОБРАЖЕНИЕ
+-- ============================================================================
 
-vim.opt.swapfile = false          -- Теперь не будет свапфайлов, которые создаются в период изменения файла до его сохраннения
--- vim.opt.updatetime = 50 -- Быстрая время обновы для автокомплитов и т.д.
+vim.opt.number = true -- абсолютные номера строк
+vim.opt.relativenumber = true -- относительные номера
+vim.opt.cursorline = true -- подсветка текущей строки
+vim.opt.wrap = false -- не переносить длинные строки
 
--- Настройка отступов
-vim.opt.shiftwidth = 4
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true   -- Все табы превращаются в пробелы
-vim.opt.smartindent = true -- умный indent при переносе строк
-vim.opt.smarttab = true    -- Если нажать на пробел в начале строки, то вставится табуляция для переноса строк согласно синтаксису
-vim.opt.cindent = true     -- Табы будут вставляться в C-lang стиле
-vim.opt.wrap = false
+vim.opt.scrolloff = 8 -- отступ сверху/снизу при скролле
+vim.opt.sidescrolloff = 10 -- отступ слева/справа
 
--- Позволит сохранить undo буффер между сессиями
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
-vim.opt.undofile = true
+vim.opt.signcolumn = "yes" -- всегда показывать колонку знаков (LSP/git)
+vim.opt.colorcolumn = "100" -- вертикальная линия на 100 символах
+vim.opt.showmatch = true -- подсветка парных скобок
 
-vim.o.exrc = true -- Разрешает использование локальных файлов .vimrc в директориях проектов
+vim.opt.cmdheight = 1 -- высота командной строки
+vim.opt.pumheight = 10 -- высота popup меню
+vim.opt.pumblend = 10 -- прозрачность popup
+vim.opt.winblend = 0 -- прозрачность floating окон
+
+vim.opt.showmode = false -- режим не показывается (для statusline)
+
+vim.opt.fillchars = { eob = " " } -- убрать ~ на пустых строках
+
+-- ============================================================================
+-- СКРОЛЛ / МЫШЬ
+-- ============================================================================
+
+vim.opt.mouse = "a" -- мышь во всех режимах
+vim.opt.smoothscroll = true -- плавный скролл (у тебя было)
+
+-- ============================================================================
+-- ОТСТУПЫ / ТАБЫ
+-- ============================================================================
+
+vim.opt.tabstop = 4 -- ширина таба
+vim.opt.shiftwidth = 4 -- ширина отступа
+vim.opt.softtabstop = 4 -- поведение Tab/Backspace
+vim.opt.expandtab = true -- табы = пробелы
+
+vim.opt.smartindent = true -- умный авто-отступ
+vim.opt.autoindent = true -- копировать отступ строки
+vim.opt.smarttab = true -- Tab в начале строки умный
+vim.opt.cindent = true -- C-style отступы
+
+-- ============================================================================
+-- ПОИСК
+-- ============================================================================
+
+vim.opt.ignorecase = true -- поиск без учета регистра
+vim.opt.smartcase = true -- если есть заглавные — учитывать регистр
+vim.opt.hlsearch = true -- подсветка результатов
+vim.opt.incsearch = true -- поиск "на лету"
+
+-- ============================================================================
+-- ФАЙЛЫ / СОХРАНЕНИЕ
+-- ============================================================================
+
+vim.opt.swapfile = false -- отключить swap файлы
+vim.opt.backup = false -- отключить backup
+vim.opt.writebackup = false -- не создавать backup при записи
+
+vim.opt.undofile = true -- сохранять undo между сессиями
+vim.opt.undodir = vim.fn.expand("~/.vim/undodir") -- папка undo
+
+vim.opt.autowrite = true -- автосохранение при переключении
+vim.opt.autowriteall = true -- автосохранение при выходе
+vim.opt.autoread = true -- перечитывать файл при изменении извне
+
+vim.opt.updatetime = 300 -- задержка для CursorHold/LSP
+vim.opt.timeoutlen = 500 -- таймаут для маппингов
+vim.opt.ttimeoutlen = 0 -- быстрые keycode события
+
+-- создать папку для undo если нет
+local undodir = vim.fn.expand("~/.vim/undodir")
+if vim.fn.isdirectory(undodir) == 0 then
+  vim.fn.mkdir(undodir, "p")
+end
+
+-- ============================================================================
+-- БУФЕРЫ / ПОВЕДЕНИЕ
+-- ============================================================================
+
+vim.opt.hidden = true -- можно скрывать буферы без сохранения
+vim.opt.errorbells = false -- отключить звуки ошибок
+
+vim.opt.backspace = "indent,eol,start" -- нормальный backspace
+vim.opt.autochdir = false -- не менять cwd автоматически
+
+vim.opt.iskeyword:append("-") -- считать - частью слова
+vim.opt.path:append("**") -- поиск по подпапкам
+
+vim.opt.selection = "inclusive" -- выделение включает последний символ
+vim.opt.clipboard:append("unnamedplus") -- системный буфер
+
+vim.opt.modifiable = true -- буфер можно редактировать
+vim.opt.encoding = "utf-8" -- кодировка
+
+-- ============================================================================
+-- SPLIT / ОКНА
+-- ============================================================================
+
+vim.opt.splitright = true -- vsplit вправо
+vim.opt.splitbelow = true -- split вниз
+
+-- ============================================================================
+-- COMPLETION
+-- ============================================================================
+
+vim.opt.completeopt = "menuone,noinsert,noselect" -- поведение автокомплита
+vim.opt.wildmenu = true -- улучшенный cmd completion
+vim.opt.wildmode = "longest:full,full" -- логика Tab completion
+
+-- ============================================================================
+-- FOLDING (treesitter)
+-- ============================================================================
+
+vim.opt.foldmethod = "expr" -- folding через выражение
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- treesitter folding
+vim.opt.foldlevel = 99 -- всё раскрыто по умолчанию
+
+-- ============================================================================
+-- ПРОИЗВОДИТЕЛЬНОСТЬ
+-- ============================================================================
+
+vim.opt.lazyredraw = true -- не перерисовывать при макросах
+vim.opt.synmaxcol = 300 -- лимит подсветки строк
+vim.opt.redrawtime = 10000 -- время на рендер
+vim.opt.maxmempattern = 20000 -- лимит regex памяти
+
+-- ============================================================================
+-- ДОПОЛНИТЕЛЬНО
+-- ============================================================================
+
+vim.opt.inccommand = "split" -- предпросмотр замены
+vim.opt.diffopt:append("linematch:60") -- улучшенный diff
+
+vim.o.exrc = true -- локальные .nvim.lua
+
+-- курсор (визуально приятный)
+vim.opt.guicursor = "n-v-c:block,i-ci-ve:block,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250"

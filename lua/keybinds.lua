@@ -17,14 +17,14 @@ vim.keymap.set("n", "N", "Nzzzv")
 vim.keymap.set("v", "<", "<gv", opts)
 vim.keymap.set("v", ">", ">gv", opts)
 
-vim.keymap.set("v", "p", '"_dP', opts)        -- При вставке буффер обмена не заменяется
+vim.keymap.set("v", "p", '"_dP', opts) -- При вставке буффер обмена не заменяется
 vim.keymap.set({ "v" }, "<leader>d", [["_d]]) -- Удаление без вставки в буффео обмена
-vim.keymap.set("n", "x", '"_x', opts)         -- Посимвольное удаление также ничего не делает
+vim.keymap.set("n", "x", '"_x', opts) -- Посимвольное удаление также ничего не делает
 
 -- глобальная замена слова под курсором (в рамках файла)
 -- vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>//g<Left><Left>]], { desc = "Replace word under cursor" })
 
-vim.keymap.set({ "i" }, "<C-c>", "<Esc>")                                              -- Универсальный выход из любых режимов
+vim.keymap.set({ "i" }, "<C-c>", "<Esc>") -- Универсальный выход из любых режимов
 vim.keymap.set("n", "<C-c>", ":nohl<CR>", { desc = "Clear search hl", silent = true }) -- Уберет выделения, которые идут при приске через /
 
 -- split комманды
@@ -59,15 +59,15 @@ vim.keymap.set("n", "<C-Return>", "o<Esc>", { desc = "Новая строка с
 vim.keymap.set("n", "<C-;>", "A;<Esc>", { desc = "Точка с запятой в конце" })
 
 vim.keymap.set("n", "gl", function()
-    vim.diagnostic.open_float(nil, {
-        scope = "line",
-        focus = false,
-        close_events = {
-            "CursorMoved",
-            "CursorMovedI",
-            "BufHidden",
-            "BufLeave",
-            "InsertEnter",
-        },
-    })
+  vim.diagnostic.open_float(nil, {
+    scope = "line",
+    focus = false,
+    close_events = {
+      "CursorMoved",
+      "CursorMovedI",
+      "BufHidden",
+      "BufLeave",
+      "InsertEnter",
+    },
+  })
 end, { desc = "Show line diagnostic" })
