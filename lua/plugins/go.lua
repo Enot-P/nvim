@@ -11,6 +11,7 @@ require("go").setup({
 	lsp_keymaps = false,
 	lsp_codelens = true,
 	lsp_inlay_hints = { enable = false },
+	lsp_diag_update_in_insert = true,
 
 	-- формат
 	lsp_document_formatting = true,
@@ -35,10 +36,13 @@ require("go").setup({
 	run_in_floaterm = true,
 
 	-- snippets
-	luasnip = true,
+	luasnip = false,
 
 	-- 🧠 кастомизация gopls БЕЗ поломки дефолта
 	lsp_cfg = {
+		flags = {
+			debounce_text_changes = 150,
+		},
 		settings = {
 			gopls = {
 				gofumpt = true,
@@ -89,9 +93,10 @@ vim.api.nvim_create_autocmd("FileType", {
 			vim.keymap.set("n", lhs, rhs, { buffer = true, desc = desc })
 		end
 		-- Run/Test
-		map("<leader>r", "<cmd>GoRun<cr>", "Run")
-		map("<leader>t", "<cmd>GoTest<cr>", "Test")
-		map("<leader>T", "<cmd>GoTestFile<cr>", "Test file")
+		map("<leader>gorr", "<cmd>GoRun<cr>", "Run")
+		map("<leader>gor", "<cmd>terminal cd %:p:h && go run . -race<cr>", "Run with race")
+		map("<leader>got", "<cmd>GoTest<cr>", "Test")
+		map("<leader>goT", "<cmd>GoTestFile<cr>", "Test file")
 
 		-- Codegen
 		map("<leader>fs", "<cmd>GoFillStruct<cr>", "Fill struct")
@@ -123,5 +128,22 @@ vim.api.nvim_create_autocmd("FileType", {
 		map("<leader>du", function()
 			dapui.toggle()
 		end, "DAP UI")
+	end,
+})
+
+-- Надежный format-on-save для Go (через gopls, если доступен).
+vim.api.nvim_create_autocmd("BufWritePre", {
+	pattern = { "*.go", "*.mod", "*.sum", "*.work" },
+	callback = function(args)
+		if vim.bo[args.buf].buftype ~= "" or not vim.bo[args.buf].modifiable then
+			return
+		end
+		pcall(vim.lsp.buf.format, {
+			bufnr = args.buf,
+			timeout_ms = 2000,
+			filter = function(client)
+				return client.name == "gopls" or client.name == "efm"
+			end,
+		})
 	end,
 })

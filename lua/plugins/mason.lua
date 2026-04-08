@@ -35,7 +35,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	group = augroup,
 	pattern = {
 		"*.lua",
-		"*.go",
 		"*.json",
 		"*.sh",
 		"*.bash",
@@ -92,7 +91,7 @@ vim.diagnostic.config({
 		},
 	},
 	underline = true,
-	update_in_insert = false,
+	update_in_insert = true,
 	severity_sort = true,
 	float = {
 		border = "rounded",
@@ -191,13 +190,9 @@ do
 	local shellcheck = require("efmls-configs.linters.shellcheck")
 	local shfmt = require("efmls-configs.formatters.shfmt")
 
-	local go_revive = require("efmls-configs.linters.go_revive")
-	local gofumpt = require("efmls-configs.formatters.gofumpt")
-
 	vim.lsp.config("efm", {
 		capabilities = capabilities,
 		filetypes = {
-			"go",
 			"json",
 			"jsonc",
 			"lua",
@@ -207,7 +202,6 @@ do
 		init_options = { documentFormatting = true },
 		settings = {
 			languages = {
-				go = { gofumpt, go_revive },
 				json = { eslint_d, fixjson },
 				jsonc = { eslint_d, fixjson },
 				lua = { luacheck, stylua },
