@@ -25,6 +25,18 @@ vim.keymap.set("n", "<A-.>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next buff
 vim.keymap.set("n", "<A-<>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer in bufferline" })
 vim.keymap.set("n", "<A->>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next buffer in bufferline" })
 
+-- Закрыть все кроме текущего
+vim.keymap.set("n", "<leader>bdo", "<cmd>BufferLineCloseOthers<CR>", { desc = "Close all other buffers" })
+-- Закрыть все слева
+vim.keymap.set("n", "<leader>bdl", "<cmd>BufferLineCloseLeft<CR>", { desc = "Close buffers to the left" })
+-- Закрыть все справа
+vim.keymap.set("n", "<leader>bdr", "<cmd>BufferLineCloseRight<CR>", { desc = "Close buffers to the right" })
+-- Переместить буффер в новый tab
+vim.keymap.set("n", "<leader>bm", "<cmd>ScopeMoveBuf<CR>", { desc = "Move buffer to tab" })
+
 -- Переключение tabpage через Scope.
 vim.keymap.set("n", "<Tab>", "<cmd>tabnext<CR>", { desc = "Next tab (scope)" })
 vim.keymap.set("n", "<S-Tab>", "<cmd>tabprevious<CR>", { desc = "Previous tab (scope)" })
+
+vim.keymap.set("n", "<leader>btc", "<cmd>tabnew<CR>", { desc = "Next tab (scope)" })
+vim.keymap.set("n", "<leader>btd", "<cmd>tabclose<CR>", { desc = "Close tab" })

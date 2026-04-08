@@ -1,3 +1,11 @@
+-- IntelliJ / Kulala HTTP Client: .http и .rest → filetypes http / rest
+vim.filetype.add({
+	extension = {
+		http = "http",
+		rest = "rest",
+	},
+})
+
 -- Автоматическая очистка лог-файла LSP при старте
 local lsp_log_path = vim.fn.stdpath("log") .. "/lsp.log"
 local log_file = io.open(lsp_log_path, "r")

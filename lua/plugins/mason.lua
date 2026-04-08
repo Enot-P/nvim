@@ -19,6 +19,16 @@ require("mason-tool-installer").setup({
 		"gopls",
 		"delve",
 		"golangci-lint",
+		-- efm (efmls-configs checkhealth): линтеры/форматтеры должны быть в PATH (= mason/bin)
+		-- "luacheck",
+		"shellcheck",
+		"shfmt",
+		"prettierd",
+		"eslint_d",
+		"fixjson",
+		-- Kulala: форматирование JS/HTML в ответах; grug-far: движок ast-grep
+		"prettier",
+		"ast-grep",
 	},
 })
 
@@ -30,7 +40,26 @@ local augroup = vim.api.nvim_create_augroup("UserConfig", { clear = true })
 local blink_ok, blink = pcall(require, "blink.cmp")
 local capabilities = blink_ok and blink.get_lsp_capabilities() or vim.lsp.protocol.make_client_capabilities()
 
--- Format on save (ONLY real file buffers, ONLY when efm is attached)
+---@param bufnr integer
+---@return fun(client: vim.lsp.Client): boolean|nil
+local function formatting_filter(bufnr)
+	local ft = vim.bo[bufnr].filetype
+	if ft == "http" or ft == "rest" then
+		return function(c)
+			return c.name == "kulala"
+		end
+	end
+	for _, c in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+		if c:supports_method("textDocument/formatting") and c.name == "efm" then
+			return function(cl)
+				return cl.name == "efm"
+			end
+		end
+	end
+	return nil
+end
+
+-- Format on save (реальные файлы; efm или kulala)
 vim.api.nvim_create_autocmd("BufWritePre", {
 	group = augroup,
 	pattern = {
@@ -39,6 +68,8 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		"*.sh",
 		"*.bash",
 		"*.zsh",
+		"*.http",
+		"*.rest",
 	},
 	callback = function(args)
 		if vim.bo[args.buf].buftype ~= "" then
@@ -50,14 +81,11 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		if vim.api.nvim_buf_get_name(args.buf) == "" then
 			return
 		end
-		local has_efm = false
 		local has_any_formatter = false
 		for _, c in ipairs(vim.lsp.get_clients({ bufnr = args.buf })) do
 			if c:supports_method("textDocument/formatting") then
 				has_any_formatter = true
-				if c.name == "efm" then
-					has_efm = true
-				end
+				break
 			end
 		end
 		if not has_any_formatter then
@@ -65,10 +93,8 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		end
 		pcall(vim.lsp.buf.format, {
 			bufnr = args.buf,
-			timeout_ms = 2000,
-			filter = has_efm and function(c)
-				return c.name == "efm"
-			end or nil,
+			timeout_ms = 5000,
+			filter = formatting_filter(args.buf),
 		})
 	end,
 })
