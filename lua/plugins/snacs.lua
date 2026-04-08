@@ -295,7 +295,6 @@ map({ "n", "t" }, "[[", function()
   snacks.words.jump(-vim.v.count1)
 end, { desc = "Prev Reference" })
 
--- ── Toggle mappings (через VeryLazy) ─────────────────────────────────────────
 vim.api.nvim_create_autocmd("User", {
   pattern = "VeryLazy",
   callback = function()
@@ -322,7 +321,6 @@ vim.api.nvim_create_autocmd("User", {
     snacks.toggle.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map("<leader>uc")
     snacks.toggle.treesitter():map("<leader>uT")
     snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
-    snacks.toggle.inlay_hints():map("<leader>uh")
     snacks.toggle.indent():map("<leader>ug")
     snacks.toggle.dim():map("<leader>uD")
   end,

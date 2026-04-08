@@ -52,22 +52,32 @@ vim.keymap.set("n", "<leader>bx", "<cmd>bdelete<cr>", { desc = "remove buffer" }
 
 -- Сохранение по Ctrl+S во всех режимах (:update — сохраняет только при изменениях)
 vim.keymap.set("n", "<C-s>", ":update<CR>", { silent = true, desc = "Сохранить файл" })
-vim.keymap.set("i", "<C-s>", "<Esc>:update<CR>a", { silent = true, desc = "Сохранить и вернуться в insert" })
-vim.keymap.set("v", "<C-s>", "<Esc>:update<CR>gv", { silent = true, desc = "Сохранить и сохранить выделение" })
+vim.keymap.set(
+	"i",
+	"<C-s>",
+	"<Esc>:update<CR>a",
+	{ silent = true, desc = "Сохранить и вернуться в insert" }
+)
+vim.keymap.set(
+	"v",
+	"<C-s>",
+	"<Esc>:update<CR>gv",
+	{ silent = true, desc = "Сохранить и сохранить выделение" }
+)
 
 vim.keymap.set("n", "<C-Return>", "o<Esc>", { desc = "Новая строка снизу" })
 vim.keymap.set("n", "<C-;>", "A;<Esc>", { desc = "Точка с запятой в конце" })
 
 vim.keymap.set("n", "gl", function()
-  vim.diagnostic.open_float(nil, {
-    scope = "line",
-    focus = false,
-    close_events = {
-      "CursorMoved",
-      "CursorMovedI",
-      "BufHidden",
-      "BufLeave",
-      "InsertEnter",
-    },
-  })
+	vim.diagnostic.open_float(nil, {
+		scope = "line",
+		focus = false,
+		close_events = {
+			"CursorMoved",
+			"CursorMovedI",
+			"BufHidden",
+			"BufLeave",
+			"InsertEnter",
+		},
+	})
 end, { desc = "Show line diagnostic" })

@@ -137,6 +137,3 @@ vim.opt.inccommand = "split" -- предпросмотр замены
 vim.opt.diffopt:append("linematch:60") -- улучшенный diff
 
 vim.o.exrc = true -- локальные .nvim.lua
-
--- курсор (визуально приятный)
-vim.opt.guicursor = "n-v-c:block,i-ci-ve:block,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250"

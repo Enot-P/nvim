@@ -13,6 +13,10 @@
       "rev": "0540d52ba64d0ec7677ec1ef14b3624c95a2aaba",
       "src": "https://github.com/tomasky/bookmarks.nvim"
     },
+    "efmls-configs-nvim": {
+      "rev": "0b0ca5462a0a9c1233cc8359e64741d7d49fbbe4",
+      "src": "https://github.com/creativenull/efmls-configs-nvim"
+    },
     "flash.nvim": {
       "rev": "fcea7ff883235d9024dc41e638f164a450c14ca2",
       "src": "https://github.com/folke/flash.nvim"
