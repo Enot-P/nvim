@@ -19,25 +19,33 @@ require("kulala").setup({
 	global_keymaps_prefix = "<leader>R",
 	kulala_keymaps_prefix = "",
 	ui = {
-		-- Контраст: метод / URL / версия не должны сливаться в один «синий» (как у @function + @string.special).
+		-- Без summary JSON в output-буфере парсится чище (InspectTree без массы ERROR до body).
+		show_request_summary = false,
+		-- icons = {
+		-- 	-- Более нейтральные группы для summary-строки в окне ответа.
+		-- 	textHighlight = "Comment",
+		-- 	loadingHighlight = "Comment",
+		-- 	doneHighlight = "DiagnosticOk",
+		-- 	errorHighlight = "DiagnosticError",
+		-- },
+		-- Явно задаем цвета, чтобы группы Kulala не сливались в один оттенок.
 		syntax_hl = {
-			["@punctuation.bracket.kulala_http"] = "@punctuation.bracket",
-			["@character.special.kulala_http"] = "@character.special",
-			["@operator.kulala_http"] = "@operator",
-			["@variable.kulala_http"] = "@variable",
-			["@function.method.kulala_http"] = "@keyword",
-			["@string.special.url.kulala_http"] = "@string",
-			["@string.special.kulala_http"] = "@character.special",
-			["@constant.kulala_http"] = "@constant",
-			["@number.kulala_http"] = "@number",
-			["@comment.kulala_http"] = "@comment",
-			["@redirect_path.kulala_http"] = "@markup.link",
-			["@external_body_path.kulala_http"] = "@string.special",
-			["@query_param.name.kulala_http"] = "@keyword",
-			["@query_param.value.kulala_http"] = "@string",
-			["@form_param_name.kulala_http"] = "@keyword",
-			["@form_param_value.kulala_http"] = "@string",
+			["@function.method.kulala_http"] = { fg = "#e5c07b", bold = true },
+			["@string.special.url.kulala_http"] = { fg = "#61afef", underline = true },
+			["@variable.kulala_http"] = { fg = "#98c379" },
+			["@character.special.kulala_http"] = { fg = "#c678dd" },
+			["@string.special.kulala_http"] = { fg = "#56b6c2" },
+			["@constant.kulala_http"] = { fg = "#d19a66" },
+			["@number.kulala_http"] = { fg = "#d19a66" },
+			["@operator.kulala_http"] = { fg = "#abb2bf" },
+			["@punctuation.bracket.kulala_http"] = { fg = "#abb2bf" },
+			["@query_param.name.kulala_http"] = { fg = "#e06c75" },
+			["@query_param.value.kulala_http"] = { fg = "#98c379" },
+			["@form_param_name.kulala_http"] = { fg = "#e06c75" },
+			["@form_param_value.kulala_http"] = { fg = "#98c379" },
+			["@redirect_path.kulala_http"] = { fg = "#56b6c2", underline = true },
+			["@external_body_path.kulala_http"] = { fg = "#56b6c2", italic = true },
+			["@comment.kulala_http"] = { fg = "#7f848e", italic = true },
 		},
 	},
-	-- Форматтер Kulala при невалидном методе (например GT вместо GET) может подставить GET, оставив «GT» в URL — см. formatter.lua request().
 })

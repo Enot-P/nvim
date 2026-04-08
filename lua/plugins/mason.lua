@@ -172,6 +172,12 @@ local function lsp_on_attach(ev)
 
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 
+	-- CodeLens: Neovim 0.13+ рекомендует enable() вместо refresh({bufnr=...}).
+	-- Включаем только для gopls, чтобы не менять поведение остальных LSP.
+	if client.name == "gopls" and client:supports_method("textDocument/codeLens", bufnr) then
+		pcall(vim.lsp.codelens.enable, true, { bufnr = bufnr })
+	end
+
 	if client:supports_method("textDocument/codeAction", bufnr) then
 		vim.keymap.set("n", "<leader>oi", function()
 			vim.lsp.buf.code_action({

@@ -9,7 +9,7 @@ vim.pack.add({
 
 require("go").setup({
 	lsp_keymaps = false,
-	lsp_codelens = true,
+	lsp_codelens = false,
 	lsp_inlay_hints = { enable = false },
 	lsp_diag_update_in_insert = true,
 

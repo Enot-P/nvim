@@ -11,12 +11,7 @@ vim.pack.add({
 pcall(vim.cmd, "packadd nvim-treesitter")
 
 local function setup_treesitter()
-	local ok, ts = pcall(require, "nvim-treesitter.configs")
-	if not ok then
-		return false
-	end
-
-	ts.setup({
+	local opts = {
 		ensure_installed = {
 			"go",
 			"gomod",
@@ -46,9 +41,22 @@ local function setup_treesitter()
 			},
 		},
 		textobjects = { enable = true },
-	})
+	}
 
-	return true
+	-- nvim-treesitter поддерживает разные entrypoints в разных ветках/версиях.
+	local ok_configs, ts_configs = pcall(require, "nvim-treesitter.configs")
+	if ok_configs and ts_configs and type(ts_configs.setup) == "function" then
+		ts_configs.setup(opts)
+		return true
+	end
+
+	local ok_main, ts_main = pcall(require, "nvim-treesitter")
+	if ok_main and ts_main and type(ts_main.setup) == "function" then
+		ts_main.setup(opts)
+		return true
+	end
+
+	return false
 end
 
 if not setup_treesitter() then
@@ -70,5 +78,14 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.schedule(function()
 			pcall(vim.treesitter.start, args.buf)
 		end)
+	end,
+})
+
+-- Go: явный старт парсера как fallback, если модульный setup недоступен/отложен.
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("treesitter_go_start", { clear = true }),
+	pattern = { "go", "gomod", "gosum", "gowork", "gotmpl" },
+	callback = function(args)
+		pcall(vim.treesitter.start, args.buf)
 	end,
 })
