@@ -1,0 +1,31 @@
+{
+  "Error wrap": {
+    "prefix": "erw",
+    "body": [
+      "if err != nil {",
+      "\treturn fmt.Errorf(\"${1:msg}: %w\", err)",
+      "}"
+    ]
+  },
+  "Context arg": {
+    "prefix": "ctx",
+    "body": [
+      "ctx context.Context"
+    ]
+  },
+  "Interface method": {
+    "prefix": "im",
+    "body": [
+      "${1:MethodName}(${2:arg} ${3:Type}) (${4:ReturnType}, error)"
+    ]
+  },
+  "If err return": {
+    "prefix": "iferr",
+    "body": [
+      "if err != nil {",
+      "\t$0",
+      "\treturn",
+      "}"
+    ]
+  }
+}

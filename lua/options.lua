@@ -75,7 +75,7 @@ vim.opt.ttimeoutlen = 0 -- быстрые keycode события
 -- создать папку для undo если нет
 local undodir = vim.fn.expand("~/.vim/undodir")
 if vim.fn.isdirectory(undodir) == 0 then
-  vim.fn.mkdir(undodir, "p")
+	vim.fn.mkdir(undodir, "p")
 end
 
 -- ============================================================================
@@ -92,8 +92,8 @@ vim.opt.iskeyword:append("-") -- считать - частью слова
 vim.opt.path:append("**") -- поиск по подпапкам
 
 vim.opt.selection = "inclusive" -- выделение включает последний символ
-vim.opt.clipboard:append("unnamedplus") -- системный буфер
 
+vim.opt.clipboard = "unnamedplus"
 vim.opt.modifiable = true -- буфер можно редактировать
 vim.opt.encoding = "utf-8" -- кодировка
 

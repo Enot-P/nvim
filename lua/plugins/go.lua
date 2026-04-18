@@ -29,7 +29,7 @@ require("go").setup({
 
 	-- debug
 	dap_debug = true,
-	dap_debug_gui = false, -- ❗ мы сами управляем UI
+	dap_debug_gui = false,
 	dap_debug_vt = true,
 
 	-- UI
