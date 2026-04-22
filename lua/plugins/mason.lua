@@ -8,18 +8,18 @@ vim.pack.add({
 
 require("mason").setup()
 require("mason-lspconfig").setup({
-	ensure_installed = { "lua_ls", "bashls", "gopls", "efm" },
+	ensure_installed = { "lua_ls", "bashls", "gopls", "efm", "postgres_lsp" },
 	automatic_enable = false,
 })
 require("mason-tool-installer").setup({
-	ensure_installed = {
+ensure_installed = {
 		"lua_ls",
 		"efm",
 		"stylua",
 		"gopls",
 		"delve",
 		"golangci-lint",
-		-- efm (efmls-configs checkhealth): линтеры/форматтеры должны быть в PATH (= mason/bin)
+		-- efm (efmls-configs-nvim checkhealth): линтеры/форматтеры должны быть в PATH (= mason/bin)
 		-- "luacheck",
 		"shellcheck",
 		"shfmt",
@@ -29,6 +29,8 @@ require("mason-tool-installer").setup({
 		-- Kulala: форматирование JS/HTML в ответах; grug-far: движок ast-grep
 		"prettier",
 		"ast-grep",
+		-- SQL
+		"sqlfluff",
 	},
 })
 
@@ -70,6 +72,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		"*.zsh",
 		"*.http",
 		"*.rest",
+		"*.sql",
 	},
 	callback = function(args)
 		if vim.bo[args.buf].buftype ~= "" then
@@ -222,6 +225,12 @@ do
 	local shellcheck = require("efmls-configs.linters.shellcheck")
 	local shfmt = require("efmls-configs.formatters.shfmt")
 
+	local sqlfluff = require("efmls-configs.linters.sqlfluff")
+	local sqlfluff_fmt = {
+		formatCommand = "sqlfluff fix --dialect postgres -",
+		formatStdin = true,
+	}
+
 	vim.lsp.config("efm", {
 		capabilities = capabilities,
 		filetypes = {
@@ -230,6 +239,7 @@ do
 			"lua",
 			"markdown",
 			"sh",
+			"sql",
 		},
 		init_options = { documentFormatting = true },
 		settings = {
@@ -239,13 +249,35 @@ do
 				lua = { luacheck, stylua },
 				markdown = { prettier_d },
 				sh = { shellcheck, shfmt },
+				sql = { sqlfluff, sqlfluff_fmt },
 			},
 		},
 	})
 end
 
+vim.lsp.config("sqls", {
+	capabilities = capabilities,
+	filetypes = { "sql" },
+	settings = {
+		sqls = {
+			connections = {
+				{
+					driver = "postgresql",
+					dataSourceName = "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=postgres sslmode=disable",
+				},
+			},
+		},
+	},
+})
+
+vim.lsp.config("postgres_lsp", {
+	capabilities = capabilities,
+	filetypes = { "sql", "psql" },
+})
+
 vim.lsp.enable({
 	"lua_ls",
 	"bashls",
 	"efm",
+	"postgres_lsp",
 })
