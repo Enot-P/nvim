@@ -1,44 +1,35 @@
 vim.pack.add({
 	{ src = "https://github.com/ray-x/guihua.lua" },
 	{ src = "https://github.com/ray-x/go.nvim" },
-
 	{ src = "https://github.com/mfussenegger/nvim-dap" },
 	{ src = "https://github.com/rcarriga/nvim-dap-ui" },
 	{ src = "https://github.com/nvim-neotest/nvim-nio" },
 })
-
 require("go").setup({
 	lsp_keymaps = false,
 	lsp_codelens = false,
 	lsp_inlay_hints = { enable = false },
 	lsp_diag_update_in_insert = true,
-
 	-- формат
 	lsp_document_formatting = true,
 	lsp_format_on_save = true,
 	lsp_gofumpt = true,
-
 	-- lint
 	golangci_lint = {
 		default = "standard",
 	},
-
 	-- тесты
 	test_runner = "go",
 	verbose_tests = true,
-
 	-- debug
 	dap_debug = true,
 	dap_debug_gui = false,
 	dap_debug_vt = true,
-
-	-- UI
+	-- ui
 	run_in_floaterm = true,
-
 	-- snippets
 	luasnip = false,
-
-	-- 🧠 кастомизация gopls БЕЗ поломки дефолта
+	-- 🧠 кастомизация gopls без поломки дефолта
 	lsp_cfg = {
 		flags = {
 			debounce_text_changes = 150,
@@ -49,14 +40,12 @@ require("go").setup({
 				staticcheck = true,
 				usePlaceholders = true,
 				completeUnimported = true,
-
 				analyses = {
 					unusedparams = true,
 					shadow = true,
 					nilness = true,
 					unusedwrite = true,
 				},
-
 				hints = {
 					assignVariableTypes = true,
 					compositeLiteralFields = true,
@@ -68,48 +57,113 @@ require("go").setup({
 	},
 })
 
--- 🎮 DAP UI (ручной контроль)
+-- 🎮 dap ui (ручной контроль)
 local dap, dapui = require("dap"), require("dapui")
-
 dapui.setup()
-
 dap.listeners.after.event_initialized["dapui"] = function()
 	dapui.open()
 end
-
 dap.listeners.before.event_terminated["dapui"] = function()
 	dapui.close()
 end
-
 dap.listeners.before.event_exited["dapui"] = function()
 	dapui.close()
 end
 
--- 🎮 KEYMAPS
+-- ============================================================
+-- 🗄️  golang-migrate helpers
+-- ============================================================
+
+local function find_migrations_dir(callback)
+	local cwd = vim.fn.getcwd()
+
+	local found = vim.fs.find("migrations", {
+		path = cwd,
+		type = "directory",
+		limit = math.huge,
+	})
+
+	if #found == 0 then
+		local default = cwd .. "/migrations"
+		vim.fn.mkdir(default, "p")
+		callback(default)
+		return
+	end
+
+	if #found == 1 then
+		callback(found[1])
+		return
+	end
+
+	-- несколько папок — показываем выбор
+	Snacks.picker.select(found, {
+		prompt = "📁 Выбери папку migrations",
+		format = function(item)
+			return item:gsub("^" .. vim.pesc(cwd) .. "/", "")
+		end,
+	}, function(item)
+		if item then
+			callback(item)
+		end
+	end)
+end
+
+local function migrate_create()
+	Snacks.input({
+		prompt = "📦 Имя миграции (например: create_users_table)",
+		width = 60,
+	}, function(name)
+		if not name or name == "" then
+			return
+		end
+		name = name:gsub("%s+", "_"):lower()
+
+		find_migrations_dir(function(dir)
+			local cmd = string.format(
+				"migrate create -ext sql -dir %s -seq %s",
+				vim.fn.shellescape(dir),
+				vim.fn.shellescape(name)
+			)
+			local out = vim.fn.system(cmd)
+			if vim.v.shell_error ~= 0 then
+				vim.notify("migrate error:\n" .. out, vim.log.levels.ERROR)
+			else
+				vim.notify("✅ Миграция создана в " .. dir, vim.log.levels.INFO)
+				local up = vim.fn.glob(dir .. "/*_" .. name .. ".up.sql")
+				if up ~= "" then
+					vim.cmd("edit " .. up)
+				end
+			end
+		end)
+	end)
+end
+
+-- ============================================================
+-- 🎮 keymaps
+-- ============================================================
+
+vim.keymap.set("n", "<leader>gmc", migrate_create, { desc = "Migrate: create" })
+
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "go", "gomod" },
 	callback = function()
 		local map = function(lhs, rhs, desc)
 			vim.keymap.set("n", lhs, rhs, { buffer = true, desc = desc })
 		end
-		-- Run/Test
+		-- run/test
 		map("<leader>gorr", "<cmd>GoRun<cr>", "Run")
 		map("<leader>gor", "<cmd>terminal cd %:p:h && go run . -race<cr>", "Run with race")
 		map("<leader>got", "<cmd>GoTest<cr>", "Test")
 		map("<leader>goT", "<cmd>GoTestFile<cr>", "Test file")
-
-		-- Codegen
+		-- codegen
 		map("<leader>fs", "<cmd>GoFillStruct<cr>", "Fill struct")
 		map("<leader>ie", "<cmd>GoIfErr<cr>", "If err")
 		map("<leader>im", "<cmd>GoImpl<cr>", "Implement interface")
-
-		-- Navigation
+		-- navigation
 		map("<leader>a", "<cmd>GoAlt<cr>", "Alt file")
-
-		-- Coverage
+		-- coverage
 		map("<leader>c", "<cmd>GoCoverage<cr>", "Coverage")
-
-		-- Debug
+		-- debug
 		map("<F5>", function()
 			dap.continue()
 		end, "Debug continue")
@@ -131,7 +185,7 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
--- Надежный format-on-save для Go (через gopls, если доступен).
+-- надежный format-on-save для go (через gopls, если доступен)
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = { "*.go", "*.mod", "*.sum", "*.work" },
 	callback = function(args)
