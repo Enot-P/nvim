@@ -24,6 +24,7 @@ local function setup_treesitter()
 			"markdown",
 			"comment",
 			"sql",
+			"postgresql",
 		},
 		auto_install = true,
 		highlight = {
@@ -81,10 +82,19 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
--- Go: явный старт парсера как fallback, если модульный setup недоступен/отложен.
+-- Go: явный старт парсеров как fallback, если модульный setup недоступен/отложен.
 vim.api.nvim_create_autocmd("FileType", {
 	group = vim.api.nvim_create_augroup("treesitter_go_start", { clear = true }),
 	pattern = { "go", "gomod", "gosum", "gowork", "gotmpl" },
+	callback = function(args)
+		pcall(vim.treesitter.start, args.buf)
+	end,
+})
+
+-- SQL: старт парсера для dadbod и sql файлов.
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("treesitter_sql_start", { clear = true }),
+	pattern = { "sql", "mysql", "postgres" },
 	callback = function(args)
 		pcall(vim.treesitter.start, args.buf)
 	end,
