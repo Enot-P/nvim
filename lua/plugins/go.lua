@@ -119,11 +119,7 @@ local function migrate_create()
 		name = name:gsub("%s+", "_"):lower()
 
 		find_migrations_dir(function(dir)
-			local cmd = string.format(
-				"migrate create -ext sql -dir %s -seq %s",
-				vim.fn.shellescape(dir),
-				vim.fn.shellescape(name)
-			)
+			local cmd = string.format("migrate create -ext sql -dir %s -seq %s", vim.fn.shellescape(dir), vim.fn.shellescape(name))
 			local out = vim.fn.system(cmd)
 			if vim.v.shell_error ~= 0 then
 				vim.notify("migrate error:\n" .. out, vim.log.levels.ERROR)
@@ -139,10 +135,68 @@ local function migrate_create()
 end
 
 -- ============================================================
+-- 🗄️  migrate up / down
+-- ============================================================
+
+local function migrate_run(direction)
+	find_migrations_dir(function(dir)
+		Snacks.input({
+			prompt = "🔌 DATABASE_URL",
+			width = 70,
+		}, function(url)
+			if not url or url == "" then
+				return
+			end
+
+			local prompt = direction == "up" and "⬆️  Шагов up (Enter = все)" or "⬇️  Шагов down"
+
+			Snacks.input({ prompt = prompt, width = 30 }, function(steps)
+				local steps_arg = ""
+				if steps and steps ~= "" then
+					steps_arg = " " .. steps
+				end
+
+				local cmd = string.format("migrate -path %s -database %s %s%s", vim.fn.shellescape(dir), vim.fn.shellescape(url), direction, steps_arg)
+
+				vim.fn.jobstart(cmd, {
+					stdout_buffered = true,
+					stderr_buffered = true,
+					on_stdout = function(_, data)
+						local out = table.concat(data, "\n"):gsub("^%s+", ""):gsub("%s+$", "")
+						if out ~= "" then
+							vim.notify(out, vim.log.levels.INFO)
+						end
+					end,
+					on_stderr = function(_, data)
+						local out = table.concat(data, "\n"):gsub("^%s+", ""):gsub("%s+$", "")
+						if out ~= "" then
+							vim.notify(out, vim.log.levels.WARN)
+						end
+					end,
+					on_exit = function(_, code)
+						if code == 0 then
+							vim.notify("✅ migrate " .. direction .. " выполнен", vim.log.levels.INFO)
+						else
+							vim.notify("❌ migrate завершился с кодом " .. code, vim.log.levels.ERROR)
+						end
+					end,
+				})
+			end)
+		end)
+	end)
+end
+
+-- ============================================================
 -- 🎮 keymaps
 -- ============================================================
 
 vim.keymap.set("n", "<leader>gmc", migrate_create, { desc = "Migrate: create" })
+vim.keymap.set("n", "<leader>gmu", function()
+	migrate_run("up")
+end, { desc = "Migrate: up" })
+vim.keymap.set("n", "<leader>gmd", function()
+	migrate_run("down")
+end, { desc = "Migrate: down" })
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "go", "gomod" },
@@ -199,5 +253,16 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 				return client.name == "gopls" or client.name == "efm"
 			end,
 		})
+	end,
+})
+
+-- авто lsp restart при скачке пакета
+vim.api.nvim_create_autocmd("BufWritePost", {
+	pattern = { "go.mod", "go.sum" },
+	callback = function()
+		vim.defer_fn(function()
+			vim.cmd("LspRestart")
+			vim.notify("📦 go.mod изменился — LSP перезапущен", vim.log.levels.INFO)
+		end, 500) -- небольшая задержка, чтобы go mod tidy успел отработать
 	end,
 })
