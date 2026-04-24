@@ -11,21 +11,11 @@ vim.g.dbs = {
 vim.g.db_ui_use_nerd_fonts = 1
 vim.g.db_ui_show_help = 1
 vim.g.db_ui_default_query = "select * from {table} limit 100"
+vim.g.db_ui_execute_on_save = 0
+vim.g.db_ui_use_nvim_notify = 1
 
--- vim.g.db_ui_table_helpers = {
--- 	postgres = {
--- 		"List",
--- 		"Describe",
--- 		"Indexes",
--- 		"Foreign Keys",
--- 		"Primary Key",
--- 		"Count",
--- 		"Size",
--- 	},
--- }
+vim.g.db_ui_save_location = vim.fn.stdpath("data") .. "/dadbod"   
+vim.g.db_ui_tmp_query_location = vim.fn.stdpath("data") .. "/dadbod/tmp" -- папка для временных запросов
 
-vim.g.db_ui_save_location = vim.fn.stdpath("data") .. "/dadbod"
-
-vim.keymap.set("n", "<leader>db", "<Cmd>DBUI<CR>", { desc = "Open DBUI" })
-vim.keymap.set("n", "<leader>dt", "<Cmd>DBUIToggle<CR>", { desc = "Toggle DBUI" })
+vim.keymap.set("n", "<leader>dbu", "<Cmd>DBUIToggle<CR>", { desc = "Toggle DBUI" })
 
