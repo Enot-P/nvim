@@ -119,7 +119,11 @@ local function migrate_create()
 		name = name:gsub("%s+", "_"):lower()
 
 		find_migrations_dir(function(dir)
-			local cmd = string.format("migrate create -ext sql -dir %s -seq %s", vim.fn.shellescape(dir), vim.fn.shellescape(name))
+			local cmd = string.format(
+				"migrate create -ext sql -dir %s -seq %s",
+				vim.fn.shellescape(dir),
+				vim.fn.shellescape(name)
+			)
 			local out = vim.fn.system(cmd)
 			if vim.v.shell_error ~= 0 then
 				vim.notify("migrate error:\n" .. out, vim.log.levels.ERROR)
@@ -156,7 +160,13 @@ local function migrate_run(direction)
 					steps_arg = " " .. steps
 				end
 
-				local cmd = string.format("migrate -path %s -database %s %s%s", vim.fn.shellescape(dir), vim.fn.shellescape(url), direction, steps_arg)
+				local cmd = string.format(
+					"migrate -path %s -database %s %s%s",
+					vim.fn.shellescape(dir),
+					vim.fn.shellescape(url),
+					direction,
+					steps_arg
+				)
 
 				vim.fn.jobstart(cmd, {
 					stdout_buffered = true,
@@ -187,6 +197,32 @@ local function migrate_run(direction)
 end
 
 -- ============================================================
+-- 🎖️ custom
+-- ============================================================
+
+local function sqlc_generate()
+	local cwd = vim.fn.getcwd()
+	local config = vim.fs.find({ "sqlc.yaml", "sqlc.yml", ".sqlc.yaml" }, { path = cwd, upward = true })[1]
+
+	local cmd = "sqlc generate"
+	if config and config:match("%.sqlc%.ya?ml$") then
+		cmd = cmd .. " -f " .. vim.fn.shellescape(config)
+	end
+
+	vim.notify("🚀 SQLC: Генерация кода...", vim.log.levels.INFO)
+
+	vim.fn.jobstart(cmd, {
+		on_exit = function(_, code)
+			if code == 0 then
+				vim.notify("✅ SQLC: Код успешно сгенерирован", vim.log.levels.INFO)
+			else
+				vim.notify("❌ SQLC: Ошибка генерации (код " .. code .. ")", vim.log.levels.ERROR)
+			end
+		end,
+	})
+end
+
+-- ============================================================
 -- 🎮 keymaps
 -- ============================================================
 
@@ -199,11 +235,12 @@ vim.keymap.set("n", "<leader>gmd", function()
 end, { desc = "Migrate: down" })
 
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "go", "gomod" },
+	pattern = { "go", "gomod", "sql" },
 	callback = function()
 		local map = function(lhs, rhs, desc)
 			vim.keymap.set("n", lhs, rhs, { buffer = true, desc = desc })
 		end
+		map("<leader>gs", sqlc_generate, "SQLC Generate")
 		-- run/test
 		map("<leader>gorr", "<cmd>GoRun<cr>", "Run")
 		map("<leader>gor", "<cmd>terminal cd %:p:h && go run . -race<cr>", "Run with race")
