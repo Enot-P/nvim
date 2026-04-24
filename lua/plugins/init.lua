@@ -4,6 +4,7 @@ require("plugins.blink")
 require("plugins.tressiter")
 -- После nvim-treesitter (kulala_http) и blink (capabilities для LSP)
 require("plugins.kulala")
+require("plugins.devicons") -- icons for bufferline, explorer, etc.
 require("plugins.which-key")
 require("plugins.autopairs")
 require("plugins.quicklist-improve")

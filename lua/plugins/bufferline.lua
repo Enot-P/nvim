@@ -1,6 +1,7 @@
 vim.pack.add({
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 	{ src = "https://github.com/tiagovla/scope.nvim" },
+	{ src = "https://github.com/nvim-tree/nvim-web-devicons" },
 	{ src = "https://github.com/akinsho/bufferline.nvim" },
 })
 
@@ -16,6 +17,7 @@ require("bufferline").setup({
 		show_buffer_close_icons = false,
 		enforce_regular_tabs = false,
 		diagnostics = "nvim_lsp",
+		icon_theme = "default",
 	},
 })
 
