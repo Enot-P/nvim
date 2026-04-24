@@ -1,6 +1,5 @@
 require("plugins.colorscheme")
 require("plugins.lualine")
-require("plugins.mason")
 require("plugins.blink")
 require("plugins.tressiter")
 -- После nvim-treesitter (kulala_http) и blink (capabilities для LSP)
