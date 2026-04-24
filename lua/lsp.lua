@@ -17,15 +17,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local client = clients[1]
         local opts = { buffer = args.buf }
 
-        if client and client:supports_method("textDocument/formatting") then
-            vim.api.nvim_create_autocmd("BufWritePre", {
-                buffer = args.buf,
-                callback = function()
-                    vim.lsp.buf.format({ bufnr = args.buf })
-                end,
-            })
-        end
-
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
         vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
         vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)

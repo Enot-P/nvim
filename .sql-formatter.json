@@ -1,0 +1,7 @@
+{
+  "language": "postgresql",
+  "keywordCase": "upper",
+  "tabWidth": 4,
+  "expressionWidth": 50,
+  "logicalOperatorNewline": "before"
+}
