@@ -2,6 +2,9 @@ return {
   cmd = { "gopls" },
   filetypes = { "go", "gomod", "gosum" },
   root_markers = { "go.work", "go.mod", ".git" },
+  on_init = function(client)
+    print("gopls initialized")
+  end,
     settings = {
       gopls = {
         -- Анализаторы
