@@ -12,9 +12,9 @@ require("conform").setup({
 
     format_on_save = function(bufnr)
         if vim.bo[bufnr].filetype == "sql" then
-            return { timeout_ms = 800, lsp_format = "never" }
+            return { timeout_ms = 1000, lsp_format = "never" }
         end
-        return { timeout_ms = 800, lsp_format = "fallback" }
+        return { timeout_ms = 1000, lsp_format = "fallback" }
     end,
 
     formatters = {
