@@ -2,7 +2,7 @@ vim.lsp.enable("lua_ls")
 vim.lsp.enable("pyright")
 vim.lsp.enable("gopls")
 vim.lsp.enable("postgres_lsp")
-vim.lsp.enable("make-ls")
+-- vim.lsp.enable("make-ls")
 
 vim.diagnostic.config({
     virtual_text = {
