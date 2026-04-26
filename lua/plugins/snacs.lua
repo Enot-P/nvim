@@ -17,7 +17,20 @@ snacks.setup({
         bo = { filetype = "snacks_terminal" },
         keys = {
             q = "hide",
-            ["<esc>"] = { "<esc>", mode = "t" },
+            term_toggle = {
+                { "<C-/>", "<C-_>", "<leader>t" },
+                function() snacks.terminal() end,
+                mode = "t",
+                expr = true,
+                desc = "Toggle Terminal",
+            },
+            term_toggle_alt = {
+                "<C-_>",
+                function() snacks.terminal() end,
+                mode = "t",
+                expr = true,
+                desc = "which_key_ignore",
+            },
         },
     },
     styles = {
@@ -159,8 +172,11 @@ map("n", "<leader>cR", function() snacks.rename.rename_file() end, { desc = "Ren
 map({ "n", "v" }, "<leader>gB", function() snacks.gitbrowse() end, { desc = "Git Browse" })
 map("n", "<leader>gg", function() snacks.lazygit() end, { desc = "Lazygit" })
 map("n", "<leader>un", function() snacks.notifier.hide() end, { desc = "Dismiss All Notifications" })
-map("n", "<c-/>", function() snacks.terminal() end, { desc = "Toggle Terminal" })
-map("n", "<c-_>", function() snacks.terminal() end, { desc = "which_key_ignore" })
+map({ "n", "t" }, "<C-/>", function() snacks.terminal() end, { desc = "Toggle Terminal" })
+map({ "n", "t" }, "<C-_>", function() snacks.terminal() end, { desc = "Toggle Terminal" })
+map("n", "<C-_>", function() snacks.terminal() end, { desc = "which_key_ignore" })
+
+vim.opt.timeoutlen = 50
 map({ "n", "t" }, "]]", function() snacks.words.jump(vim.v.count1) end, { desc = "Next Reference" })
 map({ "n", "t" }, "[[", function() snacks.words.jump(-vim.v.count1) end, { desc = "Prev Reference" })
 
