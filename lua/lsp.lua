@@ -2,6 +2,7 @@ vim.lsp.enable("lua_ls")
 vim.lsp.enable("pyright")
 vim.lsp.enable("gopls")
 vim.lsp.enable("postgres_lsp")
+vim.lsp.enable("make-ls")
 
 vim.diagnostic.config({
     virtual_text = {
@@ -22,18 +23,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
         vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
         vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, opts)
-        vim.keymap.set("n", "<leader>cl", function()
-            vim.lsp.codelens.run({})
-        end, opts)
+        vim.keymap.set("n", "<leader>cl", function() vim.lsp.codelens.run({}) end, opts)
 
         vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
-        vim.keymap.set("n", "[d", function()
-            vim.diagnostic.jump({ count = -1 })
-        end, opts)
+        vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, opts)
 
-        vim.keymap.set("n", "]d", function()
-            vim.diagnostic.jump({ count = 1 })
-        end, opts)
+        vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, opts)
 
         vim.keymap.set("n", "<leader>q", function()
             vim.diagnostic.setqflist()
