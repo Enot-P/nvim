@@ -69,13 +69,13 @@ vim.opt.autowriteall = true -- автосохранение при выходе
 vim.opt.autoread = true -- перечитывать файл при изменении извне
 
 vim.opt.updatetime = 300 -- задержка для CursorHold/LSP
-vim.opt.timeoutlen = 500 -- таймаут для маппингов
+vim.opt.timeoutlen = 300 -- таймаут для маппингов
 vim.opt.ttimeoutlen = 0 -- быстрые keycode события
 
 -- создать папку для undo если нет
 local undodir = vim.fn.expand("~/.vim/undodir")
 if vim.fn.isdirectory(undodir) == 0 then
-	vim.fn.mkdir(undodir, "p")
+    vim.fn.mkdir(undodir, "p")
 end
 
 -- ============================================================================
