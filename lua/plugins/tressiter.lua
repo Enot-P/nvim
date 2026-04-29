@@ -26,6 +26,7 @@ local function setup_treesitter()
             "sql",
             "postgresql",
             "make",
+            "proto",
         },
         auto_install = true,
         highlight = {
