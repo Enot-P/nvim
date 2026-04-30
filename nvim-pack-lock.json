@@ -150,6 +150,10 @@
       "rev": "dab7b623d48b50330c43234958c0ba2de9b501d5",
       "src": "https://github.com/olimorris/onedarkpro.nvim"
     },
+    "pick-resession.nvim": {
+      "rev": "3bd9b6a7765be068d2bd88ba77c2602229c97442",
+      "src": "https://github.com/scottmckendry/pick-resession.nvim"
+    },
     "plenary.nvim": {
       "rev": "b9fd5226c2f76c951fc8ed5923d85e4de065e509",
       "src": "https://github.com/nvim-lua/plenary.nvim"
@@ -165,6 +169,10 @@
     "remote-nvim": {
       "rev": "9992c2fb8bf4f11aca2c8be8db286b506f92efcb",
       "src": "https://github.com/amitds1997/remote-nvim.nvim"
+    },
+    "resession.nvim": {
+      "rev": "05adc14db5c2d0eae064765101dd5e9c594c7851",
+      "src": "https://github.com/stevearc/resession.nvim"
     },
     "scope.nvim": {
       "rev": "228aabdb1b9cc74f0c0ccec88e79873857236e49",
