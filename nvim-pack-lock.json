@@ -12,6 +12,10 @@
       "rev": "831917523d33bea9e8767878fa827178b8dbebe2",
       "src": "https://github.com/Rtarun3606k/TakaTime"
     },
+    "alpha-nvim": {
+      "rev": "6c6a89d5b068b5251c8bdf0dd57bb921bcfeeb09",
+      "src": "https://github.com/goolord/alpha-nvim"
+    },
     "blink.cmp": {
       "rev": "62c3d54f7d739ee46f850ea6832383e3b7ca2ee1",
       "src": "https://github.com/saghen/blink.cmp",
@@ -32,6 +36,10 @@
     "conform.nvim": {
       "rev": "dca1a190aa85f9065979ef35802fb77131911106",
       "src": "https://github.com/stevearc/conform.nvim"
+    },
+    "dashboard-nvim": {
+      "rev": "f787e3462c2ee2b6117b17c1aa4ddf66cb6f57fe",
+      "src": "https://github.com/nvimdev/dashboard-nvim"
     },
     "efmls-configs-nvim": {
       "rev": "0b0ca5462a0a9c1233cc8359e64741d7d49fbbe4",

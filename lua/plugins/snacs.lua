@@ -41,7 +41,7 @@ snacks.setup({
         },
     },
     dashboard = {
-        enabled = true,
+        enabled = false,
         preset = {
             header = [[
 ⠀⠀⠀⠀⠀⠀⠀⠰⣶⣶⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -58,9 +58,10 @@ snacks.setup({
         },
         sections = {
             { section = "header" },
-            { icon = " ", title = "Keymaps", section = "keys", indent = 2, padding = 1 },
-            { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
-            { icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+            { icon = "", title = "Keymaps", section = "keys", indent = 2, padding = 1 },
+            { icon = "", title = "Projects", section = "projects", indent = 2, padding = 1 },
+            { icon = "", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+            { icon = " ", title = "Sessions", section = "session", indent = 2, padding = 1 },
         },
     },
     indent = { enabled = true },
@@ -105,6 +106,7 @@ map(
     function() snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end,
     { desc = "Find Config File" }
 )
+map("n", "<leader>fs", function() Snacks.picker.resession() end, { desc = "Find Sessions" })
 map("n", "<leader>ff", function() snacks.picker.files() end, { desc = "Find Files" })
 map("n", "<leader>fg", function() snacks.picker.git_files() end, { desc = "Find Git Files" })
 map("n", "<leader>fp", function() snacks.picker.projects() end, { desc = "Projects" })
