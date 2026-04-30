@@ -137,3 +137,5 @@ vim.opt.inccommand = "split" -- предпросмотр замены
 vim.opt.diffopt:append("linematch:60") -- улучшенный diff
 
 vim.o.exrc = true -- локальные .nvim.lua
+
+vim.opt.autoread = true -- Neovim перечитывает буфер при внешнем изменении

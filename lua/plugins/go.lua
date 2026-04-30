@@ -157,6 +157,13 @@ vim.api.nvim_create_autocmd("FileType", {
     callback = function()
         local map = function(lhs, rhs, desc) vim.keymap.set("n", lhs, rhs, { buffer = true, desc = desc }) end
 
+        vim.keymap.set("n", "<leader>lr", function()
+            vim.notify("Перезапуск gopls...", vim.log.levels.INFO)
+            for _, client in ipairs(vim.lsp.get_clients({ name = "gopls" })) do
+                client:stop(true)
+            end
+        end, { desc = "Restart gopls" })
+
         map("<leader>gs", sqlc_generate, "SQLC Generate")
 
         -- run/test
