@@ -95,6 +95,9 @@ map("n", "<leader>nn", function() snacks.picker.notifications() end, { desc = "N
 map("n", "<leader>e", function() snacks.explorer() end, { desc = "File Explorer" })
 
 -- find
+
+-- Группа для find
+vim.keymap.set("n", "<leader>f", "", { desc = "+find" })
 map("n", "<leader>fb", function() snacks.picker.buffers() end, { desc = "Buffers" })
 map(
     "n",
@@ -108,6 +111,10 @@ map("n", "<leader>fp", function() snacks.picker.projects() end, { desc = "Projec
 map("n", "<leader>fr", function() snacks.picker.recent() end, { desc = "Recent" })
 
 -- git
+
+-- Группа для git
+vim.keymap.set("n", "<leader>g", "", { desc = "+ git and pretty-comment" })
+
 map("n", "<leader>gb", function() snacks.picker.git_branches() end, { desc = "Git Branches" })
 map("n", "<leader>gl", function() snacks.picker.git_log() end, { desc = "Git Log" })
 map("n", "<leader>gL", function() snacks.picker.git_log_line() end, { desc = "Git Log Line" })
@@ -129,6 +136,9 @@ map("n", "<leader>sg", function() snacks.picker.grep() end, { desc = "Grep" })
 map({ "n", "x" }, "<leader>sw", function() snacks.picker.grep_word() end, { desc = "Visual selection or word" })
 
 -- search
+
+-- Группа для search
+vim.keymap.set("n", "<leader>s", "", { desc = "+search" })
 map("n", '<leader>s"', function() snacks.picker.registers() end, { desc = "Registers" })
 map("n", "<leader>s/", function() snacks.picker.search_history() end, { desc = "Search History" })
 map("n", "<leader>sa", function() snacks.picker.autocmds() end, { desc = "Autocmds" })
