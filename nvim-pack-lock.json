@@ -210,6 +210,10 @@
       "rev": "e6cdb4dc528c5dc4ca8da86e83ef4e3c84b0729c",
       "src": "https://github.com/nvim-telescope/telescope.nvim"
     },
+    "tiny-cmdline.nvim": {
+      "rev": "ad58747b955d0743ccfd56e97da1a4c1fac89f58",
+      "src": "https://github.com/rachartier/tiny-cmdline.nvim"
+    },
     "todo-comments.nvim": {
       "rev": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668",
       "src": "https://github.com/folke/todo-comments.nvim"
