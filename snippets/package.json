@@ -2,10 +2,8 @@
   "name": "my-snippets",
   "contributes": {
     "snippets": [
-      {
-        "language": "go",
-        "path": "./go.json"
-      }
+      { "language": "go", "path": "./go.json" },
+      { "language": "sql", "path": "./sql.json" }
     ]
   }
 }

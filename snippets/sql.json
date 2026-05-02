@@ -1,0 +1,61 @@
+{
+  "PG Create Function": {
+    "prefix": "pgfunc",
+    "body": [
+      "CREATE OR REPLACE FUNCTION ${1:schema}.${2:function_name}(",
+      "\t${3:param_name} ${4:param_type}",
+      ")",
+      "RETURNS ${5:return_type}",
+      "LANGUAGE ${6:plpgsql}",
+      "AS \\$\\$",
+      "DECLARE",
+      "\t${7:-- variables}",
+      "BEGIN",
+      "\t${0}",
+      "\tRETURN ${8:result};",
+      "END;",
+      "\\$\\$;"
+    ],
+    "description": "Create or replace PostgreSQL function"
+  },
+
+  "PG Create Function SQL": {
+    "prefix": "pgfuncsql",
+    "body": [
+      "CREATE OR REPLACE FUNCTION ${1:schema}.${2:function_name}(",
+      "\t${3:param_name} ${4:param_type}",
+      ")",
+      "RETURNS ${5:return_type}",
+      "LANGUAGE sql",
+      "STABLE",
+      "AS \\$\\$",
+      "\t${0}",
+      "\\$\\$;"
+    ],
+    "description": "Create or replace PostgreSQL function (pure SQL)"
+  },
+
+  "PG Create Function Trigger": {
+    "prefix": "pgfunctrigger",
+    "body": [
+      "CREATE OR REPLACE FUNCTION ${1:schema}.${2:function_name}()",
+      "RETURNS trigger",
+      "LANGUAGE plpgsql",
+      "AS \\$\\$",
+      "BEGIN",
+      "\t${0}",
+      "\tRETURN ${2:NEW};",
+      "END;",
+      "\\$\\$;"
+    ],
+    "description": "Create or replace PostgreSQL trigger function"
+  },
+
+  "PG Drop Function": {
+    "prefix": "pgdropfunc",
+    "body": [
+      "DROP FUNCTION IF EXISTS ${1:schema}.${2:function_name}(${3:param_types});"
+    ],
+    "description": "Drop PostgreSQL function if exists"
+  }
+}
