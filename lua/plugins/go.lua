@@ -214,6 +214,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 vim.pack.add({
     { src = "https://github.com/romus204/go-tagger.nvim" }, -- Добавляет/убирает теги
     { src = "https://github.com/maxandron/goplements.nvim" }, -- Показывает какие интерфейсы реализует струтура
+    { src = "https://github.com/fredrikaverpil/godoc.nvim" }, -- Документация
 })
 
 require("go-tagger").setup({
@@ -226,3 +227,20 @@ vim.keymap.set("v", "<leader>ta", ":AddGoTags<CR>", { desc = "Add Go struct tags
 vim.keymap.set("v", "<leader>tr", ":RemoveGoTags<CR>", { desc = "Remove Go struct tags", silent = true })
 
 require("goplements").setup({})
+
+-- Godoc: регистрация парсера и старт подсветки
+vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("treesitter_godoc_start", { clear = true }),
+    pattern = { "godoc" },
+    callback = function(args)
+        vim.treesitter.language.add("godoc", {
+            path = "/home/enot/.local/share/nvim-dev/nvim-treesitter/parser/godoc.so",
+        })
+        vim.treesitter.language.register("godoc", "godoc")
+        pcall(vim.treesitter.start, args.buf)
+    end,
+})
+
+require("godoc").setup({
+    window = { type = "vsplit" },
+})

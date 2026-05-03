@@ -33,6 +33,10 @@
       "rev": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3",
       "src": "https://github.com/akinsho/bufferline.nvim"
     },
+    "cmp-go-pkgs": {
+      "rev": "d8c2ed12a2a6b6f0499d9a51b776d2e135ae1511",
+      "src": "https://github.com/Snikimonkd/cmp-go-pkgs"
+    },
     "conform.nvim": {
       "rev": "dca1a190aa85f9065979ef35802fb77131911106",
       "src": "https://github.com/stevearc/conform.nvim"
@@ -64,6 +68,10 @@
     "go.nvim": {
       "rev": "fe8e1de03157f8a68e9e5b819409368ce33aeb87",
       "src": "https://github.com/ray-x/go.nvim"
+    },
+    "godoc.nvim": {
+      "rev": "c90c6d289e5f22875654303d49a35ce959c5d54a",
+      "src": "https://github.com/fredrikaverpil/godoc.nvim"
     },
     "goplements.nvim": {
       "rev": "1750ace64d42efcbc1ce36eef848a3cea5f88c79",
