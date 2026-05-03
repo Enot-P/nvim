@@ -57,9 +57,17 @@
       "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
       "src": "https://github.com/rafamadriz/friendly-snippets"
     },
+    "go-tagger.nvim": {
+      "rev": "8fb11cdda459d2336c6312d9dfb2108f250b95e2",
+      "src": "https://github.com/romus204/go-tagger.nvim"
+    },
     "go.nvim": {
       "rev": "fe8e1de03157f8a68e9e5b819409368ce33aeb87",
       "src": "https://github.com/ray-x/go.nvim"
+    },
+    "goplements.nvim": {
+      "rev": "1750ace64d42efcbc1ce36eef848a3cea5f88c79",
+      "src": "https://github.com/maxandron/goplements.nvim"
     },
     "grug-far.nvim": {
       "rev": "37d0eafc6a2dcf8641aa19fc2a8db5e391b7f16b",

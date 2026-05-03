@@ -208,3 +208,21 @@ vim.api.nvim_create_autocmd("BufWritePost", {
         end, 500) -- небольшая задержка, чтобы go mod tidy успел отработать
     end,
 })
+
+-------------- PACKAGES -----------------
+
+vim.pack.add({
+    { src = "https://github.com/romus204/go-tagger.nvim" }, -- Добавляет/убирает теги
+    { src = "https://github.com/maxandron/goplements.nvim" }, -- Показывает какие интерфейсы реализует струтура
+})
+
+require("go-tagger").setup({
+    skip_private = true, -- Skip unexported fields (starting with lowercase)
+    casing = "snake_case", -- Global casing setting
+    tags = {}, -- Per tag setting override
+})
+
+vim.keymap.set("v", "<leader>ta", ":AddGoTags<CR>", { desc = "Add Go struct tags", silent = true })
+vim.keymap.set("v", "<leader>tr", ":RemoveGoTags<CR>", { desc = "Remove Go struct tags", silent = true })
+
+require("goplements").setup({})
