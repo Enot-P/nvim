@@ -29,7 +29,7 @@ dashboard.section.buttons.val = {
     dashboard.button("f", "" .. " Find File", function() Snacks.picker.files() end),
     dashboard.button("n", "" .. " New File", "enew"),
     dashboard.button("s", "" .. " Find session", function() require("resession").load() end),
-    dashboard.button("s", "󰣷" .. " Find project", function() Snacks.picker.projects() end),
+    dashboard.button("p", "󰣷" .. " Find project", function() Snacks.picker.projects() end),
     dashboard.button("c", "" .. " Config", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end),
     dashboard.button("q", "󰠚" .. " Quit", "<Cmd>qa<CR>"),
 }
@@ -42,7 +42,7 @@ local function get_session_buttons()
     end
     local sessions = resession.list()
     if not sessions or #sessions == 0 then
-        return { dashboard.button("", "No sessions found 😥", "") }
+        return { { type = "text", val = "No sessions found 😥", opts = { position = "center" } } }
     end
     local btns = {}
     for i, name in ipairs(sessions) do
