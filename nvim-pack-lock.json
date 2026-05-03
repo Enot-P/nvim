@@ -45,6 +45,10 @@
       "rev": "f787e3462c2ee2b6117b17c1aa4ddf66cb6f57fe",
       "src": "https://github.com/nvimdev/dashboard-nvim"
     },
+    "ec": {
+      "rev": "98aea488bcb8970bdabc0cb7cc9920da59e8ea56",
+      "src": "https://github.com/chojs23/ec"
+    },
     "efmls-configs-nvim": {
       "rev": "0b0ca5462a0a9c1233cc8359e64741d7d49fbbe4",
       "src": "https://github.com/creativenull/efmls-configs-nvim"
