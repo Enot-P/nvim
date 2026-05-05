@@ -27,6 +27,7 @@ local function setup_treesitter()
             "postgresql",
             "make",
             "proto",
+            "yaml",
         },
         auto_install = true,
         highlight = {
@@ -93,5 +94,12 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("treesitter_sql_start", { clear = true }),
     pattern = { "sql", "mysql", "postgres" },
+    callback = function(args) pcall(vim.treesitter.start, args.buf) end,
+})
+
+-- YAML: явный старт парсера для корректной подсветки и инъекций
+vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("treesitter_yaml_start", { clear = true }),
+    pattern = { "yaml" },
     callback = function(args) pcall(vim.treesitter.start, args.buf) end,
 })

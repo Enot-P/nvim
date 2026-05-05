@@ -3,7 +3,7 @@ vim.lsp.enable("pyright")
 vim.lsp.enable("gopls")
 vim.lsp.enable("postgres_lsp")
 vim.lsp.enable("protols")
--- vim.lsp.enable("make-ls")
+vim.lsp.enable("yamlls")
 
 vim.diagnostic.config({
     virtual_text = {
