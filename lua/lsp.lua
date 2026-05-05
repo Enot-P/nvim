@@ -18,6 +18,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local clients = vim.lsp.get_clients({ bufnr = args.buf })
         local client = clients[1]
         local opts = { buffer = args.buf }
+        local orig = vim.lsp.handlers["textDocument/rename"]
 
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
 
@@ -30,7 +31,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         vim.keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
 
-        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
+        vim.lsp.handlers["textDocument/rename"] = function(err, result, ctx, config)
+            orig(err, result, ctx, config)
+            vim.cmd("silent! wall")
+        end
 
         vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
 
