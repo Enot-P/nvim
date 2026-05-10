@@ -191,6 +191,19 @@ vim.api.nvim_create_autocmd("FileType", {
             "Coverage"
         )
 
+        -- gopher
+        map("<leader>gtg", "<cmd>GoTagAdd json<cr>", "Add json tags")
+        map("<leader>gtr", "<cmd>GoTagRm json<cr>", "Remove json tags")
+        map("<leader>gts", "<cmd>GoTestsAdd<cr>", "Generate tests")
+        map("<leader>gie", "<cmd>GoIfErr<cr>", "Add if err")
+        map("<leader>gii", function()
+            vim.ui.input({ prompt = "Interface (например: io.Reader): " }, function(input)
+                if input and input ~= "" then
+                    vim.cmd("GoImpl " .. input)
+                end
+            end)
+        end, "Impl interface")
+
         -- migrations
         vim.keymap.set("n", "<leader>gmc", migrate_create, { desc = "Migrate: create" })
         vim.keymap.set("n", "<leader>gmu", function() migrate_run("up") end, { desc = "Migrate: up" })
@@ -212,20 +225,20 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 -------------- PACKAGES -----------------
 
 vim.pack.add({
-    { src = "https://github.com/romus204/go-tagger.nvim" }, -- Добавляет/убирает теги
+    { src = "https://github.com/olexsmir/gopher.nvim" },
     { src = "https://github.com/maxandron/goplements.nvim" }, -- Показывает какие интерфейсы реализует струтура
     { src = "https://github.com/fredrikaverpil/godoc.nvim" }, -- Документация
 })
 
-require("go-tagger").setup({
-    skip_private = true, -- Skip unexported fields (starting with lowercase)
-    casing = "snake_case", -- Global casing setting
-    tags = {}, -- Per tag setting override
+require("gopher").setup({
+    commands = {
+        go = "go",
+        gomodifytags = "gomodifytags",
+        gotests = "gotests",
+        impl = "impl",
+        iferr = "iferr",
+    },
 })
-
-vim.keymap.set("v", "<leader>ta", ":AddGoTags<CR>", { desc = "Add Go struct tags", silent = true })
-vim.keymap.set("v", "<leader>tr", ":RemoveGoTags<CR>", { desc = "Remove Go struct tags", silent = true })
-
 require("goplements").setup({})
 
 -- Godoc: регистрация парсера и старт подсветки
