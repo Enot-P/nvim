@@ -171,6 +171,14 @@ vim.api.nvim_create_autocmd("FileType", {
         map("<leader>gor", "<cmd>terminal go run -race .<cr>", "Run with race")
         map("<leader>got", "<cmd>terminal go test ./...<cr>", "Test")
         map("<leader>goT", function() vim.cmd("terminal go test " .. vim.fn.expand("%:p:h")) end, "Test file")
+        map("<leader>gof", "<cmd>terminal go test -fuzz=FuzzParsePrice -fuzztime=60s -v<cr>", "Fuzz: ParsePrice")
+        map("<leader>goF", function()
+            vim.ui.input({ prompt = "Fuzz function name (или . для всех): " }, function(name)
+                if name and name ~= "" then
+                    vim.cmd("terminal go test -fuzz=" .. name .. " -fuzztime=60s ./... -v")
+                end
+            end)
+        end, "Fuzz: Custom")
 
         -- navigation
         map("<leader>a", function()
@@ -196,6 +204,7 @@ vim.api.nvim_create_autocmd("FileType", {
         map("<leader>gtr", "<cmd>GoTagRm json<cr>", "Remove json tags")
         map("<leader>gts", "<cmd>GoTestsAdd<cr>", "Generate tests")
         map("<leader>gie", "<cmd>GoIfErr<cr>", "Add if err")
+        map("<leader>gdc", "<cmd>GoCmt<cr>", "Add doc comment")
         map("<leader>gii", function()
             vim.ui.input({ prompt = "Interface (например: io.Reader): " }, function(input)
                 if input and input ~= "" then

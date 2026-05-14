@@ -10,6 +10,13 @@ require("neotest").setup({
     adapters = {
         require("neotest-go")({}),
     },
+    summary = {
+        enabled = true,
+        open = "botright vsplit | vertical resize 70",
+        count = true, -- показывать количество тестов
+        animated = true, -- анимация при запуске
+        follow = true, -- следовать за текущим файлом
+    },
     output_panel = {
         enabled = true,
         open = "botright split | resize 15",
