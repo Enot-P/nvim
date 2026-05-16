@@ -45,6 +45,10 @@
       "rev": "f787e3462c2ee2b6117b17c1aa4ddf66cb6f57fe",
       "src": "https://github.com/nvimdev/dashboard-nvim"
     },
+    "diffview.nvim": {
+      "rev": "4516612fe98ff56ae0415a259ff6361a89419b0a",
+      "src": "https://github.com/sindrets/diffview.nvim"
+    },
     "ec": {
       "rev": "98aea488bcb8970bdabc0cb7cc9920da59e8ea56",
       "src": "https://github.com/chojs23/ec"
@@ -195,6 +199,10 @@
       "rev": "f5fddfd5122fe00421e199151ae4fe8571a02898",
       "src": "https://github.com/olimorris/onedarkpro.nvim"
     },
+    "opencode.nvim": {
+      "rev": "4ae5d4582880b9bb061bc0572d2af6b1612e6217",
+      "src": "https://github.com/sudo-tee/opencode.nvim"
+    },
     "pantran.nvim": {
       "rev": "b87c3ae48cba4659587fb75abd847e5b7a7c9ca0",
       "src": "https://github.com/potamides/pantran.nvim"
@@ -222,6 +230,10 @@
     "remote-nvim": {
       "rev": "9992c2fb8bf4f11aca2c8be8db286b506f92efcb",
       "src": "https://github.com/amitds1997/remote-nvim.nvim"
+    },
+    "render-markdown.nvim": {
+      "rev": "629eb9533ec989d9d5c6cab8f3ad5372422c24e0",
+      "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resession.nvim": {
       "rev": "05adc14db5c2d0eae064765101dd5e9c594c7851",
