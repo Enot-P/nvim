@@ -63,3 +63,74 @@ map("<leader>fla", "<cmd>FlutterReanalyze<cr>", "Reanalyze")
 map("<leader>fln", "<cmd>FlutterRename<cr>", "Rename")
 map("<leader>flp", "<cmd>FlutterPubGet<cr>", "Pub Get")
 map("<leader>flP", "<cmd>FlutterPubUpgrade<cr>", "Pub Upgrade")
+
+-- ============================================================
+-- 🛢 Barrel Create — dart export generator
+-- ============================================================
+
+local function find_project_root(dir)
+    local pubspec = vim.fs.find({ "pubspec.yaml" }, { upward = true, path = dir })[1]
+    return pubspec and vim.fn.fnamemodify(pubspec, ":h") or nil
+end
+
+local function has_barrel_create()
+    local f = io.popen("dart pub global list 2>/dev/null")
+    if not f then
+        return false
+    end
+    local out = f:read("*a")
+    f:close()
+    return out:find("barrel_create") ~= nil
+end
+
+local function run_barrel_create(dir)
+    local root = find_project_root(dir)
+    if not root then
+        vim.notify("Not a Dart project (no pubspec.yaml found)", vim.log.levels.WARN)
+        return
+    end
+    if not has_barrel_create() then
+        vim.notify("barrel_create not installed. Run: dart pub global activate barrel_create", vim.log.levels.WARN)
+        return
+    end
+    local rel = dir:sub(#root + 2)
+    vim.fn.jobstart({ "barrel_create", rel }, {
+        cwd = root,
+        on_stdout = function(_, data)
+            for _, line in ipairs(data) do
+                if line and line ~= "" then
+                    vim.notify(line, vim.log.levels.INFO)
+                end
+            end
+        end,
+        on_stderr = function(_, data)
+            for _, line in ipairs(data) do
+                if line and line ~= "" then
+                    vim.notify(line, vim.log.levels.WARN)
+                end
+            end
+        end,
+        on_exit = function(_, code)
+            if code == 0 then
+                vim.notify("✅ Barrel files created in " .. dir, vim.log.levels.INFO)
+            else
+                vim.notify("❌ barrel_create failed (code " .. code .. ")", vim.log.levels.ERROR)
+            end
+        end,
+    })
+end
+
+-- Add action and key to snacks.explorer via the live config
+---@diagnostic disable-next-line: undefined-field
+local exp_config = require("snacks").config.picker.sources.explorer
+exp_config.actions = exp_config.actions or {}
+exp_config.actions.dart_barrel_create = function(picker, item)
+    local dir = (item.dir and item.file)
+        or (item.file and vim.fn.isdirectory(item.file) == 1 and item.file)
+        or picker:dir()
+    run_barrel_create(dir)
+end
+exp_config.win = exp_config.win or {}
+exp_config.win.list = exp_config.win.list or {}
+exp_config.win.list.keys = exp_config.win.list.keys or {}
+exp_config.win.list.keys["ge"] = "dart_barrel_create"
