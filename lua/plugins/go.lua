@@ -167,8 +167,8 @@ vim.api.nvim_create_autocmd("FileType", {
         map("<leader>gs", sqlc_generate, "SQLC Generate")
 
         -- run/test
-        map("<leader>gorr", "<cmd>terminal go run .<cr>", "Run")
-        map("<leader>gor", "<cmd>terminal go run -race .<cr>", "Run with race")
+        map("<leader>gor", function() vim.cmd("terminal go run " .. vim.fn.expand("%:p:h")) end, "Run")
+        map("<leader>gorr", function() vim.cmd("terminal go run -race " .. vim.fn.expand("%:p:h")) end, "Run with race")
         map("<leader>got", "<cmd>terminal go test ./...<cr>", "Test")
         map("<leader>goT", function() vim.cmd("terminal go test " .. vim.fn.expand("%:p:h")) end, "Test file")
         map("<leader>gof", "<cmd>terminal go test -fuzz=FuzzParsePrice -fuzztime=60s -v<cr>", "Fuzz: ParsePrice")

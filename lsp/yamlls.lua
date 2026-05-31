@@ -7,7 +7,11 @@ return {
                 enable = false,
             },
             schemas = {
-                ["https://www.schemastore.org/pubspec.json"] = "pubspec.yaml",
+                ["https://json.schemastore.org/pubspec.json"] = "pubspec.yaml",
+                ["https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json"] = {
+                    "docker-compose*.yaml",
+                    "docker-compose*.yml",
+                },
             },
             validate = true,
             completion = true,

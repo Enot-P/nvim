@@ -2,5 +2,5 @@ return {
     name = "protols",
     cmd = { "protols" },
     filetypes = { "proto" },
-    root_dir = vim.fs.root(0, { ".proto", ".git", "protols.toml", "buf.yaml" }),
+    root_dir = function(fname) return vim.fs.root(fname, { ".proto", ".git", "protols.toml", "buf.yaml" }) end,
 }

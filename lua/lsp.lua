@@ -4,6 +4,7 @@ vim.lsp.enable("gopls")
 vim.lsp.enable("postgres_lsp")
 vim.lsp.enable("protols")
 vim.lsp.enable("yamlls")
+vim.lsp.enable("make-ls")
 
 vim.diagnostic.config({
     virtual_text = {

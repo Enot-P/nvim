@@ -1,0 +1,103 @@
+{
+  "Target": {
+    "prefix": "target",
+    "body": ["${1:target}: ${2:deps}", "\t${0:recipe}"],
+    "description": "Makefile target with dependencies"
+  },
+  "PHONY": {
+    "prefix": "phony",
+    "body": [".PHONY: ${0}"],
+    "description": "Declare phony targets"
+  },
+  "Variable assignment": {
+    "prefix": "var",
+    "body": ["${1:name} := ${2:value}"],
+    "description": "Simply expanded variable"
+  },
+  "ifeq": {
+    "prefix": "ifeq",
+    "body": ["ifeq (${1:cond1}, ${2:cond2})", "\t${0:body}", "endif"],
+    "description": "Conditional ifeq block"
+  },
+  "ifneq": {
+    "prefix": "ifneq",
+    "body": ["ifneq (${1:cond1}, ${2:cond2})", "\t${0:body}", "endif"],
+    "description": "Conditional ifneq block"
+  },
+  "ifdef": {
+    "prefix": "ifdef",
+    "body": ["ifdef ${1:var}", "\t${0:body}", "endif"],
+    "description": "Conditional ifdef block"
+  },
+  "foreach": {
+    "prefix": "foreach",
+    "body": ["\\$(foreach ${1:var},${2:list},${3:text})"],
+    "description": "foreach function"
+  },
+  "Include": {
+    "prefix": "include",
+    "body": ["include ${1:makefile}"],
+    "description": "Include another makefile"
+  },
+  "Pattern rule": {
+    "prefix": "pattern",
+    "body": ["${1:%.o}: ${2:%.c}", "\t${0:recipe}"],
+    "description": "Pattern rule with %"
+  },
+  "Shell case": {
+    "prefix": "case",
+    "body": [
+      "case \"${1:var}\" in",
+      "\t${2:pattern})",
+      "\t\t${0:body}",
+      "\t\t;;",
+      "esac"
+    ],
+    "description": "Shell case statement in recipe"
+  },
+  "Build target": {
+    "prefix": "build",
+    "body": [".PHONY: build", "", "build: ${1:deps}", "\t${0:go build -o bin/app .}"],
+    "description": "Build target"
+  },
+  "Install target": {
+    "prefix": "install",
+    "body": [".PHONY: install", "", "install:", "\t${0:cp bin/app /usr/local/bin/}"],
+    "description": "Install target"
+  },
+  "Test target": {
+    "prefix": "test",
+    "body": [".PHONY: test", "", "test:", "\t${0:go test ./...}"],
+    "description": "Test target"
+  },
+  "Clean target": {
+    "prefix": "clean",
+    "body": [".PHONY: clean", "", "clean:", "\trm -rf ${0:bin/}"],
+    "description": "Clean target"
+  },
+  "Docker build target": {
+    "prefix": "docker",
+    "body": [".PHONY: docker", "", "docker:", "\tdocker build -t ${1:image}:${2:latest} ."],
+    "description": "Docker build target"
+  },
+  "Automatic variables": {
+    "prefix": "autovar",
+    "body": [
+      "\\$@    # target name",
+      "\\$<    # first prerequisite",
+      "\\$^    # all prerequisites",
+      "\\$?    # prerequisites newer than target",
+      "\\$*    # stem of the pattern match"
+    ],
+    "description": "Common automatic variables reminder"
+  },
+  "Help target": {
+    "prefix": "help",
+    "body": [
+      "help:",
+      "\t@echo \"=== Доступные команды для миграций ===\"",
+      "\t@awk 'BEGIN \\{FS = \":.*##\";\\} /^[a-zA-Z_-]+:.*?##/ \\{printf \"  \\\\033[36m%-20s\\\\033[0m %s\\\\n\", \\$\\$1, \\$\\$2\\}' \\$(MAKEFILE_LIST)"
+    ],
+    "description": "Makefile help target for migrations"
+  }
+}

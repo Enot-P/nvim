@@ -3,7 +3,8 @@
   "contributes": {
     "snippets": [
       { "language": "go", "path": "./go.json" },
-      { "language": "sql", "path": "./sql.json" }
+      { "language": "sql", "path": "./sql.json" },
+      { "language": "make", "path": "./make.json" }
     ]
   }
 }
