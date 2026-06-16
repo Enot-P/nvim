@@ -149,6 +149,67 @@ local function sqlc_generate()
 end
 
 -- ============================================================
+-- 🧩 impl: выбор интерфейса из списка (без ручного pkg.Name)
+-- ============================================================
+
+-- По выбранному символу собираем аргумент для `impl`:
+--  - тот же пакет, что и структура → просто имя интерфейса
+--  - другой пакет → полный import-path + ".Name" (его impl всегда резолвит)
+local function resolve_iface(item, origin_buf)
+    local name = item and item.name
+    if not name or name == "" then
+        vim.notify("Не удалось определить имя интерфейса", vim.log.levels.ERROR)
+        return nil
+    end
+
+    local sym_dir = item.file and vim.fn.fnamemodify(item.file, ":h")
+    local cur_dir = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(origin_buf), ":h")
+
+    -- тот же пакет — квалификатор не нужен
+    if not sym_dir or sym_dir == cur_dir then
+        return name
+    end
+
+    local out = vim.system(
+        { "go", "list", "-f", "{{.ImportPath}}" },
+        { cwd = sym_dir, text = true }
+    ):wait()
+
+    if out.code == 0 then
+        local importpath = vim.trim(out.stdout or "")
+        if importpath ~= "" then
+            return importpath .. "." .. name
+        end
+    end
+
+    -- fallback: имя пакета из директории (может не совпасть с package-именем)
+    vim.notify("go list не дал import-path, использую имя директории", vim.log.levels.WARN)
+    return vim.fn.fnamemodify(sym_dir, ":t") .. "." .. name
+end
+
+local function impl_interface_picker()
+    -- курсор должен стоять на структуре; запоминаем буфер, т.к. picker уводит фокус
+    local origin_buf = vim.api.nvim_get_current_buf()
+
+    Snacks.picker.lsp_workspace_symbols({
+        filter = { default = { "Interface" }, go = { "Interface" } },
+        confirm = function(picker, item)
+            picker:close()
+            if not item then
+                return
+            end
+            -- после close фокус возвращается в исходное окно/структуру
+            vim.schedule(function()
+                local iface = resolve_iface(item, origin_buf)
+                if iface then
+                    require("gopher.impl").impl(iface)
+                end
+            end)
+        end,
+    })
+end
+
+-- ============================================================
 -- 🎮 keymaps
 -- ============================================================
 
@@ -205,13 +266,14 @@ vim.api.nvim_create_autocmd("FileType", {
         map("<leader>gts", "<cmd>GoTestsAdd<cr>", "Generate tests")
         map("<leader>gie", "<cmd>GoIfErr<cr>", "Add if err")
         map("<leader>gdc", "<cmd>GoCmt<cr>", "Add doc comment")
-        map("<leader>gii", function()
+        map("<leader>gii", impl_interface_picker, "Impl interface (picker)")
+        map("<leader>giI", function()
             vim.ui.input({ prompt = "Interface (например: io.Reader): " }, function(input)
                 if input and input ~= "" then
                     vim.cmd("GoImpl " .. input)
                 end
             end)
-        end, "Impl interface")
+        end, "Impl interface (ручной ввод)")
 
         -- migrations
         vim.keymap.set("n", "<leader>gmc", migrate_create, { desc = "Migrate: create" })
