@@ -25,27 +25,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local client = clients[1]
         local opts = { buffer = args.buf }
 
+        -- gd оставляем кастомным (нативного дефолта нет).
+        -- K (hover), gri (implementation), grn (rename), gra (code action) — из коробки в 0.11.
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
 
-        vim.keymap.set(
-            "n",
-            "gi",
-            vim.lsp.buf.implementation,
-            vim.tbl_extend("force", opts, { desc = "Go to implementation" })
-        )
-
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
-
-        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
-
         vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
-
-        vim.keymap.set(
-            "n",
-            "<leader>ca",
-            vim.lsp.buf.code_action,
-            vim.tbl_extend("force", opts, { desc = "Code actions" })
-        )
 
         vim.keymap.set(
             "n",
@@ -61,19 +45,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.tbl_extend("force", opts, { desc = "Show diagnostics" })
         )
 
-        vim.keymap.set(
-            "n",
-            "[d",
-            function() vim.diagnostic.jump({ count = -1 }) end,
-            vim.tbl_extend("force", opts, { desc = "Previous diagnostic" })
-        )
-
-        vim.keymap.set(
-            "n",
-            "]d",
-            function() vim.diagnostic.jump({ count = 1 }) end,
-            vim.tbl_extend("force", opts, { desc = "Next diagnostic" })
-        )
+        -- [d / ]d (переход по диагностикам) — нативные дефолты с 0.10.
 
         vim.keymap.set("n", "<leader>q", function()
             vim.diagnostic.setqflist()
@@ -82,6 +54,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         if client and client:supports_method("textDocument/codeLens") then
             vim.lsp.codelens.enable(true, { bufnr = args.buf })
+        end
+
+        if client and client:supports_method("textDocument/inlayHint") then
+            vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
         end
     end,
 })

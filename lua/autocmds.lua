@@ -30,15 +30,19 @@ vim.api.nvim_create_autocmd("FileType", {
     pattern = "markdown",
     callback = function()
         vim.opt_local.wrap = true
-        vim.keymap.set("n", "k", "gk")
-        vim.keymap.set("n", "j", "gj")
+        vim.keymap.set("n", "k", "gk", { buffer = true })
+        vim.keymap.set("n", "j", "gj", { buffer = true })
     end,
 })
 
--- Выключает подсветку курсора, когда покидаешь окно
+-- Подсветка курсора только в активном окне
 vim.api.nvim_create_autocmd("WinLeave", {
     pattern = "*",
     callback = function() vim.wo.cursorline = false end,
+})
+vim.api.nvim_create_autocmd("WinEnter", {
+    pattern = "*",
+    callback = function() vim.wo.cursorline = true end,
 })
 
 -- Открывает help файлы вертикально справа

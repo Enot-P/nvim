@@ -42,7 +42,7 @@ vim.opt.expandtab = true -- табы = пробелы
 vim.opt.smartindent = true -- умный авто-отступ
 vim.opt.autoindent = true -- копировать отступ строки
 vim.opt.smarttab = true -- Tab в начале строки умный
-vim.opt.cindent = true -- C-style отступы
+-- cindent убран: конфликтовал с treesitter indent на не-C файлах
 
 -- ============================================================================
 -- ПОИСК
@@ -108,8 +108,8 @@ vim.opt.splitbelow = true -- split вниз
 -- COMPLETION
 -- ============================================================================
 
-vim.opt.completeopt = "menuone,noinsert,noselect" -- поведение автокомплита
-vim.opt.wildmenu = true -- улучшенный cmd completion
+-- completeopt убран: автодополнением в insert управляет blink.cmp
+vim.opt.wildmenu = true -- улучшенный cmd completion (для : командной строки)
 vim.opt.wildmode = "longest:full,full" -- логика Tab completion
 
 -- ============================================================================

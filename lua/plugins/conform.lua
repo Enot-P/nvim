@@ -22,9 +22,8 @@ require("conform").setup({
             prepend_args = { "--config-path", vim.fn.stdpath("config") .. "/stylua.toml" },
         },
         sql_formatter = {
-            command = "npx",
+            command = "sql-formatter",
             args = {
-                "sql-formatter",
                 "-c",
                 vim.fn.stdpath("config") .. "/.sql-formatter.json",
             },
