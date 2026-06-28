@@ -1,6 +1,7 @@
 vim.lsp.enable("lua_ls")
 vim.lsp.enable("pyright")
 vim.lsp.enable("gopls")
+vim.lsp.enable("golangci_lint_ls")
 vim.lsp.enable("postgres_lsp")
 vim.lsp.enable("protols")
 vim.lsp.enable("yamlls")
@@ -56,8 +57,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.lsp.codelens.enable(true, { bufnr = args.buf })
         end
 
-        if client and client:supports_method("textDocument/inlayHint") then
-            vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
-        end
+        -- Inlay hints выключены по умолчанию; включаются вручную через <leader>uh.
     end,
 })

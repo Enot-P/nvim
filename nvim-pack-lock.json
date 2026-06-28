@@ -16,6 +16,10 @@
       "rev": "6c6a89d5b068b5251c8bdf0dd57bb921bcfeeb09",
       "src": "https://github.com/goolord/alpha-nvim"
     },
+    "avante.nvim": {
+      "rev": "90a0e77c63251c367935caeaa0070670522c960b",
+      "src": "https://github.com/yetone/avante.nvim"
+    },
     "blink.cmp": {
       "rev": "62c3d54f7d739ee46f850ea6832383e3b7ca2ee1",
       "src": "https://github.com/saghen/blink.cmp",
@@ -220,7 +224,7 @@
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "pretty-comment.nvim": {
-      "rev": "3b55388d7badb92adc649be36dd867a0abf325f9",
+      "rev": "f0d030edcf908dab73aaab273c39e6c154a4daee",
       "src": "https://github.com/Cartoone9/pretty-comment.nvim"
     },
     "promise-async": {
@@ -316,7 +320,7 @@
       "src": "https://github.com/folke/which-key.nvim"
     },
     "yanky.nvim": {
-      "rev": "784188e0a7363e762e53140f39124d786aec0832",
+      "rev": "020c22d0cfa60358569e49d1d7b91630f175aef0",
       "src": "https://github.com/gbprod/yanky.nvim"
     }
   }

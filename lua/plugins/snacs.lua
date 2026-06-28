@@ -165,7 +165,9 @@ map("n", "<leader>uC", function() snacks.picker.colorschemes() end, { desc = "Co
 -- LSP
 map("n", "gd", function() snacks.picker.lsp_definitions() end, { desc = "Goto Definition" })
 map("n", "gD", function() snacks.picker.lsp_declarations() end, { desc = "Goto Declaration" })
-map("n", "gr", function() snacks.picker.lsp_references() end, { desc = "References", nowait = true })
+-- grr (а не голый gr): иначе gr с nowait перехватывал ввод и блокировал
+-- нативные grn (rename) / gra (code action) / gri / grt.
+map("n", "grr", function() snacks.picker.lsp_references() end, { desc = "References" })
 map("n", "gI", function() snacks.picker.lsp_implementations() end, { desc = "Goto Implementation" })
 map("n", "gy", function() snacks.picker.lsp_type_definitions() end, { desc = "Goto T[y]pe Definition" })
 map("n", "gai", function() snacks.picker.lsp_incoming_calls() end, { desc = "Calls Incoming" })
@@ -188,7 +190,7 @@ map({ "n", "t" }, "<C-/>", function() snacks.terminal() end, { desc = "Toggle Te
 map({ "n", "t" }, "<C-_>", function() snacks.terminal() end, { desc = "Toggle Terminal" })
 map("n", "<C-_>", function() snacks.terminal() end, { desc = "which_key_ignore" })
 
-vim.opt.timeoutlen = 50
+vim.opt.timeoutlen = 300 -- было 50 — не хватало времени добрать grn/gra/grt и т.п.
 map({ "n", "t" }, "]]", function() snacks.words.jump(vim.v.count1) end, { desc = "Next Reference" })
 map({ "n", "t" }, "[[", function() snacks.words.jump(-vim.v.count1) end, { desc = "Prev Reference" })
 
@@ -213,6 +215,7 @@ vim.api.nvim_create_autocmd("User", {
             .option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
             :map("<leader>uc")
         snacks.toggle.treesitter():map("<leader>uT")
+        snacks.toggle.inlay_hints():map("<leader>uh")
         snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
         snacks.toggle.indent():map("<leader>ug")
         snacks.toggle.dim():map("<leader>uD")

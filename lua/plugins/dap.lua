@@ -35,6 +35,43 @@ end, { desc = "Debug: Clear all breakpoints" })
 map("n", "<leader>dt", require("dap-go").debug_test, { desc = "Debug: Test under cursor" })
 map("n", "<leader>dT", require("dap-go").debug_last_test, { desc = "Debug: Repeat last test" })
 
+-- Attach к запущенному dlv (Docker/k8s/headless) и к локальному процессу.
+-- dap-go регистрирует адаптер "go" (через delve) — переиспользуем его.
+dap.configurations.go = dap.configurations.go or {}
+vim.list_extend(dap.configurations.go, {
+    {
+        type = "go",
+        name = "Attach: remote (dlv --headless)",
+        mode = "remote",
+        request = "attach",
+        host = function() return vim.fn.input("Host [127.0.0.1]: ", "127.0.0.1") end,
+        port = function() return tonumber(vim.fn.input("Port [40000]: ", "40000")) end,
+        -- В контейнере исходники часто лежат по другому пути — маппинг local↔remote.
+        substitutePath = {
+            { from = "${workspaceFolder}", to = "/app" },
+        },
+    },
+    {
+        type = "go",
+        name = "Attach: local process",
+        mode = "local",
+        request = "attach",
+        processId = require("dap.utils").pick_process,
+    },
+})
+
+map("n", "<leader>da", function()
+    require("dap").run({
+        type = "go",
+        name = "Attach: remote (dlv --headless)",
+        mode = "remote",
+        request = "attach",
+        host = vim.fn.input("Host [127.0.0.1]: ", "127.0.0.1"),
+        port = tonumber(vim.fn.input("Port [40000]: ", "40000")),
+        substitutePath = { { from = "${workspaceFolder}", to = "/app" } },
+    })
+end, { desc = "Debug: Attach to remote dlv" })
+
 ----------- SETTINGS -------------
 vim.fn.sign_define("DapBreakpoint", {
     text = "●",
