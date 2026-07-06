@@ -282,17 +282,6 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
--- авто lsp restart при скачке пакета
-vim.api.nvim_create_autocmd("BufWritePost", {
-    pattern = { "go.mod", "go.sum" },
-    callback = function()
-        vim.defer_fn(function()
-            vim.cmd("LspRestart")
-            vim.notify("📦 go.mod изменился — LSP перезапущен", vim.log.levels.INFO)
-        end, 500) -- небольшая задержка, чтобы go mod tidy успел отработать
-    end,
-})
-
 -------------- PACKAGES -----------------
 
 vim.pack.add({
