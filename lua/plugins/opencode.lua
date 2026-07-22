@@ -19,4 +19,11 @@ require("opencode").setup({
             preset = 'nerdfonts',
         },
     },
+    keymap = {
+        editor = {
+            -- <leader>od отдан diffview
+            ['<leader>od'] = false,
+            ['<leader>oD'] = { 'diff_open', desc = 'Open diff view' },
+        },
+    },
 })

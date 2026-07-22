@@ -1,3 +1,16 @@
+-- Не поднимаем сервер в буферах, чьё имя не является путём к файлу (diffview://…, fugitive://…):
+-- их URI уходит серверу как есть, и gopls отвечает JSON RPC parse error.
+-- on_dir(nil) => корень по-прежнему считается из root_markers конкретного сервера.
+vim.lsp.config("*", {
+    root_dir = function(bufnr, on_dir)
+        local name = vim.api.nvim_buf_get_name(bufnr)
+        if name:match("^%a[%w+.%-]*://") then
+            return
+        end
+        on_dir(nil)
+    end,
+})
+
 vim.lsp.enable("lua_ls")
 vim.lsp.enable("pyright")
 vim.lsp.enable("gopls")
