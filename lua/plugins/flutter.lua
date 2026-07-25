@@ -125,17 +125,11 @@ local function run_barrel_create(dir)
     })
 end
 
--- Add action and key to snacks.explorer via the live config
----@diagnostic disable-next-line: undefined-field
-local exp_config = require("snacks").config.picker.sources.explorer
-exp_config.actions = exp_config.actions or {}
-exp_config.actions.dart_barrel_create = function(picker, item)
-    local dir = (item.dir and item.file)
-        or (item.file and vim.fn.isdirectory(item.file) == 1 and item.file)
-        or picker:dir()
-    run_barrel_create(dir)
-end
-exp_config.win = exp_config.win or {}
-exp_config.win.list = exp_config.win.list or {}
-exp_config.win.list.keys = exp_config.win.list.keys or {}
-exp_config.win.list.keys["ge"] = "dart_barrel_create"
+-- Раньше это была экшен-кнопка `ge` в snacks.explorer; explorer заменён на yazi,
+-- поэтому — команда с опциональным аргументом-директорией (по умолчанию каталог текущего файла).
+vim.api.nvim_create_user_command("DartBarrelCreate", function(opts)
+    local dir = opts.args ~= "" and vim.fn.fnamemodify(opts.args, ":p") or vim.fn.expand("%:p:h")
+    run_barrel_create((dir:gsub("/$", "")))
+end, { nargs = "?", complete = "dir", desc = "barrel_create для директории" })
+
+vim.keymap.set("n", "<leader>ge", "<cmd>DartBarrelCreate<cr>", { desc = "Dart: barrel_create (каталог файла)" })

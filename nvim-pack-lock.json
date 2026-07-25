@@ -322,6 +322,10 @@
     "yanky.nvim": {
       "rev": "020c22d0cfa60358569e49d1d7b91630f175aef0",
       "src": "https://github.com/gbprod/yanky.nvim"
+    },
+    "yazi.nvim": {
+      "rev": "41de141381b4046f565d28f8a1ac78468d74fce9",
+      "src": "https://github.com/mikavilpas/yazi.nvim"
     }
   }
 }

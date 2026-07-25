@@ -67,18 +67,7 @@ snacks.setup({
     indent = { enabled = true },
     input = { enabled = true },
     notifier = { enabled = true, timeout = 3000 },
-    picker = {
-        sources = {
-            explorer = {
-                auto_close = true,
-                replace_netrw = true,
-                trash = true,
-                layout = "right",
-                hidden = true,
-                git_untracked = false,
-            },
-        },
-    },
+    picker = { enabled = true },
     quickfile = { enabled = true },
     scope = { enabled = true },
     scroll = { enabled = true },
@@ -89,11 +78,11 @@ snacks.setup({
 -- ── Keymaps ───────────────────────────────────────────────────────────────────
 local map = vim.keymap.set
 
--- Top Pickers & Explorer
+-- Top Pickers
+-- Файловый менеджер — yazi (<leader>e), см. plugins/yazi.lua
 map("n", "<leader><space>", function() snacks.picker.smart() end, { desc = "Smart Find Files" })
 map("n", "<leader>/", function() snacks.picker.grep() end, { desc = "Grep" })
 map("n", "<leader>nn", function() snacks.picker.notifications() end, { desc = "Notification History" })
-map("n", "<leader>e", function() snacks.explorer() end, { desc = "File Explorer" })
 
 -- find
 
