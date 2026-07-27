@@ -228,10 +228,17 @@ vim.api.nvim_create_autocmd("FileType", {
         map("<leader>gs", sqlc_generate, "SQLC Generate")
 
         -- run/test
-        map("<leader>gor", function() vim.cmd("terminal go run " .. vim.fn.expand("%:p:h")) end, "Run")
-        map("<leader>gorr", function() vim.cmd("terminal go run -race " .. vim.fn.expand("%:p:h")) end, "Run with race")
+        -- go определяет модуль по cwd, а не по аргументу-пути, поэтому запускаем
+        -- из директории файла: иначе в репо без go.mod в корне будет
+        -- "cannot find main module"
+        local in_file_dir = function(cmd)
+            vim.cmd("terminal cd " .. vim.fn.shellescape(vim.fn.expand("%:p:h")) .. " && " .. cmd)
+        end
+
+        map("<leader>gor", function() in_file_dir("go run .") end, "Run")
+        map("<leader>gorr", function() in_file_dir("go run -race .") end, "Run with race")
         map("<leader>got", "<cmd>terminal go test ./...<cr>", "Test")
-        map("<leader>goT", function() vim.cmd("terminal go test " .. vim.fn.expand("%:p:h")) end, "Test file")
+        map("<leader>goT", function() in_file_dir("go test .") end, "Test file")
         map("<leader>gof", "<cmd>terminal go test -fuzz=FuzzParsePrice -fuzztime=60s -v<cr>", "Fuzz: ParsePrice")
         map("<leader>goF", function()
             vim.ui.input({ prompt = "Fuzz function name (или . для всех): " }, function(name)
