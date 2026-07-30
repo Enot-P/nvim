@@ -19,10 +19,13 @@ require("claudecode").setup({
             width = 0.35,
             border = "rounded",
             keys = {
+                -- mode = "n", а не "t": в терминальном режиме этот маппинг съедал
+                -- букву "q" в промпте Claude вместо того, чтобы её печатать.
+                -- Выйти в normal mode -- <C-q> (см. lua/terminal.lua), дальше q скрывает.
                 claude_hide = {
                     "q",
                     function(self) self:hide() end,
-                    mode = "t",
+                    mode = "n",
                 },
             },
         },
@@ -31,7 +34,10 @@ require("claudecode").setup({
     diff_opts = {
         -- "unified" = инлайн-дифф в стиле VS Code; "vertical" = side-by-side; "horizontal" = сверху/снизу
         layout = "unified",
-        open_in_new_tab = false, -- true = каждый дифф в отдельной вкладке
+        -- дифф открывается в своей вкладке: [дифф | терминал Claude справа], а рабочая
+        -- вкладка с кодом не трогается вообще -- на закрытии диффа вкладка просто закрывается
+        open_in_new_tab = true,
+        hide_terminal_in_new_tab = false, -- true = дифф во всю ширину вкладки, без терминала рядом
         keep_terminal_focus = false, -- true = фокус остаётся в терминале при открытии диффа
     },
 

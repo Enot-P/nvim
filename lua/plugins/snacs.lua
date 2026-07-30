@@ -180,8 +180,10 @@ map({ "n", "t" }, "<C-_>", function() snacks.terminal() end, { desc = "Toggle Te
 map("n", "<C-_>", function() snacks.terminal() end, { desc = "which_key_ignore" })
 
 vim.opt.timeoutlen = 300 -- было 50 — не хватало времени добрать grn/gra/grt и т.п.
-map({ "n", "t" }, "]]", function() snacks.words.jump(vim.v.count1) end, { desc = "Next Reference" })
-map({ "n", "t" }, "[[", function() snacks.words.jump(-vim.v.count1) end, { desc = "Prev Reference" })
+-- только normal mode: в терминальном режиме "[[" — это обычный ввод (Lua, шелл),
+-- а прыжок по ссылкам в терминальном буфере всё равно бессмыслен
+map("n", "]]", function() snacks.words.jump(vim.v.count1) end, { desc = "Next Reference" })
+map("n", "[[", function() snacks.words.jump(-vim.v.count1) end, { desc = "Prev Reference" })
 
 vim.api.nvim_create_autocmd("User", {
     pattern = "VeryLazy",

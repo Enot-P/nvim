@@ -268,8 +268,35 @@ vim.api.nvim_create_autocmd("FileType", {
         )
 
         -- gopher
-        map("<leader>gtg", "<cmd>GoTagAdd json<cr>", "Add json tags")
-        map("<leader>gtr", "<cmd>GoTagRm json<cr>", "Remove json tags")
+        -- gomodifytags вызывается с -file/-w, то есть работает с файлом на диске,
+        -- а не с буфером: несохранённые правки он не видит, а его результат их ещё
+        -- и затирает в буфере. Поэтому сохраняем перед каждым вызовом. Файл при
+        -- этом обязан парситься — на синтаксической ошибке команда откажет целиком.
+        local tag_cmd = function(cmd, args, range)
+            vim.cmd("silent! update")
+            vim.cmd((range or "") .. cmd .. " " .. args)
+        end
+
+        map("<leader>gtg", function() tag_cmd("GoTagAdd", "json") end, "Add json tags")
+        map("<leader>gtr", function() tag_cmd("GoTagRm", "json") end, "Remove json tags")
+
+        -- Любой тег, а не только json. Аргумент без '=' — тег, с '=' — опция
+        -- (json=omitempty), несколько — через пробел.
+        local tag_add = function(range)
+            vim.ui.input({ prompt = "Tag (yaml, db, json=omitempty): " }, function(input)
+                if input and input ~= "" then
+                    tag_cmd("GoTagAdd", input, range)
+                end
+            end)
+        end
+
+        map("<leader>gta", function() tag_add() end, "Add any tag")
+        vim.keymap.set("v", "<leader>gta", function()
+            -- выходим из visual, чтобы проставились метки '< и '>: vim.ui.input
+            -- асинхронный, к моменту колбэка выделения уже не будет
+            vim.cmd("normal! \27")
+            tag_add(("%d,%d"):format(vim.fn.line("'<"), vim.fn.line("'>")))
+        end, { buffer = true, desc = "Add any tag (выделенные поля)" })
         map("<leader>gts", "<cmd>GoTestsAdd<cr>", "Generate tests")
         map("<leader>gie", "<cmd>GoIfErr<cr>", "Add if err")
         map("<leader>gdc", "<cmd>GoCmt<cr>", "Add doc comment")
