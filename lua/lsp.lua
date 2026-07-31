@@ -52,9 +52,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local client = clients[1]
         local opts = { buffer = args.buf }
 
-        -- gd оставляем кастомным (нативного дефолта нет).
-        -- K (hover), gri (implementation), grn (rename), gra (code action) — из коробки в 0.11.
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
+        -- gd здесь не переопределяем: он уже висит глобально на snacks.picker.lsp_definitions
+        -- (snacs.lua), рядом с gD/gy/gr. Буферный маппинг перебивал глобальный, из-за чего
+        -- в LSP-буферах работал нативный прыжок без пикера, а пикер срабатывал только там,
+        -- где LSP нет, — и отвечал "No results found".
+        -- K (hover), gri (implementation), grn (rename), gra (code action),
+        -- grt (type definition) — из коробки в 0.11+.
 
         vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
 
