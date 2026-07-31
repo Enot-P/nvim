@@ -15,6 +15,12 @@ require("blink.cmp").setup({
         ["<C-d>"] = { "scroll_documentation_down" },
         ["<C-u>"] = { "scroll_documentation_up" },
     },
+    -- Раскрываем сниппеты через LuaSnip, а не через нативный vim.snippet.
+    -- У vim.snippet одна сессия на буфер: вариант от gopls, приходящий в
+    -- snippet-формате (функции, auto_brackets), затирал активный сниппет, и
+    -- Tab после этого вставлял табуляцию вместо прыжка по табстопам.
+    -- У LuaSnip сессии складываются в стек, вложенный сниппет внешний не рушит.
+    snippets = { preset = "luasnip" },
     appearance = {
         nerd_font_variant = "mono",
     },
