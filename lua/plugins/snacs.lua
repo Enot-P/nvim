@@ -28,6 +28,15 @@ snacks.setup({
             max_height = 40,
         },
         math = { enabled = false }, -- LaTeX-формулы: нужен tectonic/pdflatex, не ставили
+        convert = {
+            -- Снимок делается под масштаб терминала (~1.1), из-за чего мелкий текст
+            -- в диаграммах мылит. Рендерим вчетверо плотнее и отдаём kitty уменьшать:
+            -- downscale читается заметно лучше, чем растягивание мелкого PNG.
+            mermaid = function()
+                local theme = vim.o.background == "light" and "neutral" or "dark"
+                return { "-i", "{src}", "-o", "{file}", "-b", "transparent", "-t", theme, "-s", "4" }
+            end,
+        },
     },
     terminal = {
         win = {
@@ -297,3 +306,46 @@ local function diagram_fullscreen()
 end
 
 vim.keymap.set("n", "<leader>id", diagram_fullscreen, { desc = "Диаграмма под курсором на весь экран" })
+
+-- <leader>iD -- та же диаграмма, но во внешнем просмотрщике и вектором.
+-- Терминал рисует по сетке ячеек, поэтому мелкий текст в больших схемах мылит
+-- при любом разрешении PNG. SVG масштабируется без потерь, а системный
+-- просмотрщик (у нас на png/svg назначен chromium) даёт зум и панорамирование.
+local function diagram_external()
+    local lang, body = fenced_block_at(0, vim.api.nvim_win_get_cursor(0)[1])
+    if lang ~= "mermaid" then
+        return snacks.notify.warn("Курсор не в mermaid-блоке", { title = "Диаграмма" })
+    end
+    if not body or #body == 0 then
+        return snacks.notify.warn("Блок пустой", { title = "Диаграмма" })
+    end
+
+    local src = vim.fn.tempname() .. ".mmd"
+    vim.fn.writefile(body, src)
+    local out = vim.fn.tempname() .. ".svg"
+
+    -- Фон задаём явно: с transparent светлый текст тёмной темы теряется на белой
+    -- странице браузера.
+    local dark = vim.o.background ~= "light"
+    local theme = dark and "dark" or "default"
+    local bg = dark and "#1e1e2e" or "white"
+
+    snacks.notify.info("Рендерю диаграмму…", { title = "Диаграмма" })
+    vim.system(
+        { "mmdc", "-i", src, "-o", out, "-b", bg, "-t", theme },
+        { text = true },
+        function(res)
+            vim.schedule(function()
+                if res.code ~= 0 or vim.fn.filereadable(out) == 0 then
+                    return snacks.notify.error(
+                        "mmdc вернул " .. res.code .. ":\n" .. (res.stderr or ""),
+                        { title = "Диаграмма" }
+                    )
+                end
+                vim.ui.open(out)
+            end)
+        end
+    )
+end
+
+vim.keymap.set("n", "<leader>iD", diagram_external, { desc = "Диаграмма во внешнем просмотрщике (SVG)" })
