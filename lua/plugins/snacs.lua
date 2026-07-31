@@ -247,10 +247,15 @@ vim.api.nvim_create_autocmd("User", {
     end,
 })
 
--- ── Диаграмма на весь экран ───────────────────────────────────────────────────
--- Всплывающее окно ограничено сеткой ячеек, и большие sequenceDiagram в нём не
--- прочитать. <leader>id рендерит блок под курсором и открывает PNG отдельной
--- вкладкой: там нет сплитов, картинке достаётся всё окно.
+
+-- ── Просмотр mermaid-диаграмм ─────────────────────────────────────────────────
+-- <leader>id -- растр отдельной вкладкой nvim: быстро, не выходя из редактора.
+-- <leader>iD -- SVG во внешнем просмотрщике: вектор, зум и панорамирование.
+--
+-- В normal mode источник -- блок ```mermaid под курсором (markdown-файлы).
+-- В visual mode -- просто выделенные строки. Второе нужно для вывода Claude и
+-- прочих терминалов: там markdown уже отрисован, ограждений ``` в тексте нет,
+-- и найти границы блока автоматически невозможно -- их задаёт выделение.
 
 ---@return string? lang, string[]? lines
 local function fenced_block_at(buf, row)
@@ -271,21 +276,74 @@ local function fenced_block_at(buf, row)
     end
 end
 
-local function diagram_fullscreen()
-    local lang, body = fenced_block_at(0, vim.api.nvim_win_get_cursor(0)[1])
-    if not lang then
-        return snacks.notify.warn("Курсор не внутри блока кода", { title = "Диаграмма" })
+-- Вывод терминала сдвинут вправо, а mermaid ждёт тип диаграммы в первой строке.
+local function dedent(lines)
+    local indent = math.huge
+    for _, l in ipairs(lines) do
+        if l:match("%S") then
+            indent = math.min(indent, #l:match("^%s*"))
+        end
     end
-    if lang ~= "mermaid" then
-        return snacks.notify.warn("Блок с языком `" .. lang .. "`, а не mermaid", { title = "Диаграмма" })
+    if indent == math.huge or indent == 0 then
+        return lines
     end
-    if not body or #body == 0 then
-        return snacks.notify.warn("Блок пустой", { title = "Диаграмма" })
+    return vim.tbl_map(function(l) return l:sub(indent + 1) end, lines)
+end
+
+local function trim_blank(lines)
+    local first, last = 1, #lines
+    while first <= last and not lines[first]:match("%S") do
+        first = first + 1
+    end
+    while last >= first and not lines[last]:match("%S") do
+        last = last - 1
+    end
+    return vim.list_slice(lines, first, last)
+end
+
+---@param visual boolean источник -- выделение, а не блок под курсором
+---@return string[]? body
+local function diagram_body(visual)
+    if not visual then
+        local lang, body = fenced_block_at(0, vim.api.nvim_win_get_cursor(0)[1])
+        if not lang then
+            snacks.notify.warn("Курсор не внутри блока кода", { title = "Диаграмма" })
+        elseif lang ~= "mermaid" then
+            snacks.notify.warn("Блок с языком `" .. lang .. "`, а не mermaid", { title = "Диаграмма" })
+        elseif not body or #body == 0 then
+            snacks.notify.warn("Блок пустой", { title = "Диаграмма" })
+        else
+            return body
+        end
+        return
     end
 
+    local from, to = vim.fn.line("v"), vim.fn.line(".")
+    if from > to then
+        from, to = to, from
+    end
+    vim.cmd("normal! \27") -- выходим из visual, дальше всё асинхронно
+    local body = trim_blank(dedent(vim.api.nvim_buf_get_lines(0, from - 1, to, false)))
+
+    -- Заголовок блока и остатки ограждений, если попали в выделение
+    if (body[1] or ""):match("^`*%s*mermaid%s*$") then
+        table.remove(body, 1)
+    end
+    if (body[#body] or ""):match("^```+$") then
+        table.remove(body)
+    end
+
+    if #body == 0 then
+        snacks.notify.warn("В выделении нет текста", { title = "Диаграмма" })
+        return
+    end
+    return body
+end
+
+-- Растр силами snacks: он же кеширует результат и умеет рисовать png в буфере.
+local function render_tab(body)
     local src = vim.fn.tempname() .. ".mmd"
     vim.fn.writefile(body, src)
-
     local convert = snacks.image.convert.convert({
         src = src,
         on_done = function(cv)
@@ -305,21 +363,8 @@ local function diagram_fullscreen()
     convert:run()
 end
 
-vim.keymap.set("n", "<leader>id", diagram_fullscreen, { desc = "Диаграмма под курсором на весь экран" })
-
--- <leader>iD -- та же диаграмма, но во внешнем просмотрщике и вектором.
--- Терминал рисует по сетке ячеек, поэтому мелкий текст в больших схемах мылит
--- при любом разрешении PNG. SVG масштабируется без потерь, а системный
--- просмотрщик (у нас на png/svg назначен chromium) даёт зум и панорамирование.
-local function diagram_external()
-    local lang, body = fenced_block_at(0, vim.api.nvim_win_get_cursor(0)[1])
-    if lang ~= "mermaid" then
-        return snacks.notify.warn("Курсор не в mermaid-блоке", { title = "Диаграмма" })
-    end
-    if not body or #body == 0 then
-        return snacks.notify.warn("Блок пустой", { title = "Диаграмма" })
-    end
-
+-- Вектор напрямую через mmdc: snacks умеет только растр.
+local function render_external(body)
     local src = vim.fn.tempname() .. ".mmd"
     vim.fn.writefile(body, src)
     local out = vim.fn.tempname() .. ".svg"
@@ -331,21 +376,29 @@ local function diagram_external()
     local bg = dark and "#1e1e2e" or "white"
 
     snacks.notify.info("Рендерю диаграмму…", { title = "Диаграмма" })
-    vim.system(
-        { "mmdc", "-i", src, "-o", out, "-b", bg, "-t", theme },
-        { text = true },
-        function(res)
-            vim.schedule(function()
-                if res.code ~= 0 or vim.fn.filereadable(out) == 0 then
-                    return snacks.notify.error(
-                        "mmdc вернул " .. res.code .. ":\n" .. (res.stderr or ""),
-                        { title = "Диаграмма" }
-                    )
-                end
-                vim.ui.open(out)
-            end)
-        end
-    )
+    vim.system({ "mmdc", "-i", src, "-o", out, "-b", bg, "-t", theme }, { text = true }, function(res)
+        vim.schedule(function()
+            if res.code ~= 0 or vim.fn.filereadable(out) == 0 then
+                return snacks.notify.error(
+                    "mmdc вернул " .. res.code .. ":\n" .. (res.stderr or ""),
+                    { title = "Диаграмма" }
+                )
+            end
+            vim.ui.open(out)
+        end)
+    end)
 end
 
-vim.keymap.set("n", "<leader>iD", diagram_external, { desc = "Диаграмма во внешнем просмотрщике (SVG)" })
+local function diagram(visual, render)
+    return function()
+        local body = diagram_body(visual)
+        if body then
+            render(body)
+        end
+    end
+end
+
+map("n", "<leader>id", diagram(false, render_tab), { desc = "Диаграмма под курсором -- вкладкой" })
+map("x", "<leader>id", diagram(true, render_tab), { desc = "Диаграмма из выделения -- вкладкой" })
+map("n", "<leader>iD", diagram(false, render_external), { desc = "Диаграмма под курсором -- просмотрщик" })
+map("x", "<leader>iD", diagram(true, render_external), { desc = "Диаграмма из выделения -- просмотрщик" })
