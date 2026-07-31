@@ -41,18 +41,25 @@ local function setup_treesitter()
     ts.setup()
 
     -- Доустанавливаем только то, чего ещё нет (аналог auto_install/ensure_installed).
-    local installed = {}
+    -- Язык считается установленным, только если есть И парсер, И queries: ветка `main`
+    -- держит их рядом в install_dir, и без queries подсветка молча не работает.
+    local have_parser, have_queries = {}, {}
     for _, lang in ipairs(ts.get_installed("parsers")) do
-        installed[lang] = true
+        have_parser[lang] = true
+    end
+    for _, lang in ipairs(ts.get_installed("queries")) do
+        have_queries[lang] = true
     end
     local missing = {}
     for _, lang in ipairs(ensure_installed) do
-        if not installed[lang] then
+        if not (have_parser[lang] and have_queries[lang]) then
             missing[#missing + 1] = lang
         end
     end
     if #missing > 0 then
-        pcall(function() ts.install(missing) end)
+        -- force: без него install пропускает язык, у которого уже есть парсер,
+        -- и queries так и не докачиваются.
+        pcall(function() ts.install(missing, { force = true }) end)
     end
 
     -- textobjects (ветка main): select / move / swap.
