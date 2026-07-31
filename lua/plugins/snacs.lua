@@ -2,8 +2,31 @@ vim.pack.add({ "https://github.com/folke/snacks.nvim" })
 
 local snacks = require("snacks")
 
+-- mmdc (mermaid-cli) ходит через puppeteer, а тот по умолчанию ищет свой
+-- chrome-headless-shell в ~/.cache/puppeteer, которого нет. Отдаём системный chromium,
+-- иначе конвертация диаграмм молча падает и картинка не появляется.
+if vim.env.PUPPETEER_EXECUTABLE_PATH == nil and vim.fn.executable("chromium") == 1 then
+    vim.env.PUPPETEER_EXECUTABLE_PATH = vim.fn.exepath("chromium")
+end
+
 snacks.setup({
     bigfile = { enabled = true },
+    -- Картинки и mermaid-диаграммы в буфере (kitty graphics protocol).
+    -- Блок ```mermaid в markdown конвертируется через mmdc и показывается по курсору,
+    -- при этом остаётся обычным текстом — GitHub отрисует его сам.
+    image = {
+        enabled = true,
+        doc = {
+            -- Картинка не врезается в текст, а всплывает в отдельном окне, когда
+            -- курсор заходит на блок: вёрстка не разъезжается, и диаграмма не висит
+            -- на строке буфера — значит render-markdown её ничем не перекрывает.
+            inline = false,
+            float = true,
+            max_width = 70,
+            max_height = 30,
+        },
+        math = { enabled = false }, -- LaTeX-формулы: нужен tectonic/pdflatex, не ставили
+    },
     terminal = {
         win = {
             position = "float",
