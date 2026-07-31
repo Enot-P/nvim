@@ -18,16 +18,11 @@ require("claudecode").setup({
             position = "right",
             width = 0.35,
             border = "rounded",
-            keys = {
-                -- mode = "n", а не "t": в терминальном режиме этот маппинг съедал
-                -- букву "q" в промпте Claude вместо того, чтобы её печатать.
-                -- Выйти в normal mode -- <C-q> (см. lua/terminal.lua), дальше q скрывает.
-                claude_hide = {
-                    "q",
-                    function(self) self:hide() end,
-                    mode = "n",
-                },
-            },
+            -- q скрывать окно здесь не задаём: это уже делает `q = "hide"` из
+            -- terminal.win.keys (snacs.lua) и дефолтов snacks, причём тоже только в
+            -- normal mode -- в терминальном режиме буква q печатается как обычно.
+            -- Выйти в normal mode -- <C-q> (см. lua/terminal.lua), дальше q скрывает.
+            -- Свой дубль на том же `q` вызывал предупреждение snacks о двойном маппинге.
         },
     },
 
