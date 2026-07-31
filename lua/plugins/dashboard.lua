@@ -34,20 +34,38 @@ dashboard.section.buttons.val = {
     dashboard.button("q", "󰠚" .. " Quit", "<Cmd>qa<CR>"),
 }
 
--- Секция сессий
+-- Секция сессий: последние 9 сессий, свежие сверху, по цифрам 1-9
+local MAX_SESSIONS = 9
+
 local function get_session_buttons()
-    local ok, resession = pcall(require, "resession")
+    local ok, sessions_mod = pcall(require, "plugins.resession")
     if not ok then
         return {}
     end
-    local sessions = resession.list()
-    if not sessions or #sessions == 0 then
+    local resession = require("resession")
+    local sessions = sessions_mod.list(MAX_SESSIONS)
+    if #sessions == 0 then
         return { { type = "text", val = "No sessions found 😥", opts = { position = "center" } } }
     end
+    -- выравниваем даты в колонку по ширине самого длинного имени
+    local width = 0
+    for _, name in ipairs(sessions) do
+        width = math.max(width, vim.fn.strdisplaywidth(sessions_mod.display_name(name)))
+    end
+
     local btns = {}
     for i, name in ipairs(sessions) do
-        local key = tostring(i - 1)
-        table.insert(btns, dashboard.button(key, "󱇒 " .. name, function() resession.load(name) end))
+        local key = tostring(i)
+        local label = sessions_mod.display_name(name)
+        local pad = string.rep(" ", width - vim.fn.strdisplaywidth(label) + 2)
+        table.insert(
+            btns,
+            dashboard.button(
+                key,
+                "󱇒 " .. label .. pad .. sessions_mod.timestamp(name),
+                function() resession.load(name) end
+            )
+        )
     end
     return btns
 end

@@ -4,8 +4,8 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "."
 
 -- Перемещение строк в визуальном режиме
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "moves lines down in visual selection" })
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "moves lines up in visual selection" })
+vim.keymap.set("x", "J", ":m '>+1<CR>gv=gv", { desc = "moves lines down in visual selection" })
+vim.keymap.set("x", "K", ":m '<-2<CR>gv=gv", { desc = "moves lines up in visual selection" })
 
 -- отцентровка экрана при перемещении по файлу
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "move down in buffer with cursor centered" })
@@ -14,11 +14,11 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
 -- Смещение не сбрасывает визуальный режим более
-vim.keymap.set("v", "<", "<gv", opts)
-vim.keymap.set("v", ">", ">gv", opts)
+vim.keymap.set("x", "<", "<gv", opts)
+vim.keymap.set("x", ">", ">gv", opts)
 
-vim.keymap.set("v", "p", '"_dP', opts) -- При вставке буффер обмена не заменяется
-vim.keymap.set({ "v" }, "<leader>d", [["_d]]) -- Удаление без вставки в буффео обмена
+vim.keymap.set("x", "p", '"_dP', opts) -- При вставке буффер обмена не заменяется
+vim.keymap.set({ "x" }, "<leader>d", [["_d]]) -- Удаление без вставки в буффео обмена
 vim.keymap.set("n", "x", '"_x', opts) -- Посимвольное удаление также ничего не делает
 
 -- глобальная замена слова под курсором (в рамках файла)
