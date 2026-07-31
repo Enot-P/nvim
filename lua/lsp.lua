@@ -9,6 +9,19 @@ vim.lsp.config("*", {
         end
         on_dir(nil)
     end,
+
+    -- Neovim по умолчанию не сообщает серверу о поддержке слежения за файлами на
+    -- Linux (protocol.lua: dynamicRegistration только для Darwin и Windows) --
+    -- считается, что тамошние бэкенды слабые. Из-за этого gopls не узнаёт о правках
+    -- go.mod/go.sum со стороны (`go get`, `go mod tidy`) и держит ошибки о
+    -- неимпортированном пакете, пока go.mod не откроешь в буфере вручную.
+    -- Здесь установлен inotifywait, поэтому nvim берёт нормальный inotify-бэкенд,
+    -- а не полинг (см. lsp/_watchfiles.lua) -- включаем.
+    capabilities = {
+        workspace = {
+            didChangeWatchedFiles = { dynamicRegistration = true },
+        },
+    },
 })
 
 vim.lsp.enable("lua_ls")
