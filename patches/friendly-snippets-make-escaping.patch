@@ -1,0 +1,22 @@
+diff --git a/snippets/make.json b/snippets/make.json
+index 57277ee..2e4e4c9 100644
+--- a/snippets/make.json
++++ b/snippets/make.json
+@@ -3,7 +3,7 @@
+         "prefix": "help",
+         "body": [
+             "help: ## Prints help for targets with comments",
+-            "\t@cat $(MAKEFILE_LIST) | grep -E '^[a-zA-Z_-]+:.*?## .*$$' | awk 'BEGIN {FS = \":.*?## \"}; {printf \"\\033[36m%-30s\\033[0m %s\\n\", $\\$1, $\\$2}'"
++            "\t@cat $$(MAKEFILE_LIST) | grep -E '^[a-zA-Z_-]+:.*?## .*$$' | awk 'BEGIN {FS = \":.*?## \"}; {printf \"\\033[36m%-30s\\033[0m %s\\n\", $$$$1, $$$$2}'"
+         ],
+         "description": "help target for self-documented Makefile"
+     },
+@@ -14,7 +14,7 @@
+     },
+     "print": {
+         "prefix": "print",
+-        "body": ["print-%: ; @echo $*=$($*)"],
++        "body": ["print-%: ; @echo $$*=$$($$*)"],
+         "description": "print"
+     },
+     "if else statement": {

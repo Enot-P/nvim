@@ -75,7 +75,8 @@ require("yazi").setup({
     yazi_floating_window_border = "rounded",
     -- поверх snacks-флоатов (styles.float.zindex = 50, терминал = 60)
     yazi_floating_window_zindex = 70,
-    -- по умолчанию тут telescope, которого у нас нет
+    -- по умолчанию тут telescope; он стоит (нужен remote-nvim и spell_suggest),
+    -- но как основной поиск используем snacks.picker
     integrations = {
         grep_in_directory = "snacks.picker",
         grep_in_selected_files = "snacks.picker",

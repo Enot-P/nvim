@@ -1,0 +1,26 @@
+diff --git a/lua/flutter-tools/lsp/color/init.lua b/lua/flutter-tools/lsp/color/init.lua
+index 746dbbd..74e0e77 100644
+--- a/lua/flutter-tools/lsp/color/init.lua
++++ b/lua/flutter-tools/lsp/color/init.lua
+@@ -9,9 +9,19 @@ function M.document_color()
+   }
+ 
+   local client = lsp_utils.get_dartls_client()
+-  if client and client.server_capabilities.colorProvider then
+-    client.request("textDocument/documentColor", params, nil, 0)
++  if not client or not client.server_capabilities.colorProvider then
++    return
++  end
++
++  -- Some versions of dartls report colorProvider capability but don't implement
++  -- the documentColor handler; avoid raising errors in that case.
++  if not client.handlers["textDocument/documentColor"] then
++    return
+   end
++
++  pcall(function()
++    client.request("textDocument/documentColor", params, nil, 0)
++  end)
+ end
+ 
+ M.on_document_color = require("flutter-tools.lsp.color.utils").on_document_color
