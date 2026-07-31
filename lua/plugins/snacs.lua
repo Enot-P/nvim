@@ -22,8 +22,10 @@ snacks.setup({
             -- на строке буфера — значит render-markdown её ничем не перекрывает.
             inline = false,
             float = true,
-            max_width = 70,
-            max_height = 30,
+            -- Размер в ячейках терминала: чем больше, тем крупнее диаграмма. Для
+            -- совсем больших схем этого всё равно мало -- есть <leader>id, см. ниже.
+            max_width = 100,
+            max_height = 40,
         },
         math = { enabled = false }, -- LaTeX-формулы: нужен tectonic/pdflatex, не ставили
     },
@@ -235,3 +237,63 @@ vim.api.nvim_create_autocmd("User", {
         snacks.toggle.dim():map("<leader>uD")
     end,
 })
+
+-- ── Диаграмма на весь экран ───────────────────────────────────────────────────
+-- Всплывающее окно ограничено сеткой ячеек, и большие sequenceDiagram в нём не
+-- прочитать. <leader>id рендерит блок под курсором и открывает PNG отдельной
+-- вкладкой: там нет сплитов, картинке достаётся всё окно.
+
+---@return string? lang, string[]? lines
+local function fenced_block_at(buf, row)
+    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+    local open_at, lang = nil, nil
+    for i, line in ipairs(lines) do
+        local fence_lang = line:match("^%s*```+(%S*)%s*$")
+        if fence_lang then
+            if open_at then
+                if row >= open_at and row <= i then
+                    return lang, vim.list_slice(lines, open_at + 1, i - 1)
+                end
+                open_at, lang = nil, nil
+            else
+                open_at, lang = i, fence_lang
+            end
+        end
+    end
+end
+
+local function diagram_fullscreen()
+    local lang, body = fenced_block_at(0, vim.api.nvim_win_get_cursor(0)[1])
+    if not lang then
+        return snacks.notify.warn("Курсор не внутри блока кода", { title = "Диаграмма" })
+    end
+    if lang ~= "mermaid" then
+        return snacks.notify.warn("Блок с языком `" .. lang .. "`, а не mermaid", { title = "Диаграмма" })
+    end
+    if not body or #body == 0 then
+        return snacks.notify.warn("Блок пустой", { title = "Диаграмма" })
+    end
+
+    local src = vim.fn.tempname() .. ".mmd"
+    vim.fn.writefile(body, src)
+
+    local convert = snacks.image.convert.convert({
+        src = src,
+        on_done = function(cv)
+            vim.schedule(function()
+                if cv._err or vim.fn.filereadable(cv.file) == 0 then
+                    return snacks.notify.error(
+                        "Не удалось отрисовать:\n" .. tostring(cv._err),
+                        { title = "Диаграмма" }
+                    )
+                end
+                -- snacks перехватывает открытие файлов-картинок и рисует их в буфере
+                vim.cmd("tabedit " .. vim.fn.fnameescape(cv.file))
+                vim.keymap.set("n", "q", "<cmd>tabclose<cr>", { buffer = 0, desc = "Закрыть диаграмму" })
+            end)
+        end,
+    })
+    convert:run()
+end
+
+vim.keymap.set("n", "<leader>id", diagram_fullscreen, { desc = "Диаграмма под курсором на весь экран" })
