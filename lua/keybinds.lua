@@ -89,3 +89,42 @@ vim.keymap.set(
 
 -- Удаляю gc
 vim.keymap.del({ "n", "x", "o" }, "gc")
+
+-- ── Select mode не должен перехватывать печатные символы ──────────────────────
+-- Маппинги, заданные через :map/:noremap без указания режима, попадают ещё и в
+-- select mode. А там любой печатный символ обязан заменять выделение -- именно в
+-- этом режиме сидит плейсхолдер сниппета. Вместо замены срабатывает команда, и
+-- буква не печатается.
+--
+-- Так ломались [[ ][ [] ]] из штатного ftplugin/go.vim, gta и S в sql, плюс
+-- несколько десятков глобальных от плагинов -- на e, o, a, f, g, R и других
+-- обычных буквах. Свои маппинги (p, J, K, <, >, gc*) переведены на "x" выше,
+-- но чужие так не поправить, поэтому снимаем select-вариант при входе в режим.
+--
+-- Всё, что начинается со спецклавиши, остаётся: <Tab>, <S-Tab>, <Plug>... нужны
+-- самим сниппетам. Остальные режимы маппинга не затрагиваются -- удаление
+-- select-варианта не трогает n/x/o.
+local function strip_select_mode()
+    local function strip(maps, opts)
+        for _, m in ipairs(maps) do
+            if m.lhs:sub(1, 1) ~= "<" then
+                pcall(vim.keymap.del, "s", m.lhs, opts)
+            end
+        end
+    end
+    strip(vim.api.nvim_get_keymap("s"), {})
+    local buf = vim.api.nvim_get_current_buf()
+    strip(vim.api.nvim_buf_get_keymap(buf, "s"), { buffer = buf })
+end
+
+vim.api.nvim_create_autocmd("ModeChanged", {
+    group = vim.api.nvim_create_augroup("strip_select_mode", { clear = true }),
+    pattern = "*",
+    desc = "Снять маппинги на печатных символах в select mode",
+    callback = function()
+        -- s, S и <C-S> -- три разновидности select mode
+        if vim.fn.mode():match("^[sS\19]") then
+            strip_select_mode()
+        end
+    end,
+})
