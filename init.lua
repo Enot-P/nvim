@@ -3,6 +3,7 @@ require("keybinds")
 require("options")
 require("terminal")
 require("lsp")
+require("markdown-links").setup()
 
 require("plugins.init")
 
