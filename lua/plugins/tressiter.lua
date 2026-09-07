@@ -25,6 +25,7 @@ local ensure_installed = {
     "markdown",
     "markdown_inline", -- инъекции кода внутри markdown
     "comment",
+    "html", -- условия задач в leetcode.nvim приходят HTML-ом, без парсера они сырые
     "sql", -- покрывает и PostgreSQL-диалект; отдельного `postgresql` парсера нет
     "make",
     "proto",
