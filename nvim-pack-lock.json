@@ -12,6 +12,11 @@
       "rev": "4ba26e41990c11620c96c0e1cff20eab65efde4a",
       "src": "https://github.com/goolord/alpha-nvim"
     },
+    "atlas.nvim": {
+      "rev": "92c6850fcf80461255390b299bcfc4b7a4740c24",
+      "src": "https://github.com/emrearmagan/atlas.nvim",
+      "version": "0.7.0 - 0.8.0"
+    },
     "blink.cmp": {
       "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
       "src": "https://github.com/saghen/blink.cmp",
