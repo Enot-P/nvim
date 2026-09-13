@@ -1,0 +1,15 @@
+diff --git a/lua/goplements/health.lua b/lua/goplements/health.lua
+index 2dfd953..6e7c5cb 100644
+--- a/lua/goplements/health.lua
++++ b/lua/goplements/health.lua
+@@ -24,7 +24,9 @@ function M.is_plugin_available(plugin)
+ end
+ 
+ function M.treesitter_parser_installed(lang)
+-  local is_installed = require("nvim-treesitter.parsers").has_parser(lang)
++  -- [enot patch] nvim-treesitter (main) больше не экспортирует has_parser:
++  -- parsers.lua теперь просто таблица конфигов. Спрашиваем ядро.
++  local is_installed = vim.treesitter.language.add(lang) == true
+   if is_installed then
+     ok("Treesitter parser for " .. lang .. " is installed")
+   else

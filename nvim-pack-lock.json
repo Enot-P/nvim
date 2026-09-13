@@ -98,9 +98,10 @@
       "rev": "27bf921498043f7ecd821d6db68d05de244bbd02",
       "src": "https://github.com/nvim-neotest/neotest"
     },
-    "neotest-go": {
-      "rev": "59b50505053f9c45a9febb79e11a56206c3e3901",
-      "src": "https://github.com/nvim-neotest/neotest-go"
+    "neotest-golang": {
+      "rev": "05cd7bf89a146cf1fa2848a9fe277a1e68a3a51d",
+      "src": "https://github.com/fredrikaverpil/neotest-golang",
+      "version": ">=0.0.0"
     },
     "nui.nvim": {
       "rev": "10fc361835c856ba4233ef5ea135b919bf3dce97",
@@ -151,6 +152,10 @@
     "nvim-web-devicons": {
       "rev": "5f032a85be210cd1c6ac98861eb3b187ff3bd5eb",
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
+    },
+    "oil.nvim": {
+      "rev": "b73018b75affd13fa38e2fc94ef753b465f770d7",
+      "src": "https://github.com/stevearc/oil.nvim"
     },
     "onedarkpro.nvim": {
       "rev": "ef009ae60769935a4eced9b3d545ae6013d3d271",
@@ -239,10 +244,6 @@
     "yanky.nvim": {
       "rev": "dd6689fdda85f66cab7d9b1a1664625f3be0920d",
       "src": "https://github.com/gbprod/yanky.nvim"
-    },
-    "yazi.nvim": {
-      "rev": "8a91621d1d51c136fe46782f872e71fe5e7f9bbf",
-      "src": "https://github.com/mikavilpas/yazi.nvim"
     }
   }
 }

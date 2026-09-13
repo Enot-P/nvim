@@ -101,7 +101,20 @@ snacks.setup({
     indent = { enabled = true },
     input = { enabled = true },
     notifier = { enabled = true, timeout = 3000 },
-    picker = { enabled = true },
+    picker = {
+        enabled = true,
+        sources = {
+            -- Дерево каталогов. Штатный пресет explorer -- "sidebar", то есть
+            -- вертикальный сплит слева; постоянная панель тут не нужна (файловый
+            -- менеджер -- oil), дерево открывается разово и плавающим окном.
+            explorer = {
+                layout = { preset = "vertical", preview = false },
+                -- В сайдбаре окно живёт долго и не закрывается по выбору файла.
+                -- Флоат же висел бы поверх только что открытого буфера -- закрываем.
+                auto_close = true,
+            },
+        },
+    },
     quickfile = { enabled = true },
     scope = { enabled = true },
     scroll = { enabled = true },
@@ -113,7 +126,8 @@ snacks.setup({
 local map = vim.keymap.set
 
 -- Top Pickers
--- Файловый менеджер — yazi (<leader>e), см. plugins/yazi.lua
+-- Файловый менеджер — oil (<leader>e), см. plugins/oil.lua;
+-- дерево каталогов — snacks.explorer (<leader>fe), настройки в picker.sources выше
 map("n", "<leader><space>", function() snacks.picker.smart() end, { desc = "Smart Find Files" })
 map("n", "<leader>/", function() snacks.picker.grep() end, { desc = "Grep" })
 map("n", "<leader>nn", function() snacks.picker.notifications() end, { desc = "Notification History" })
@@ -130,6 +144,7 @@ map(
     { desc = "Find Config File" }
 )
 map("n", "<leader>fs", function() Snacks.picker.resession() end, { desc = "Find Sessions" })
+map("n", "<leader>fe", function() snacks.explorer() end, { desc = "Дерево каталогов (float)" })
 map("n", "<leader>ff", function() snacks.picker.files() end, { desc = "Find Files" })
 map("n", "<leader>fg", function() snacks.picker.git_files() end, { desc = "Find Git Files" })
 map("n", "<leader>fp", function() snacks.picker.projects() end, { desc = "Projects" })

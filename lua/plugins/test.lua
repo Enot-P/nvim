@@ -3,12 +3,14 @@ vim.pack.add({
     { src = "https://github.com/nvim-neotest/nvim-nio" },
     { src = "https://github.com/antoinemadec/FixCursorHold.nvim" },
     { src = "https://github.com/nvim-neotest/neotest" },
-    { src = "https://github.com/nvim-neotest/neotest-go" },
+    { src = "https://github.com/fredrikaverpil/neotest-golang", version = vim.version.range("*") },
 })
 
 require("neotest").setup({
     adapters = {
-        require("neotest-go")({}),
+        require("neotest-golang")({
+            runner = "gotestsum", -- пишет JSON в файл, а не в stdout: стабильнее go test -json
+        }),
     },
     summary = {
         enabled = true,

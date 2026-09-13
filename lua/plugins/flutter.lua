@@ -125,8 +125,9 @@ local function run_barrel_create(dir)
     })
 end
 
--- Раньше это была экшен-кнопка `ge` в snacks.explorer; explorer заменён на yazi,
--- поэтому — команда с опциональным аргументом-директорией (по умолчанию каталог текущего файла).
+-- Раньше это была экшен-кнопка `ge` в snacks.explorer; файловый менеджер с тех пор
+-- сменился дважды (yazi, теперь oil), поэтому — команда с опциональным
+-- аргументом-директорией (по умолчанию каталог текущего файла).
 vim.api.nvim_create_user_command("DartBarrelCreate", function(opts)
     local dir = opts.args ~= "" and vim.fn.fnamemodify(opts.args, ":p") or vim.fn.expand("%:p:h")
     run_barrel_create((dir:gsub("/$", "")))

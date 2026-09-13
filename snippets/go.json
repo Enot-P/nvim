@@ -74,5 +74,31 @@
     "body": [
       "${1:handler} = Chain(${1:handler}, ${0:mw1, mw2})"
     ]
+  },
+  "Measure elapsed time": {
+    "prefix": "tt",
+    "body": [
+      "start := time.Now()",
+      "defer func() {",
+      "\tlog.Printf(\"${1:name} took %s\", time.Since(start))",
+      "}()",
+      "$0"
+    ]
+  },
+  "WaitGroup": {
+    "prefix": "wg",
+    "body": [
+      "var wg sync.WaitGroup"
+    ]
+  },
+  "WaitGroup goroutine": {
+    "prefix": "wgg",
+    "body": [
+      "wg.Add(1)",
+      "go func() {",
+      "\tdefer wg.Done()",
+      "\t$0",
+      "}()"
+    ]
   }
 }

@@ -68,6 +68,86 @@ vim.keymap.set(
 vim.keymap.set("n", "<C-Return>", "o<Esc>", { desc = "Новая строка снизу" })
 vim.keymap.set("n", "<C-;>", "A;<Esc>", { desc = "Точка с запятой в конце" })
 
+-- ── dS -- развернуть блок: убрать строку-заголовок и строку с `}` ─────────────
+-- Продолжение семейства nvim-surround: ySS{ оборачивает в блок, dS разворачивает
+-- его обратно. В нативном vim `d` + `S` -- no-op (S не motion), так что маппинг
+-- ничего не перекрывает и не добавляет ожидания к dd/dw.
+--
+-- Курсор -- в любом месте блока. Тело сдвигается на один уровень влево тем же
+-- whitespace, который уже лежит в файле: ни indentexpr, ни форматтер не
+-- вмешиваются, и табы от gofmt не превращаются в пробелы из-за expandtab.
+local function unwrap_block()
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local line = vim.api.nvim_get_current_line()
+    -- хвостовой комментарий не должен мешать увидеть открывающую скобку
+    local bare = line:gsub("%s*//.*$", ""):gsub("%s*%-%-.*$", "")
+
+    local open_row, open_col
+    local brace = bare:match("^.*()%{%s*$")
+    if brace then
+        open_row, open_col = row, brace - 1
+    else
+        -- ближайшая незакрытая `{` выше курсора
+        local pos = vim.fn.searchpairpos("{", "", "}", "bnW")
+        if pos[1] == 0 then
+            return vim.notify("dS: вокруг курсора нет блока", vim.log.levels.WARN)
+        end
+        open_row, open_col = pos[1], pos[2] - 1
+    end
+
+    -- парную `}` searchpairpos ищет от курсора, поэтому встаём на `{`
+    local save = { row, col }
+    vim.api.nvim_win_set_cursor(0, { open_row, open_col })
+    local close_row = vim.fn.searchpairpos("{", "", "}", "nW")[1]
+    vim.api.nvim_win_set_cursor(0, save)
+
+    if close_row == 0 then
+        return vim.notify("dS: не нашёл парную `}`", vim.log.levels.WARN)
+    end
+    if close_row == open_row then
+        return vim.notify("dS: блок в одну строку", vim.log.levels.WARN)
+    end
+
+    local head = vim.api.nvim_buf_get_lines(0, open_row - 1, open_row, false)[1]
+    local tail = vim.api.nvim_buf_get_lines(0, close_row - 1, close_row, false)[1]
+    -- на строке с `}` не должно висеть кода: иначе удаление строки его съест.
+    -- Хвост вызова разрешён -- это закрытие замыкания: `}()`, `}(ch)`.
+    if not (tail:match("^%s*%}[%s,;%)]*$") or tail:match("^%s*%}%s*%b()[%s,;]*$")) then
+        return vim.notify("dS: на строке с `}` есть код", vim.log.levels.WARN)
+    end
+
+    -- сдвиг тела: сколько ведущего whitespace уйдёт с каждой строки
+    local body = vim.api.nvim_buf_get_lines(0, open_row, close_row - 1, false)
+    local min_ws
+    for _, l in ipairs(body) do
+        local ws = l:match("^%s*")
+        if l:match("%S") and (not min_ws or #ws < #min_ws) then
+            min_ws = ws
+        end
+    end
+    local strip = min_ws and math.max(#min_ws - #head:match("^%s*"), 0) or 0
+    for i, l in ipairs(body) do
+        if l:match("%S") then
+            body[i] = l:sub(strip + 1)
+        end
+    end
+
+    -- одной правкой: заголовок + тело + `}` -> сдвинутое тело (один undo)
+    vim.api.nvim_buf_set_lines(0, open_row - 1, close_row, false, body)
+
+    local target = #body > 0 and math.min(math.max(row - 1, open_row), open_row + #body - 1)
+        or math.max(open_row - 1, 1)
+    vim.api.nvim_win_set_cursor(0, { target, 0 })
+    vim.cmd("normal! ^")
+end
+
+vim.keymap.set(
+    "n",
+    "dS",
+    unwrap_block,
+    { desc = "Развернуть блок (убрать `{` и `}` со строками)" }
+)
+
 vim.keymap.set(
     "n",
     "gl",
