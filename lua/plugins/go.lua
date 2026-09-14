@@ -210,6 +210,111 @@ local function impl_interface_picker()
 end
 
 -- ============================================================
+-- 🏗️ constructor
+-- ============================================================
+
+-- Генерирует func NewX(...) *X после структуры под курсором. with_fields —
+-- поля становятся аргументами; sync.* пропускаются, их нулевое значение
+-- уже рабочее, а копировать мьютекс по значению нельзя.
+local function gen_constructor(with_fields)
+    local bufnr = vim.api.nvim_get_current_buf()
+    local node = vim.treesitter.get_node()
+    while node and not (node:type() == "type_spec" and node:field("type")[1]
+            and node:field("type")[1]:type() == "struct_type") do
+        node = node:parent()
+    end
+    if not node then
+        vim.notify("Курсор не на структуре", vim.log.levels.WARN)
+        return
+    end
+
+    local text = function(n) return vim.treesitter.get_node_text(n, bufnr) end
+    local name = text(node:field("name")[1])
+
+    -- дженерики: [K comparable, V any] -> в сигнатуре как есть, в типе [K, V]
+    local tparams, targs = "", ""
+    local tp = node:field("type_parameters")[1]
+    if tp then
+        tparams = text(tp)
+        local names = {}
+        for decl in tp:iter_children() do
+            if decl:type() == "type_parameter_declaration" then
+                for _, id in ipairs(decl:field("name")) do
+                    table.insert(names, text(id))
+                end
+            end
+        end
+        targs = "[" .. table.concat(names, ", ") .. "]"
+    end
+
+    local params, inits = {}, {}
+    if with_fields then
+        local list = node:field("type")[1]:named_child(0)
+        for field in (list and list:iter_children() or function() end) do
+            if field:type() == "field_declaration" then
+                local ids = field:field("name")
+                -- встроенное поле: имя = имя типа без *, пакета и дженериков;
+                -- '*' у него не входит в type-узел, поэтому берём текст поля
+                local embedded = #ids == 0
+                local ftype = embedded and vim.trim((text(field):gsub("%s*[`\"].*$", "")))
+                    or text(field:field("type")[1])
+                local names = {}
+                if embedded then
+                    names = { (ftype:gsub("^%*", ""):gsub("%[.*$", ""):gsub("^.*%.", "")) }
+                else
+                    for _, id in ipairs(ids) do
+                        table.insert(names, text(id))
+                    end
+                end
+                if not ftype:match("^%*?sync%.") then
+                    for _, n in ipairs(names) do
+                        -- TTL -> ttl, HTTPClient -> httpClient, Name -> name
+                        local head, tail = n:match("^(%u+)(.*)$")
+                        local arg = n
+                        if head then
+                            if #head > 1 and tail:match("^%l") then
+                                head, tail = head:sub(1, -2), head:sub(-1) .. tail
+                            end
+                            arg = head:lower() .. tail
+                        end
+                        table.insert(params, arg .. " " .. ftype)
+                        table.insert(inits, ("\t\t%s: %s,"):format(n, arg))
+                    end
+                end
+            end
+        end
+    end
+
+    local lines = { "", ("func New%s%s(%s) *%s%s {"):format(name, tparams, table.concat(params, ", "), name, targs) }
+    if #inits == 0 then
+        table.insert(lines, ("\treturn &%s%s{}"):format(name, targs))
+    else
+        table.insert(lines, ("\treturn &%s%s{"):format(name, targs))
+        vim.list_extend(lines, inits)
+        table.insert(lines, "\t}")
+    end
+    table.insert(lines, "}")
+
+    -- вставляем после всего type-объявления (у type ( ... ) — после скобки)
+    local decl = node:parent()
+    local end_row = (decl and decl:type() == "type_declaration" and decl or node):end_()
+    vim.api.nvim_buf_set_lines(bufnr, end_row + 1, end_row + 1, false, lines)
+
+    if #inits > 0 then
+        vim.api.nvim_win_set_cursor(0, { end_row + 3, 0 })
+        return
+    end
+
+    -- пустой литерал отдаём gopls-экшену Fill: он проставит все поля с нулевыми
+    -- значениями (sync.Map{}, "", 0, nil) — тот же код, что и в Code actions
+    vim.api.nvim_win_set_cursor(0, { end_row + 4, #("\treturn &" .. name .. targs) })
+    vim.lsp.buf.code_action({
+        apply = true,
+        filter = function(action) return action.title:match("^Fill ") ~= nil end,
+    })
+end
+
+-- ============================================================
 -- 🎮 keymaps
 -- ============================================================
 
@@ -258,6 +363,15 @@ vim.api.nvim_create_autocmd("FileType", {
             end
         end, "Alt file")
 
+        -- исходники stdlib/runtime: gopls ищет только объявления, а тут нужны
+        -- комментарии, //go:linkname и .s-файлы
+        local goroot_src = function()
+            local out = vim.system({ "go", "env", "GOROOT" }, { text = true }):wait()
+            return vim.trim(out.stdout or "") .. "/src"
+        end
+        map("<leader>fG", function() Snacks.picker.files({ cwd = goroot_src() }) end, "Find Files (GOROOT)")
+        map("<leader>sG", function() Snacks.picker.grep({ cwd = goroot_src() }) end, "Grep (GOROOT)")
+
         -- coverage
         map(
             "<leader>c",
@@ -299,6 +413,8 @@ vim.api.nvim_create_autocmd("FileType", {
         end, { buffer = true, desc = "Add any tag (выделенные поля)" })
         map("<leader>gts", "<cmd>GoTestsAdd<cr>", "Generate tests")
         map("<leader>gie", "<cmd>GoIfErr<cr>", "Add if err")
+        map("<leader>goc", function() gen_constructor(false) end, "Constructor (пустой)")
+        map("<leader>goC", function() gen_constructor(true) end, "Constructor (поля в аргументах)")
         map("<leader>gdc", "<cmd>GoCmt<cr>", "Add doc comment")
         map("<leader>gii", impl_interface_picker, "Impl interface (picker)")
         map("<leader>giI", function()

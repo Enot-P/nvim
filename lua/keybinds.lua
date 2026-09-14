@@ -4,8 +4,9 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "."
 
 -- Перемещение строк в визуальном режиме
-vim.keymap.set("x", "J", ":m '>+1<CR>gv=gv", { desc = "moves lines down in visual selection" })
-vim.keymap.set("x", "K", ":m '<-2<CR>gv=gv", { desc = "moves lines up in visual selection" })
+-- silent: при 3+ строках (> 'report') :m и = пишут «N lines moved/indented», и это сообщение съедает хвост маппинга
+vim.keymap.set("x", "J", ":<C-u>silent '<,'>m '>+1 | silent normal! '[=']<CR>gv", { silent = true, desc = "moves lines down in visual selection" })
+vim.keymap.set("x", "K", ":<C-u>silent '<,'>m '<-2 | silent normal! '[=']<CR>gv", { silent = true, desc = "moves lines up in visual selection" })
 
 -- отцентровка экрана при перемещении по файлу
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "move down in buffer with cursor centered" })
