@@ -315,6 +315,176 @@ local function gen_constructor(with_fields)
 end
 
 -- ============================================================
+-- 🧵 go func() {...}()  <->  wg.Go(func() {...})
+-- ============================================================
+
+-- Переключает ближайшую к курсору горутину. В сторону wg.Go заодно съедает
+-- старый паттерн wg.Add(1) перед go и defer wg.Done() первой строкой тела.
+-- Обратно разворачивает в голый go func() {...}().
+local function goroutine_toggle()
+    local bufnr = vim.api.nvim_get_current_buf()
+    vim.treesitter.get_parser(bufnr):parse()
+    local text = function(n) return vim.treesitter.get_node_text(n, bufnr) end
+
+    -- X.Method(args) -> X, иначе nil
+    local selector_call = function(call, method)
+        if not (call and call:type() == "call_expression") then
+            return nil
+        end
+        local fn = call:field("function")[1]
+        if fn:type() ~= "selector_expression" or text(fn:field("field")[1]) ~= method then
+            return nil
+        end
+        return text(fn:field("operand")[1])
+    end
+
+    -- строка содержит только этот узел — её можно удалять целиком
+    local alone_on_line = function(n)
+        local row = n:start()
+        return n:end_() == row and vim.trim(vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1]) == text(n)
+    end
+
+    -- имя WaitGroup, объявленной в объемлющей функции выше строки row
+    local find_wg_name = function(node, row)
+        local fn
+        for p in function(_, n) return n:parent() end, nil, node do
+            if p:type() == "function_declaration" or p:type() == "method_declaration" then
+                fn = p
+            elseif p:type() == "func_literal" and not fn then
+                fn = p
+            end
+        end
+        if not fn then
+            return nil
+        end
+        local src = table.concat(vim.api.nvim_buf_get_lines(bufnr, fn:start(), row, false), "\n")
+        -- var wg sync.WaitGroup / wg *sync.WaitGroup (параметр, поле)
+        -- wg := sync.WaitGroup{} / &sync.WaitGroup{} / new(sync.WaitGroup)
+        return src:match("([%w_]+)%s+%*?sync%.WaitGroup")
+            or src:match("([%w_]+)%s*:?=%s*&?sync%.WaitGroup")
+            or src:match("([%w_]+)%s*:?=%s*new%(sync%.WaitGroup%)")
+    end
+
+    local function to_wg_go(stmt)
+        local call = stmt:named_child(0)
+        local lit = call:field("function")[1]
+        if call:field("arguments")[1]:named_child_count() > 0
+            or lit:field("parameters")[1]:named_child_count() > 0 then
+            vim.notify("wg.Go принимает только func() — уберите аргументы горутины", vim.log.levels.WARN)
+            return
+        end
+
+        local prev = stmt:prev_named_sibling()
+        local add = prev and prev:type() == "expression_statement" and alone_on_line(prev)
+            and prev:named_child(0):field("arguments")[1]
+            and text(prev:named_child(0):field("arguments")[1]) == "(1)"
+            and selector_call(prev:named_child(0), "Add")
+        local name = add or find_wg_name(stmt, stmt:start())
+
+        -- defer wg.Done() первой строкой тела больше не нужен
+        local lines = vim.split(text(lit), "\n")
+        local body = lit:field("body")[1]:named_child(0)
+        if body and body:type() == "statement_list" then
+            body = body:named_child(0)
+        end
+        if body and body:type() == "defer_statement" and alone_on_line(body)
+            and selector_call(body:named_child(0), "Done") == (name or "wg") then
+            table.remove(lines, body:start() - lit:start() + 1)
+        end
+
+        lines[1] = (name or "wg") .. ".Go(" .. lines[1]
+        lines[#lines] = lines[#lines] .. ")"
+
+        local sr, sc, er, ec = stmt:range()
+        vim.api.nvim_buf_set_text(bufnr, sr, sc, er, ec, lines)
+        if add then
+            vim.api.nvim_buf_set_lines(bufnr, prev:start(), prev:start() + 1, false, {})
+        elseif not name then
+            local indent = vim.api.nvim_buf_get_lines(bufnr, sr, sr + 1, false)[1]:match("^%s*")
+            vim.api.nvim_buf_set_lines(bufnr, sr, sr, false, { indent .. "var wg sync.WaitGroup" })
+        end
+    end
+
+    local node = vim.treesitter.get_node()
+    while node do
+        -- go func() {...}()
+        if node:type() == "go_statement" then
+            local call = node:named_child(0)
+            if call and call:type() == "call_expression" and call:field("function")[1]:type() == "func_literal" then
+                return to_wg_go(node)
+            end
+        end
+        -- wg.Go(func() {...})
+        if selector_call(node, "Go") then
+            local args = node:field("arguments")[1]
+            local lit = args:named_child_count() == 1 and args:named_child(0)
+            if lit and lit:type() == "func_literal" then
+                local lines = vim.split(text(lit), "\n")
+                lines[1] = "go " .. lines[1]
+                lines[#lines] = lines[#lines] .. "()"
+                local sr, sc, er, ec = node:range()
+                vim.api.nvim_buf_set_text(bufnr, sr, sc, er, ec, lines)
+                return
+            end
+        end
+        node = node:parent()
+    end
+    vim.notify("Курсор не в go func() {...}() и не в wg.Go(func() {...})", vim.log.levels.WARN)
+end
+
+-- ============================================================
+-- 🛝 playground: одноразовый модуль для быстрой проверки идеи
+-- ============================================================
+
+-- Модуль в /tmp: с go.mod gopls работает полноценно, go get и тесты тоже.
+-- Удалять руками не нужно — /tmp чистится при перезагрузке.
+local playground_files = {
+    ["main.go"] = {
+        "package main",
+        "",
+        'import "fmt"',
+        "",
+        "func main() {",
+        '\tfmt.Println("hello")',
+        "}",
+    },
+    ["main_test.go"] = {
+        "package main",
+        "",
+        'import "testing"',
+        "",
+        "func TestPlay(t *testing.T) {",
+        "}",
+    },
+}
+
+local function go_playground()
+    local dir = vim.trim(vim.fn.system({ "mktemp", "-d", "/tmp/goplay-XXXX" }))
+    local out = vim.system({ "go", "mod", "init", "play" }, { cwd = dir, text = true }):wait()
+    if out.code ~= 0 then
+        vim.notify("go mod init:\n" .. (out.stderr or ""), vim.log.levels.ERROR)
+        return
+    end
+    for name, lines in pairs(playground_files) do
+        vim.fn.writefile(lines, dir .. "/" .. name)
+    end
+
+    -- своя вкладка со своим cwd, чтобы не сбить cwd текущего проекта;
+    -- пустой стартовый буфер (nvim без аргументов) переиспользуем
+    local buf = vim.api.nvim_get_current_buf()
+    local empty = vim.api.nvim_buf_get_name(buf) == "" and not vim.bo[buf].modified
+    if not empty then
+        vim.cmd("tabnew")
+    end
+    vim.cmd("tcd " .. vim.fn.fnameescape(dir))
+    vim.cmd("edit main.go")
+    vim.api.nvim_win_set_cursor(0, { 6, 0 })
+end
+
+vim.api.nvim_create_user_command("GoPlay", go_playground, { desc = "Go playground в /tmp" })
+vim.keymap.set("n", "<leader>gop", go_playground, { desc = "Go playground" })
+
+-- ============================================================
 -- 🎮 keymaps
 -- ============================================================
 
@@ -330,7 +500,7 @@ vim.api.nvim_create_autocmd("FileType", {
             end
         end, { desc = "Restart gopls" })
 
-        map("<leader>gs", sqlc_generate, "SQLC Generate")
+        map("<leader>gos", sqlc_generate, "SQLC Generate")
 
         -- run/test
         -- go определяет модуль по cwd, а не по аргументу-пути, поэтому запускаем
@@ -412,12 +582,13 @@ vim.api.nvim_create_autocmd("FileType", {
             tag_add(("%d,%d"):format(vim.fn.line("'<"), vim.fn.line("'>")))
         end, { buffer = true, desc = "Add any tag (выделенные поля)" })
         map("<leader>gts", "<cmd>GoTestsAdd<cr>", "Generate tests")
-        map("<leader>gie", "<cmd>GoIfErr<cr>", "Add if err")
+        map("<leader>goe", "<cmd>GoIfErr<cr>", "Add if err")
+        map("<leader>gow", goroutine_toggle, "go func() <-> wg.Go")
         map("<leader>goc", function() gen_constructor(false) end, "Constructor (пустой)")
         map("<leader>goC", function() gen_constructor(true) end, "Constructor (поля в аргументах)")
-        map("<leader>gdc", "<cmd>GoCmt<cr>", "Add doc comment")
-        map("<leader>gii", impl_interface_picker, "Impl interface (picker)")
-        map("<leader>giI", function()
+        map("<leader>god", "<cmd>GoCmt<cr>", "Add doc comment")
+        map("<leader>goi", impl_interface_picker, "Impl interface (picker)")
+        map("<leader>goI", function()
             vim.ui.input({ prompt = "Interface (например: io.Reader): " }, function(input)
                 if input and input ~= "" then
                     vim.cmd("GoImpl " .. input)

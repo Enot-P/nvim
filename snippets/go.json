@@ -91,6 +91,18 @@
       "var wg sync.WaitGroup"
     ]
   },
+  "Mutex": {
+    "prefix": "mu",
+    "body": [
+      "var mu sync.Mutex"
+    ]
+  },
+  "RWMutex": {
+    "prefix": "mur",
+    "body": [
+      "var mu sync.RWMutex"
+    ]
+  },
   "WaitGroup goroutine": {
     "prefix": "wgg",
     "body": [
@@ -99,6 +111,14 @@
       "\tdefer wg.Done()",
       "\t$0",
       "}()"
+    ]
+  },
+  "WaitGroup Go": {
+    "prefix": "gow",
+    "body": [
+      "${1:wg}.Go(func() {",
+      "\t${TM_SELECTED_TEXT}$0",
+      "})"
     ]
   }
 }
