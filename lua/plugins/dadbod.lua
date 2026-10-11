@@ -1,10 +1,10 @@
 return {
     "kristijanhusak/vim-dadbod-ui",
-    dependencies = { "tpope/vim-dadbod", "kristijanhusak/vim-dadbod-completion" },
+    dependencies = { "tpope/vim-dadbod", "kristijanhusak/vim-dadbod-completion", "tpope/vim-dotenv" },
     -- vimscript-плагин читает g:-переменные при загрузке, поэтому всё в init
     init = function()
-        local ok, dbs = pcall(dofile, vim.fn.stdpath("config") .. "/local/database_connections.lua")
-        vim.g.dbs = ok and dbs or {}
+        -- g:dbs = local/database_connections.lua + БД из .env текущего проекта
+        require("project-db").setup()
 
         vim.g.db_ui_use_nerd_fonts = 1
         vim.g.db_ui_show_help = 1
