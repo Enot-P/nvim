@@ -26,9 +26,9 @@ return {
 
             -- Подсказки (inlay hints)
             hints = {
-                parameterNames = true,   -- имена параметров при вызове функции
+                parameterNames = true, -- имена параметров при вызове функции
                 assignVariableTypes = true, -- типы переменных при :=
-                constantValues = true,   -- значения констант
+                constantValues = true, -- значения констант
                 compositeLiteralFields = true, -- имена полей в структурах
             },
 
@@ -43,5 +43,5 @@ return {
             -- Проверка уязвимостей
             vulncheck = "Imports", -- или "Off"
         },
-    }
+    },
 }

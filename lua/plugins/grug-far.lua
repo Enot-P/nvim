@@ -1,8 +1,9 @@
-vim.pack.add({
-	{ src = "https://github.com/MagicDuck/grug-far.nvim" },
-})
+return {
+	"MagicDuck/grug-far.nvim",
+	config = function()
+		require("grug-far").setup({})
 
-require("grug-far").setup({})
-
-vim.keymap.set("n", "<leader>fR", "<cmd>GrugFar<cr>", { desc = "GrugFar: find & replace" })
-vim.keymap.set("v", "<leader>fR", "<cmd>GrugFarWithin<cr>", { desc = "GrugFar: within selection" })
+		vim.keymap.set("n", "<leader>fR", "<cmd>GrugFar<cr>", { desc = "GrugFar: find & replace" })
+		vim.keymap.set("v", "<leader>fR", "<cmd>GrugFarWithin<cr>", { desc = "GrugFar: within selection" })
+	end,
+}

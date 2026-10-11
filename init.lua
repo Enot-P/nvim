@@ -5,6 +5,7 @@ require("terminal")
 require("lsp")
 require("markdown-links").setup()
 
-require("plugins.init")
+require("spelling")
+require("plugin-manager")
 
 vim.opt.timeoutlen = 300 -- таймаут для маппингов

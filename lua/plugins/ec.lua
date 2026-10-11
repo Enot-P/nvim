@@ -1,10 +1,11 @@
-vim.pack.add({
-    { src = "https://github.com/chojs23/ec" },
-})
+return {
+    "chojs23/ec",
+    config = function()
+        local ok, ec = pcall(require, "ec")
+        if ok then
+            ec.setup({})
+        end
 
-local ok, ec = pcall(require, "ec")
-if ok then
-    ec.setup({})
-end
-
-vim.keymap.set("n", "<leader>gr", ":Ec<CR>", { desc = "Open ec conflict resolver" })
+        vim.keymap.set("n", "<leader>gr", ":Ec<CR>", { desc = "Open ec conflict resolver" })
+    end,
+}
